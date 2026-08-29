@@ -1,0 +1,76 @@
+<div class="settings-panel">
+  <section class="settings-group">
+    <span class="group-label">{{ i18n.t().retroSetPalette }}</span>
+    <div class="theme-options">
+      <button
+        type="button"
+        class="theme-btn"
+        [class.active]="store.theme() === 'zen-dark'"
+        (click)="onSelectTheme('zen-dark')"
+      >
+        <span class="swatch swatch-zen"></span>
+        <span>Zen Dark (Sumi-e & Oro)</span>
+      </button>
+
+      <button
+        type="button"
+        class="theme-btn"
+        [class.active]="store.theme() === 'retro-amber'"
+        (click)="onSelectTheme('retro-amber')"
+      >
+        <span class="swatch swatch-amber"></span>
+        <span>Phosphor Amber (CRT)</span>
+      </button>
+
+      <button
+        type="button"
+        class="theme-btn"
+        [class.active]="store.theme() === 'matrix-green'"
+        (click)="onSelectTheme('matrix-green')"
+      >
+        <span class="swatch swatch-matrix"></span>
+        <span>Matrix Cyber-Zen (Verde)</span>
+      </button>
+    </div>
+  </section>
+
+  <div class="settings-divider"></div>
+
+  <section class="settings-group">
+    <span class="group-label">{{ i18n.t().retroSetVisualAudio }}</span>
+
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <span class="toggle-name">{{ i18n.t().retroSetScanlines }}</span>
+        <span class="toggle-desc">{{ i18n.t().retroSetScanlinesDesc }}</span>
+      </div>
+      <button
+        type="button"
+        class="zen-toggle-switch"
+        [class.on]="store.scanlines()"
+        (click)="onToggleScanlines()"
+        role="switch"
+        [attr.aria-checked]="store.scanlines()"
+      >
+        {{ store.scanlines() ? 'ON' : 'OFF' }}
+      </button>
+    </div>
+
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <span class="toggle-name">{{ i18n.t().retroSetSound }}</span>
+        <span class="toggle-desc">{{ i18n.t().retroSetSoundDesc }}</span>
+      </div>
+      <button
+        type="button"
+        class="zen-toggle-switch"
+        [class.on]="store.soundEnabled()"
+        (click)="onToggleSound()"
+        role="switch"
+        [attr.aria-checked]="store.soundEnabled()"
+      >
+        {{ store.soundEnabled() ? 'ON' : 'OFF' }}
+      </button>
+    </div>
+  </section>
+</div>

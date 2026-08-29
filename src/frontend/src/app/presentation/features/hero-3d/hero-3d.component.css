@@ -1,0 +1,98 @@
+:host { display: block; width: 100%; }
+.hero-scroll-wrapper { position: relative; width: 100%; height: 400vh; }
+.hero-sticky-stage {
+  position: sticky; top: 0; width: 100%; height: 100vh; overflow: hidden;
+  background: #000; display: flex; align-items: center; justify-content: center;
+}
+.thinkpad-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 1; }
+
+.zen-loader-pill {
+  position: absolute; top: calc(var(--space-8) + 36px); right: clamp(1rem, 3vw, 2.5rem);
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(12, 14, 20, 0.85); backdrop-filter: blur(8px);
+  border: 1px solid var(--zen-border-subtle); padding: 4px 12px;
+  border-radius: 2px; font-family: var(--font-sans); font-size: 0.75rem;
+  font-weight: 600; color: var(--zen-accent-kintsugi); z-index: 30;
+}
+.loader-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--zen-accent-kintsugi);
+  animation: pulse-l 1.2s infinite ease-in-out;
+}
+@keyframes pulse-l {
+  0%, 100% { opacity: 0.4; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+.lateral-panel {
+  position: absolute; z-index: 10; width: 100%; opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+}
+.side-left { left: clamp(1.5rem, 4vw, 4rem); transform: translateY(calc(-50% + 16px)); }
+.side-right { right: clamp(1.5rem, 4vw, 4rem); transform: translateY(calc(-50% + 16px)); }
+.lateral-panel.active { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(-50%); }
+
+.pos-f1-left { top: 45%; max-width: 440px; }
+.pos-f1-right { top: 58%; max-width: 275px; }
+.pos-f2-left { top: 54%; max-width: 370px; }
+.pos-f2-right { top: 40%; max-width: 330px; }
+.pos-f3-left { top: 42%; max-width: 300px; }
+.pos-f3-right { top: 52%; max-width: 380px; }
+
+/* Tarjeta Insignia Principal de Bryan */
+.hero-lead-card, .panel-card {
+  border: 1px solid var(--zen-border-subtle); border-radius: 2px;
+  backdrop-filter: blur(12px);
+}
+.hero-lead-card {
+  background: rgba(11, 14, 20, 0.9);
+  border-color: rgba(197, 155, 39, 0.45);
+  border-left: 4px solid var(--zen-accent-kintsugi);
+  padding: 24px;
+  box-shadow: 0 0 35px rgba(197, 155, 39, 0.18), 0 20px 50px rgba(0, 0, 0, 0.9);
+}
+.lead-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.lead-status { font-family: var(--font-sans); font-size: 0.75rem; color: var(--zen-accent-matcha); font-weight: 700; }
+.lead-tag { font-family: var(--font-sans); font-size: 0.75rem; color: var(--zen-text-muted); font-weight: 600; }
+.lead-name {
+  font-family: var(--font-sans);
+  font-size: clamp(2rem, 3vw, 2.5rem); font-weight: 800; color: var(--zen-text-primary);
+  line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 2px;
+}
+.lead-role, .panel-eyebrow {
+  display: block; font-family: var(--font-sans); font-size: 0.8125rem; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--zen-accent-kintsugi); margin-bottom: 8px;
+}
+.lead-desc { font-family: var(--font-sans); font-size: 0.9375rem; color: var(--zen-text-secondary); line-height: 1.6; margin-bottom: 16px; }
+.lead-badges, .panel-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.lead-footer { border-top: 1px solid var(--zen-border-subtle); padding-top: 10px; margin-top: 14px; }
+.lead-metric { font-family: var(--font-sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; color: var(--zen-text-muted); }
+
+/* Tarjetas Secundarias */
+.panel-card {
+  background: rgba(10, 12, 16, 0.82);
+  border-left: 3px solid var(--zen-accent-kintsugi);
+  padding: 18px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85);
+}
+.compact-card { padding: 14px; }
+.panel-title { font-family: var(--font-sans); font-size: 1.3rem; font-weight: 800; line-height: 1.25; color: var(--zen-text-primary); margin-bottom: 6px; }
+.panel-desc { font-family: var(--font-sans); font-size: 0.875rem; color: var(--zen-text-secondary); line-height: 1.55; margin-bottom: 12px; }
+
+/* Chips de Etiquetas */
+.zen-chip {
+  font-family: var(--font-sans); font-size: 0.75rem; font-weight: 600; padding: 3px 9px; border-radius: 2px;
+  background: rgba(255, 255, 255, 0.04); border: 1px solid var(--zen-border-subtle); color: var(--zen-text-primary);
+}
+.chip-gold { border-color: rgba(197, 155, 39, 0.45); color: var(--zen-accent-kintsugi); background: rgba(197, 155, 39, 0.08); }
+.chip-matcha { border-color: rgba(78, 155, 111, 0.45); color: var(--zen-accent-matcha); background: rgba(78, 155, 111, 0.08); }
+
+@media (max-width: 900px) {
+  .lateral-panel {
+    max-width: min(90%, 380px) !important; left: 50% !important; right: auto !important;
+    transform: translateX(-50%) translateY(16px);
+  }
+  .side-left { top: 12% !important; }
+  .side-right { top: auto !important; bottom: 8% !important; }
+  .lateral-panel.active { transform: translateX(-50%) translateY(0); }
+}

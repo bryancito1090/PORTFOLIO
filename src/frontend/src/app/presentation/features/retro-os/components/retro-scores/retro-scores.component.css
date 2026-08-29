@@ -1,0 +1,116 @@
+:host {
+  display: block;
+  padding: var(--space-3);
+  background-color: var(--zen-bg-base);
+  font-family: var(--font-sans);
+  min-height: 100%;
+}
+
+.scores-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.scores-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--zen-border-subtle);
+  padding-bottom: var(--space-2);
+}
+
+.hall-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--zen-accent-kintsugi);
+  letter-spacing: 0.08em;
+}
+
+.game-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--zen-text-primary);
+}
+
+.refresh-btn {
+  background: var(--zen-bg-surface);
+  border: 1px solid var(--zen-border-subtle);
+  color: var(--zen-text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: var(--zen-radius-xs);
+  cursor: pointer;
+}
+
+.refresh-btn:hover {
+  border-color: var(--zen-accent-kintsugi);
+  color: var(--zen-text-primary);
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.scores-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+
+.scores-table th {
+  text-align: left;
+  padding: 6px 8px;
+  color: var(--zen-text-muted);
+  border-bottom: 1px solid var(--zen-border-subtle);
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+}
+
+.scores-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.rank-col {
+  width: 24px;
+  color: var(--zen-text-muted);
+  font-weight: 700;
+}
+
+.tag-col {
+  color: var(--zen-text-primary);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.score-col {
+  color: var(--zen-accent-matcha);
+  font-weight: 700;
+}
+
+.date-col {
+  color: var(--zen-text-muted);
+  font-size: 0.6875rem;
+}
+
+.gold-rank .tag-col,
+.gold-rank .score-col {
+  color: var(--zen-accent-kintsugi);
+}
+
+.silver-rank .tag-col {
+  color: #d8dee9;
+}
+
+.bronze-rank .tag-col {
+  color: var(--zen-accent-amber);
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--space-4);
+  color: var(--zen-text-muted);
+}

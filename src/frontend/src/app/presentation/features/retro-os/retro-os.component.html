@@ -1,0 +1,94 @@
+<div class="vintage-monitor-wrapper" (click)="closeStartMenu()">
+  <!-- 1. Imagen del Monitor CRT en el Fondo (Chasis, Biseles, Botones y Base) -->
+  <img src="/assets/images/monitor.webp" alt="Monitor CRT Vintage" class="monitor-background-img" loading="eager" />
+
+  <!-- 2. Pantalla Windows XP Sobrepuesta en el Área del Tubo (100% Visible e Interactiva) -->
+  <div class="monitor-screen-glass">
+    <div class="xp-desktop-canvas">
+      <!-- Iconos de Escritorio de Windows XP -->
+      <app-retro-desktop-icons [icons]="store.desktopIcons()"
+        (openWindow)="store.openWindow($event)"></app-retro-desktop-icons>
+
+      <!-- Capa de Ventanas flotantes -->
+      <div class="xp-windows-layer">
+        @for (win of store.openWindows(); track win.id) {
+        @if (!win.isMinimized) {
+        <app-retro-window [window]="win" [isActive]="store.activeWindowId() === win.id"
+          (close)="store.closeWindow($event)" (minimize)="store.minimizeWindow($event)"
+          (toggleMaximize)="store.toggleMaximize($event)"
+          (focus)="store.focusWindow($event)" (move)="onMoveWindow($event)">
+          @switch (win.id) {
+          @case ('games') {
+          <app-retro-game-canvas />
+          }
+          @case ('cv') {
+          <app-retro-cv />
+          }
+          @case ('scores') {
+          <app-retro-scores />
+          }
+          @case ('settings') {
+          <app-retro-settings />
+          }
+          }
+        </app-retro-window>
+        }
+        }
+      </div>
+
+      <!-- Menú Inicio Clásico de Windows XP Modular -->
+      @if (isStartMenuOpen()) {
+      <app-retro-start-menu (close)="closeStartMenu()" (openWindow)="store.openWindow($event)" />
+      }
+
+      <!-- Reflejo sutil de cristal CRT -->
+      <div class="crt-screen-glare"></div>
+
+      <!-- BARRA DE TAREAS LUNA BLUE DE ALTA CALIDAD -->
+      <footer class="xp-custom-taskbar" (click)="$event.stopPropagation()">
+        <!-- Botón Inicio Clásico Verde -->
+        <button type="button" class="xp-start-button" [class.active]="isStartMenuOpen()"
+          (click)="toggleStartMenu($event)" [attr.aria-label]="i18n.t().retroStartAria" [title]="i18n.t().retroStartTitle">
+          <span class="start-flag">
+            <svg viewBox="0 0 16 16" class="xp-flag-svg">
+              <path d="M1 2.5C2.5 1.8 4.2 2 5.5 3C6 3.5 6 5 6 6.5C4.8 5.6 3.2 5.3 1 6V2.5Z" fill="#F35325" />
+              <path d="M7 3.5C8.5 2.5 10.2 2.2 11.5 2.5V6C10 5.6 8.5 5.8 7 6.6V3.5Z" fill="#81BC06" />
+              <path d="M1 7.5C3 6.8 4.6 7 5.8 8V11.5C4.2 10.5 2.5 10.8 1 11.5V7.5Z" fill="#05A6F0" />
+              <path d="M7 8.2C8.5 7.2 10 7 11.5 7.6V11.2C10 10.8 8.5 11 7 11.8V8.2Z" fill="#FFBA08" />
+            </svg>
+          </span>
+          <span class="start-text">{{ i18n.t().retroStartText }}</span>
+        </button>
+
+        <!-- Accesos Rápidos (Quick Launch) -->
+        <div class="xp-quick-launch">
+          <span class="ql-sep"></span>
+          <button type="button" class="ql-btn" (click)="closeStartMenu()" title="Internet Explorer">🌐</button>
+          <button type="button" class="ql-btn" (click)="closeStartMenu()"
+            [title]="i18n.t().retroWmpTitle">🎵</button>
+        </div>
+
+        <!-- Pestañas de Ventanas Abiertas en la Barra de Tareas -->
+        <div class="xp-task-tabs">
+          @for (win of store.openWindows(); track win.id) {
+          <button type="button" class="xp-tab-button"
+            [class.active]="store.activeWindowId() === win.id && !win.isMinimized" [class.minimized]="win.isMinimized"
+            (click)="store.openWindow(win.id)" [title]="win.title">
+            <span class="tab-win-icon"></span>
+            <span class="tab-win-title">{{ win.title }}</span>
+          </button>
+          }
+        </div>
+
+        <!-- Bandeja del Sistema (System Tray / Área de Notificación) -->
+        <div class="xp-system-tray">
+          <span class="tray-expand" [title]="i18n.t().retroTrayShowHidden">&lt;</span>
+          <span class="tray-mini-icon" [title]="i18n.t().retroTraySecurity">🛡</span>
+          <span class="tray-mini-icon" [title]="i18n.t().retroTrayVolume">🔊</span>
+          <span class="tray-mini-icon" [title]="i18n.t().retroTrayNetwork">🖧</span>
+          <span class="xp-tray-clock" [title]="i18n.t().retroTrayClock">{{ currentTime() }}</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

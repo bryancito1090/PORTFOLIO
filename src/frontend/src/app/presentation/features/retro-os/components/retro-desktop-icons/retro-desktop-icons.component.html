@@ -1,0 +1,97 @@
+<div class="xp-icons-column">
+  @for (icon of icons(); track icon.id) {
+    <button
+      type="button"
+      class="xp-desktop-icon"
+      (click)="onIconClick(icon.windowId)"
+      [attr.aria-label]="icon.label"
+    >
+      <div class="xp-icon-graphic">
+        @switch (icon.iconType) {
+          @case ('gamepad') {
+            <!-- Icono característico Juegos Windows XP (Pinball / Joystick 3D) -->
+            <svg class="xp-icon-svg" viewBox="0 0 36 36" fill="none">
+              <defs>
+                <linearGradient id="xpJoyGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#4fc3f7" />
+                  <stop offset="100%" stop-color="#0277bd" />
+                </linearGradient>
+                <linearGradient id="xpBaseGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#37474f" />
+                  <stop offset="100%" stop-color="#212121" />
+                </linearGradient>
+              </defs>
+              <ellipse cx="18" cy="27" rx="14" ry="6" fill="#1b2a32" opacity="0.6" />
+              <rect x="4" y="12" width="28" height="15" rx="5" fill="url(#xpBaseGrad)" stroke="#546e7a" stroke-width="1.2" />
+              <circle cx="11" cy="19.5" r="4.5" fill="#263238" stroke="#78909c" stroke-width="0.8" />
+              <path d="M11 16.5v6M8 19.5h6" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" />
+              <circle cx="21" cy="21" r="2" fill="#e53935" stroke="#b71c1c" stroke-width="0.8" />
+              <circle cx="25" cy="18" r="2" fill="#fdd835" stroke="#f57f17" stroke-width="0.8" />
+              <circle cx="25" cy="23" r="1.5" fill="#43a047" stroke="#1b5e20" stroke-width="0.8" />
+              <circle cx="29" cy="19" r="1.5" fill="#1e88e5" stroke="#0d47a1" stroke-width="0.8" />
+            </svg>
+          }
+          @case ('document') {
+            <!-- Icono característico Documentos / Carpeta Windows XP -->
+            <svg class="xp-icon-svg" viewBox="0 0 36 36" fill="none">
+              <defs>
+                <linearGradient id="xpFolderBack" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#e2a632" />
+                  <stop offset="100%" stop-color="#b27918" />
+                </linearGradient>
+                <linearGradient id="xpFolderFront" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#ffde59" />
+                  <stop offset="100%" stop-color="#f5ba13" />
+                </linearGradient>
+              </defs>
+              <ellipse cx="18" cy="30" rx="13" ry="4" fill="#1b2a32" opacity="0.4" />
+              <path d="M4 11C4 9.9 4.9 9 6 9H13L15.5 12H30C31.1 12 32 12.9 32 14V26C32 27.1 31.1 28 30 28H6C4.9 28 4 27.1 4 26V11Z" fill="url(#xpFolderBack)" />
+              <rect x="7" y="10" width="18" height="15" rx="1.5" fill="#ffffff" stroke="#90a4ae" stroke-width="0.8" />
+              <line x1="10" y1="13" x2="20" y2="13" stroke="#1565c0" stroke-width="1.2" stroke-linecap="round" />
+              <line x1="10" y1="16" x2="22" y2="16" stroke="#546e7a" stroke-width="1" stroke-linecap="round" />
+              <line x1="10" y1="19" x2="18" y2="19" stroke="#546e7a" stroke-width="1" stroke-linecap="round" />
+              <path d="M3 16C3 15 3.8 14.2 4.8 14.2H31.2C32.2 14.2 33 15 33 16L31.5 28.5C31.4 29.3 30.7 30 29.8 30H6.2C5.3 30 4.6 29.3 4.5 28.5L3 16Z" fill="url(#xpFolderFront)" stroke="#c68a0a" stroke-width="0.8" />
+            </svg>
+          }
+          @case ('trophy') {
+            <!-- Icono característico Récords Copa de Oro Windows XP -->
+            <svg class="xp-icon-svg" viewBox="0 0 36 36" fill="none">
+              <defs>
+                <linearGradient id="xpGoldCup" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#fff176" />
+                  <stop offset="40%" stop-color="#fbc02d" />
+                  <stop offset="100%" stop-color="#f57f17" />
+                </linearGradient>
+              </defs>
+              <ellipse cx="18" cy="31" rx="10" ry="3" fill="#1b2a32" opacity="0.5" />
+              <path d="M8 8C5 8 4 11 5 14C6 17 8 18 10 18" stroke="#f57f17" stroke-width="2.2" stroke-linecap="round" />
+              <path d="M28 8C31 8 32 11 31 14C30 17 28 18 26 18" stroke="#f57f17" stroke-width="2.2" stroke-linecap="round" />
+              <path d="M9 6H27V15C27 20 23 23 18 23C13 23 9 20 9 15V6Z" fill="url(#xpGoldCup)" stroke="#c67100" stroke-width="1.2" />
+              <path d="M15 23H21V27H15V23Z" fill="#f57f17" stroke="#c67100" stroke-width="0.8" />
+              <path d="M12 27H24V30C24 30.6 23.6 31 23 31H13C12.4 31 12 30.6 12 30V27Z" fill="#546e7a" stroke="#263238" stroke-width="1" />
+              <polygon points="18,9 19.5,13.5 24,13.5 20.5,16 22,20 18,17.5 14,20 15.5,16 12,13.5 16.5,13.5" fill="#ffffff" opacity="0.9" />
+            </svg>
+          }
+          @case ('gear') {
+            <!-- Icono característico Panel de Control Windows XP -->
+            <svg class="xp-icon-svg" viewBox="0 0 36 36" fill="none">
+              <defs>
+                <linearGradient id="xpMonitorGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#eceff1" />
+                  <stop offset="100%" stop-color="#b0bec5" />
+                </linearGradient>
+              </defs>
+              <ellipse cx="18" cy="31" rx="11" ry="3.5" fill="#1b2a32" opacity="0.5" />
+              <rect x="5" y="6" width="26" height="19" rx="2" fill="url(#xpMonitorGrad)" stroke="#78909c" stroke-width="1.2" />
+              <rect x="8" y="9" width="20" height="13" fill="#0055ea" />
+              <path d="M15 25H21L23 29H13L15 25Z" fill="#cfd8dc" stroke="#78909c" stroke-width="1" />
+              <circle cx="18" cy="15.5" r="4.5" fill="#ffb300" stroke="#f57f17" stroke-width="1.2" />
+              <circle cx="18" cy="15.5" r="2" fill="#0055ea" />
+            </svg>
+          }
+        }
+      </div>
+      <span class="xp-icon-title">{{ icon.label }}</span>
+    </button>
+  }
+</div>

@@ -1,0 +1,72 @@
+<div class="landing-container">
+  <!-- Header Minimalista Flotante (Glassmorphism & Zen High-Contrast) -->
+  <header class="zen-header">
+    <div class="brand-block">
+      <span class="brand-monogram">BRYAN</span>
+      <span class="brand-separator">/</span>
+      <span class="brand-name">BAÑO</span>
+    </div>
+
+    <div class="header-right-group">
+      <div class="time-location-block">
+        <span class="live-clock">{{ currentTime() }}</span>
+        <span class="location-label"> {{ i18n.t().location }}</span>
+      </div>
+
+      <button type="button" class="lang-toggle-btn" (click)="i18n.toggleLanguage()"
+        [attr.aria-label]="i18n.t().switchLangAria">
+        {{ i18n.currentLang() === 'es' ? 'EN' : 'ES' }}
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero con Laptop 3D desarmable al scroll (300 frames) -->
+  <main class="hero-container">
+    <app-hero-3d></app-hero-3d>
+  </main>
+
+  <!-- Contenedor Base para Módulos Interactivos (50/50 Perfil Técnico y Retro Monitor) -->
+  <section class="interactive-stage">
+    <div class="stage-grid">
+      <!-- Slot 1: Perfil Técnico & Filosofía de Ingeniería -->
+      <article class="module-card profile-module-card">
+        <app-technical-profile></app-technical-profile>
+      </article>
+
+      <!-- Slot 2: Retro OS en Monitor CRT Antiguo (50% Horizontal) -->
+      <article class="module-card retro-module-card">
+        <app-retro-os></app-retro-os>
+      </article>
+    </div>
+  </section>
+
+  <!-- Sección de Proyectos Destacados (Casos Reales del CV a Ancho Completo) -->
+  <section class="projects-stage">
+    <div class="projects-stage-inner">
+      <app-featured-projects></app-featured-projects>
+    </div>
+  </section>
+
+  <!-- Sección Dedicada para la Terminal Interactiva Arch Linux / Fish Shell (Espaciosa y a Escala Completa) -->
+  <section class="terminal-stage">
+    <div class="terminal-stage-inner">
+      <div class="terminal-header-meta">
+        <span class="mono-section-tag">{{ i18n.t().terminalWorkstationTag }}</span>
+        <h2 class="terminal-section-heading">{{ i18n.t().terminalHeading }}</h2>
+        <p class="terminal-section-desc">
+          {{ i18n.t().terminalSectionDesc }}
+        </p>
+      </div>
+      <app-terminal></app-terminal>
+    </div>
+  </section>
+
+  <!-- Sección de Contacto Corporativa Premium (Full Width debajo de la Terminal) -->
+  <app-contact-section></app-contact-section>
+
+  <!-- Footer Minimalista -->
+  <footer class="zen-footer">
+    <p class="footer-copy">© {{ currentYear() }} {{ i18n.t().footerCopy }}</p>
+    <span class="footer-version">v1.0.0-alpha</span>
+  </footer>
+</div>

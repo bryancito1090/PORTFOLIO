@@ -1,0 +1,157 @@
+:host {
+  display: block;
+}
+
+.retro-window.xp-window {
+  position: absolute;
+  background-color: #0055ea;
+  border: 3px solid #0055ea;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65), 0 2px 8px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+  max-width: calc(100% - 16px);
+  pointer-events: auto !important;
+  transition: box-shadow var(--transition-fast);
+}
+
+.xp-window.window-active {
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 85, 234, 0.4);
+}
+
+.retro-window.xp-window.window-maximized {
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: calc(100% - 28px) !important;
+  max-width: 100% !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.xp-window.window-dragging {
+  opacity: 0.94;
+  cursor: grabbing;
+}
+
+/* Barra de Título Luna Blue Windows XP */
+.xp-titlebar {
+  height: 28px;
+  background: linear-gradient(
+    180deg,
+    #0058ee 0%,
+    #3593ff 8%,
+    #0057e5 20%,
+    #0055eb 60%,
+    #0047c7 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px 0 6px;
+  cursor: grab;
+  flex-shrink: 0;
+}
+
+.xp-header-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  pointer-events: none;
+}
+
+.xp-win-icon {
+  width: 15px;
+  height: 15px;
+  border-radius: 2px;
+  background: linear-gradient(135deg, #f5ba13 0%, #e2a632 100%);
+  border: 1px solid #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  flex-shrink: 0;
+}
+
+.xp-window-title {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 1px 1px 1px #002277, 0 1px 2px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.01em;
+}
+
+/* Botones Clásicos Luna */
+.xp-caption-buttons {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.xp-btn-caption {
+  width: 21px;
+  height: 21px;
+  border: 1px solid #ffffff;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #3d95ff 0%, #0055ea 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 1px 2px rgba(0, 0, 0, 0.4);
+  transition: all var(--transition-fast);
+}
+
+.xp-btn-caption:hover {
+  background: linear-gradient(180deg, #5eb5f7 0%, #1e69ba 100%);
+}
+
+.xp-btn-caption:active {
+  transform: translateY(1px);
+}
+
+.btn-symbol {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.btn-min .btn-symbol {
+  margin-top: -3px;
+}
+
+.btn-close {
+  background: linear-gradient(180deg, #e05338 0%, #c42910 100%);
+}
+
+.btn-close:hover {
+  background: linear-gradient(180deg, #f5745d 0%, #e03b1f 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 6px rgba(230, 60, 30, 0.8);
+}
+
+/* Área de Contenido Windows XP (Color Clásico #ece9d8) */
+.xp-client-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #ece9d8;
+  border: 1px solid #7f9db9;
+  border-top: none;
+  pointer-events: auto !important;
+  color: #000000;
+}
+
+.xp-window.window-maximized .xp-client-area {
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+}

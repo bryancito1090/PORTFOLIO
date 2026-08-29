@@ -1,0 +1,67 @@
+<div class="arch-terminal-card" (click)="focusInput()">
+  <!-- Barra Superior Arch Linux / Window Chrome -->
+  <header class="term-window-header">
+    <div class="term-traffic-lights" aria-hidden="true">
+      <span class="light-dot dot-close" (click)="clear()" title="Limpiar buffer"></span>
+      <span class="light-dot dot-min"></span>
+      <span class="light-dot dot-max"></span>
+    </div>
+
+    <div class="term-title-block">
+      <span class="arch-icon">󰣇</span>
+      <span class="term-window-title">bryan&#64;archlinux: ~ (fish)</span>
+    </div>
+
+  </header>
+
+  <!-- Área de Salida de Terminal -->
+  <div #terminalBody class="term-body">
+    @for (entry of entries(); track entry.id) {
+    @switch (entry.type) {
+    @case ('banner') {
+    <pre class="term-banner" aria-label="Información del sistema Arch Linux">{{ entry.content }}</pre>
+    }
+    @case ('input') {
+    <div class="term-line-input">
+      <span class="prompt-user">bryan&#64;archlinux</span>
+      <span class="prompt-path">~</span>
+      <span class="prompt-symbol">❯</span>
+      <span class="typed-command">{{ entry.command }}</span>
+    </div>
+    }
+    @case ('error') {
+    <pre class="term-output term-error">{{ entry.content }}</pre>
+    }
+    @case ('success') {
+    <pre class="term-output term-success">{{ entry.content }}</pre>
+    }
+    @case ('ascii') {
+    <pre class="term-output term-ascii">{{ entry.content }}</pre>
+    }
+    @default {
+    <pre class="term-output">{{ entry.content }}</pre>
+    }
+    }
+    }
+
+    <!-- Fila Activa del Prompt con Autosugerencia Fish Shell -->
+    <form class="term-prompt-row" (submit)="onSubmit($event)">
+      <span class="prompt-user">bryan&#64;archlinux</span>
+      <span class="prompt-path">~</span>
+      <span class="prompt-symbol">❯</span>
+
+      <div class="term-input-wrapper">
+        <input #cmdInput type="text" class="term-input" [value]="currentInput()"
+          (input)="currentInput.set($any($event.target).value)" (keydown)="onKeyDown($event)" spellcheck="false"
+          autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="Línea de comandos de terminal" />
+
+        <!-- Texto fantasma de autocompletado en color atenuado (Estilo Fish) -->
+        @if (suggestion(); as suggest) {
+        <span class="term-ghost-text" aria-hidden="true">
+          <span class="ghost-spacer">{{ currentInput() }}</span>{{ suggest }}
+        </span>
+        }
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,208 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.arch-terminal-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  max-height: 560px;
+  background-color: #0b0e14;
+  border: 1px solid var(--zen-border-subtle);
+  border-radius: var(--zen-radius-sm);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), 0 0 1px 1px rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+  font-family: var(--font-mono);
+  user-select: text;
+  cursor: text;
+}
+
+/* Barra Superior de Ventana Unix */
+.term-window-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-4);
+  height: 36px;
+  background-color: #12161f;
+  border-bottom: 1px solid var(--zen-border-subtle);
+  user-select: none;
+  cursor: default;
+}
+
+.term-traffic-lights {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 60px;
+}
+
+.light-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.light-dot:hover {
+  opacity: 0.8;
+}
+
+.dot-close { background-color: #f7768e; }
+.dot-min { background-color: #e0af68; }
+.dot-max { background-color: #9ece6a; }
+
+.term-title-block {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--zen-text-secondary);
+}
+
+.arch-icon {
+  color: #7dcfff;
+  font-size: 0.8125rem;
+}
+
+.term-header-status {
+  width: 60px;
+  display: flex;
+  justify-content: flex-end;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.git-branch {
+  color: #565f89;
+}
+
+.branch-name {
+  color: #bb9af7;
+}
+
+/* Área de Salida de Terminal */
+.term-body {
+  flex: 1;
+  padding: var(--space-4);
+  overflow-y: auto;
+  overflow-x: hidden;
+  line-height: 1.6;
+  font-size: 0.8125rem;
+  background: radial-gradient(circle at top right, rgba(122, 162, 247, 0.04) 0%, transparent 60%);
+}
+
+.term-banner {
+  margin: 0 0 var(--space-3) 0;
+  font-family: inherit;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: #7dcfff;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.term-output {
+  margin: 0 0 var(--space-3) 0;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  color: var(--zen-text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.term-error {
+  color: #f7768e;
+}
+
+.term-success {
+  color: #9ece6a;
+}
+
+.term-ascii {
+  color: #7aa2f7;
+  font-family: inherit;
+}
+
+.term-line-input {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: var(--space-2);
+}
+
+.typed-command {
+  color: #c0caf5;
+  font-weight: 500;
+}
+
+/* Fila Activa del Prompt (Estilo Fish Shell Pastel) */
+.term-prompt-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  position: relative;
+  margin-top: var(--space-2);
+}
+
+.prompt-user {
+  color: #7dcfff;
+  font-weight: 700;
+}
+
+.prompt-path {
+  color: #bb9af7;
+  font-weight: 600;
+}
+
+.prompt-symbol {
+  color: #73daca;
+  font-weight: 700;
+}
+
+.term-input-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+}
+
+.term-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: inherit;
+  color: #c0caf5;
+  padding: 0;
+  margin: 0;
+  caret-color: var(--zen-accent-kintsugi);
+  z-index: 2;
+}
+
+.term-ghost-text {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: pre;
+  color: #565f89;
+  font-family: inherit;
+  font-size: inherit;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ghost-spacer {
+  visibility: hidden;
+}

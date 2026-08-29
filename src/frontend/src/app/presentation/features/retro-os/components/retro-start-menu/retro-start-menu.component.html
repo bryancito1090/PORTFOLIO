@@ -1,0 +1,104 @@
+<div class="xp-start-menu" (click)="$event.stopPropagation()">
+  <!-- Cabecera de Usuario -->
+  <header class="start-header">
+    <div class="user-avatar-frame">
+      <div class="user-avatar-placeholder"></div>
+    </div>
+    <span class="user-name">Bryan</span>
+  </header>
+
+  <!-- Cuerpo del Menú en 2 Columnas -->
+  <div class="start-body">
+    <!-- Columna Izquierda (Blanca) -->
+    <div class="start-col-left">
+      <div class="start-item pinned" (click)="onSelect()">
+        <span class="item-icon ie-icon">e</span>
+        <div class="item-texts">
+          <span class="item-title">{{ i18n.t().retroMenuInternet }}</span>
+          <span class="item-sub">Internet Explorer</span>
+        </div>
+      </div>
+      <div class="start-item pinned" (click)="onSelect()">
+        <span class="item-icon mail-icon">✉</span>
+        <div class="item-texts">
+          <span class="item-title">{{ i18n.t().retroMenuEmail }}</span>
+          <span class="item-sub">Outlook Express</span>
+        </div>
+      </div>
+
+      <div class="start-sep"></div>
+
+      <div class="start-item" (click)="onSelect('games')">
+        <span class="item-icon game-icon">🎮</span>
+        <span class="item-title bold">{{ i18n.t().retroMenuGames }}</span>
+      </div>
+      <div class="start-item" (click)="onSelect()">
+        <span class="item-icon wmp-icon">▶</span>
+        <span class="item-title">{{ i18n.t().retroMenuWmp }}</span>
+      </div>
+      <div class="start-item" (click)="onSelect()">
+        <span class="item-icon notepad-icon">📝</span>
+        <span class="item-title">{{ i18n.t().retroMenuNotepad }}</span>
+      </div>
+
+      <div class="start-all-progs" (click)="onSelect()">
+        <span class="all-progs-text">{{ i18n.t().retroMenuAllProgs }}</span>
+        <span class="green-arrow">▶</span>
+      </div>
+    </div>
+
+    <!-- Columna Derecha (Azul Luna Suave) -->
+    <div class="start-col-right">
+      <div class="start-item right" (click)="onSelect('cv')">
+        <span class="item-icon doc-icon">📁</span>
+        <span class="item-title bold">{{ i18n.t().retroMenuDocs }}</span>
+      </div>
+      <div class="start-item right" (click)="onSelect()">
+        <span class="item-icon pic-icon">🖼</span>
+        <span class="item-title bold">{{ i18n.t().retroMenuPics }}</span>
+      </div>
+      <div class="start-item right" (click)="onSelect()">
+        <span class="item-icon music-icon">🎵</span>
+        <span class="item-title bold">{{ i18n.t().retroMenuMusic }}</span>
+      </div>
+      <div class="start-item right" (click)="onSelect()">
+        <span class="item-icon pc-icon">💻</span>
+        <span class="item-title bold">{{ i18n.t().retroMenuPc }}</span>
+      </div>
+
+      <div class="start-sep blue"></div>
+
+      <div class="start-item right" (click)="onSelect('settings')">
+        <span class="item-icon cpl-icon">⚙</span>
+        <span class="item-title">{{ i18n.t().retroMenuSettings }}</span>
+      </div>
+      <div class="start-item right" (click)="onSelect('scores')">
+        <span class="item-icon trophy-icon">🏆</span>
+        <span class="item-title">{{ i18n.t().retroMenuScores }}</span>
+      </div>
+
+      <div class="start-sep blue"></div>
+
+      <div class="start-item right" (click)="onSelect()">
+        <span class="item-icon help-icon">❓</span>
+        <span class="item-title">{{ i18n.t().retroMenuHelp }}</span>
+      </div>
+      <div class="start-item right" (click)="onSelect()">
+        <span class="item-icon search-icon">🔍</span>
+        <span class="item-title">{{ i18n.t().retroMenuSearch }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pie del Menú Inicio: Cerrar sesión y Apagar -->
+  <footer class="start-footer">
+    <button type="button" class="footer-action-btn" (click)="onSelect()">
+      <span class="key-icon">🔑</span>
+      <span>{{ i18n.t().retroMenuLogoff }}</span>
+    </button>
+    <button type="button" class="footer-action-btn power" (click)="onSelect()">
+      <span class="power-icon">⏻</span>
+      <span>{{ i18n.t().retroMenuShutdown }}</span>
+    </button>
+  </footer>
+</div>

@@ -1,0 +1,176 @@
+:host {
+  display: block;
+  width: 100%;
+  background-color: #121517;
+}
+
+/* ==============================================================================
+   MONITOR CRT VINTAGE RECORTADO AL 100% (SIN BORDES VACÍOS)
+   ============================================================================== */
+
+.vintage-monitor-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1398 / 1564;
+  margin: 0 auto;
+  user-select: none;
+  background-color: #121517;
+}
+
+/* Imagen del Monitor de Fondo (Ocupa el 100% del ancho sin márgenes vacíos) */
+.monitor-background-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Área de Pantalla CRT Calibrada al Milímetro (81.83% del ancho del chasis) */
+.monitor-screen-glass {
+  position: absolute;
+  top: 9.27%;
+  left: 8.80%;
+  width: 81.83%;
+  height: 56.91%;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #000000;
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.9);
+  z-index: 10;
+}
+
+/* Escritorio Windows XP dentro de la Pantalla */
+.xp-desktop-canvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #245edb url('/assets/images/xp.jpg') center center / cover no-repeat;
+  overflow: hidden;
+}
+
+.crt-screen-glare {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 45%;
+  height: 40%;
+  background: radial-gradient(ellipse at top right, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 25;
+}
+
+.xp-windows-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.xp-windows-layer > * {
+  pointer-events: auto;
+}
+
+/* ==============================================================================
+   BARRA DE TAREAS LUNA BLUE DE ALTA FIDELIDAD (28px)
+   ============================================================================== */
+
+.xp-custom-taskbar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: linear-gradient(180deg, #3168d8 0%, #3f8cf3 10%, #245edb 22%, #245edb 90%, #1941a5 100%);
+  border-top: 1px solid #5896ff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  z-index: 28;
+}
+
+/* Botón Inicio Clásico Verde */
+.xp-start-button {
+  height: 28px;
+  width: 88px;
+  background: linear-gradient(180deg, #3ca330 0%, #46b537 10%, #3c9b2f 25%, #2b7823 55%, #22661c 85%, #1b5416 100%);
+  border: 1px solid #1b5416;
+  border-left: none;
+  border-radius: 0 12px 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 8px 0 5px;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 1px 0 3px rgba(0, 0, 0, 0.4);
+  transition: filter var(--transition-fast);
+}
+
+.xp-start-button:hover,
+.xp-start-button.active { filter: brightness(1.12); }
+.xp-start-button:active { filter: brightness(0.95); }
+.start-flag { width: 14px; height: 14px; display: flex; align-items: center; }
+.xp-flag-svg { width: 14px; height: 14px; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5)); }
+
+.start-text {
+  font-family: var(--font-sans);
+  font-style: italic;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 1px 1px 1px #0e3b0a;
+}
+
+/* Quick Launch */
+.xp-quick-launch { display: flex; align-items: center; gap: 2px; padding: 0 4px; }
+.ql-sep { width: 2px; height: 16px; border-left: 1px solid #1646b9; border-right: 1px solid #5896ff; margin-right: 3px; }
+.ql-btn { background: transparent; border: none; font-size: 0.6875rem; cursor: pointer; padding: 1px 2px; }
+.ql-btn:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* Pestañas de Ventanas */
+.xp-task-tabs { display: flex; align-items: center; gap: 3px; flex: 1; overflow-x: auto; padding: 0 4px; }
+.xp-tab-button {
+  height: 22px;
+  max-width: 120px;
+  background: linear-gradient(180deg, #3d80e8 0%, #2055be 100%);
+  border: 1px solid #163d8b;
+  border-radius: 2px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 5px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.xp-tab-button.active {
+  background: linear-gradient(180deg, #1b45a0 0%, #153888 100%);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
+  border-color: #0b2255;
+}
+
+.tab-win-icon { width: 8px; height: 8px; border-radius: 1px; background: #ffb300; flex-shrink: 0; }
+.tab-win-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Tray */
+.xp-system-tray {
+  height: 100%;
+  background: linear-gradient(180deg, #0c3ea6 0%, #104abf 40%, #0c3694 100%);
+  border-left: 1px solid #1646b9;
+  border-top: 1px solid #092a7a;
+  box-shadow: inset 1px 1px 0 #072366;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 6px;
+  color: #ffffff;
+}
+
+.tray-expand { font-size: 0.5rem; background: #1754ce; border-radius: 50%; width: 11px; height: 11px; display: flex; align-items: center; justify-content: center; }
+.tray-mini-icon { font-size: 0.625rem; }
+.xp-tray-clock { font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 600; margin-left: 2px; }

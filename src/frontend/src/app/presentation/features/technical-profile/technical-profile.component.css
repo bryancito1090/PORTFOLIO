@@ -1,0 +1,136 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.profile-editorial-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-2) 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  user-select: text;
+  box-sizing: border-box;
+}
+
+/* Eyebrow */
+.editorial-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--zen-accent-kintsugi);
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+/* Título Principal H2 */
+.editorial-title {
+  font-family: var(--font-sans);
+  font-size: clamp(1.85rem, 3vw, 2.35rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+/* Párrafo Lead */
+.editorial-lead {
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  color: var(--zen-text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.editorial-lead strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Secciones de Contenido */
+.editorial-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.section-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.section-bullet {
+  color: var(--zen-accent-kintsugi);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.editorial-subtitle {
+  font-family: var(--font-sans);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* Grid de Categorías Técnicas */
+.skills-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 14px;
+}
+
+.skill-category {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--zen-text-secondary);
+}
+
+.cat-label {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  color: #7dcfff;
+  font-size: 0.8125rem;
+  margin-right: 6px;
+}
+
+.cat-techs {
+  color: #c0caf5;
+}
+
+/* Lista de Áreas de Interés */
+.interests-list {
+  list-style: none;
+  padding: 0 0 0 14px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.interest-item {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--zen-text-secondary);
+}
+
+.interest-key {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  color: #bb9af7;
+  font-size: 0.8125rem;
+  margin-right: 6px;
+}

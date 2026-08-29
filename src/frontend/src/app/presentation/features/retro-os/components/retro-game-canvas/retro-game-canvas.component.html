@@ -1,0 +1,89 @@
+<div class="xp-game-wrapper">
+  <!-- Barra Superior Clásica de Juegos de Windows XP -->
+  <header class="xp-game-header">
+    <div class="xp-hud-stats">
+      <div class="hud-item">
+        <span class="hud-tag">{{ i18n.t().retroGameScore }}</span>
+        <span class="hud-num">{{ score() }}</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-tag">{{ i18n.t().retroGameHigh }}</span>
+        <span class="hud-num highlight">{{ highScore() }}</span>
+      </div>
+    </div>
+
+    <div class="xp-hud-actions">
+      <button
+        type="button"
+        class="xp-classic-btn"
+        (click)="startGame()"
+        title="Iniciar o reiniciar la partida"
+      >
+        {{ isPlaying() ? i18n.t().retroGameRestart : i18n.t().retroGameStart }}
+      </button>
+      <button
+        type="button"
+        class="xp-classic-btn"
+        [disabled]="!isPlaying() || isGameOver()"
+        (click)="togglePause()"
+        title="Pausar el juego"
+      >
+        {{ isPaused() ? i18n.t().retroGameResume : i18n.t().retroGamePause }}
+      </button>
+    </div>
+  </header>
+
+  <!-- Contenedor del Tablero Canvas (Siempre visible, interactivo al clic) -->
+  <div class="xp-canvas-box" (click)="onCanvasClick()" title="Haz clic aquí o pulsa cualquier flecha para jugar">
+    <canvas #gameCanvas width="300" height="300" class="xp-snake-canvas"></canvas>
+
+    <!-- Banner sutil de instrucciones (sin tapar a la serpiente) -->
+    @if (!isPlaying() && !isGameOver()) {
+      <div class="xp-start-banner">
+        <span>{{ i18n.t().retroGameBanner }}</span>
+      </div>
+    }
+
+    <!-- Banner de Game Over -->
+    @if (isGameOver()) {
+      <div class="xp-gameover-card" (click)="$event.stopPropagation()">
+        <span class="gameover-text">{{ i18n.t().retroGameOver }}</span>
+        <span class="gameover-pts">{{ i18n.t().retroGameScoreLabel }} {{ score() }}</span>
+
+        @if (!isScoreSaved() && score() > 0) {
+          <div class="xp-save-row">
+            <input
+              type="text"
+              maxlength="4"
+              [value]="playerTag()"
+              (input)="playerTag.set($any($event.target).value.toUpperCase())"
+              class="xp-input-tag"
+              placeholder="TAG"
+            />
+            <button type="button" class="xp-classic-btn btn-save" (click)="submitScore()">
+              {{ i18n.t().retroGameSave }}
+            </button>
+          </div>
+        }
+
+        @if (isScoreSaved()) {
+          <span class="xp-saved-label">{{ i18n.t().retroGameSaved }}</span>
+        }
+
+        <button type="button" class="xp-classic-btn btn-retry" (click)="startGame()">
+          {{ i18n.t().retroGamePlayAgain }}
+        </button>
+      </div>
+    }
+  </div>
+
+  <!-- Controles Direccionales Táctiles / Ratón (D-Pad) -->
+  <footer class="xp-dpad-container" (click)="$event.stopPropagation()">
+    <div class="xp-dpad-grid">
+      <button type="button" class="xp-arrow-btn up" (click)="setDirection('UP')" [attr.aria-label]="i18n.t().retroGameUp">▲</button>
+      <button type="button" class="xp-arrow-btn left" (click)="setDirection('LEFT')" [attr.aria-label]="i18n.t().retroGameLeft">◀</button>
+      <button type="button" class="xp-arrow-btn down" (click)="setDirection('DOWN')" [attr.aria-label]="i18n.t().retroGameDown">▼</button>
+      <button type="button" class="xp-arrow-btn right" (click)="setDirection('RIGHT')" [attr.aria-label]="i18n.t().retroGameRight">▶</button>
+    </div>
+  </footer>
+</div>

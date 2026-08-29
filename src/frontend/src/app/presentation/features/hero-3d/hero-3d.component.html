@@ -1,0 +1,96 @@
+<section #scrollContainer class="hero-scroll-wrapper" [attr.aria-label]="i18n.t().heroAriaExperience">
+  <div class="hero-sticky-stage">
+    <!-- Lienzo Canvas en alta resolución que ocupa toda la pantalla de fondo -->
+    <canvas #canvas class="thinkpad-canvas" aria-hidden="true"></canvas>
+
+    <!-- Loader discreto estilo Zen mientras se precargan los fotogramas -->
+    @if (!isLoaded()) {
+      <div class="zen-loader-pill" role="status" aria-live="polite">
+        <span class="loader-dot"></span>
+        <span class="loader-label">{{ i18n.t().preloading }} // {{ loadProgress() }}%</span>
+      </div>
+    }
+
+    <!-- FASE 1: Tarjeta Insignia Principal de Bryan (Izquierda) y Filosofía Asimétrica (Derecha) -->
+    <aside class="lateral-panel side-left pos-f1-left" [class.active]="activePhase() === 1" [attr.aria-label]="i18n.t().heroAriaLead">
+      <div class="hero-lead-card">
+        <div class="lead-header">
+          <span class="lead-status">{{ i18n.t().p1LeadStatus }}</span>
+          <span class="lead-tag">{{ i18n.t().p1LeadTag }}</span>
+        </div>
+        <h1 class="lead-name">{{ i18n.t().p1LeadName }}</h1>
+        <span class="lead-role">{{ i18n.t().p1LeadRole }}</span>
+        <p class="lead-desc">{{ i18n.t().p1LeadDesc }}</p>
+        <div class="lead-badges">
+          <span class="zen-chip chip-gold">{{ i18n.t().p1LeadBadge1 }}</span>
+          <span class="zen-chip chip-matcha">{{ i18n.t().p1LeadBadge2 }}</span>
+          <span class="zen-chip">{{ i18n.t().p1LeadBadge3 }}</span>
+        </div>
+        <footer class="lead-footer">
+          <span class="lead-metric">{{ i18n.t().p1LeadMetric }}</span>
+        </footer>
+      </div>
+    </aside>
+
+    <aside class="lateral-panel side-right pos-f1-right" [class.active]="activePhase() === 1" [attr.aria-label]="i18n.t().heroAriaPhilosophy">
+      <div class="panel-card compact-card">
+        <span class="panel-eyebrow">{{ i18n.t().p1RightTag }}</span>
+        <h2 class="panel-title">{{ i18n.t().p1RightTitle }}</h2>
+        <p class="panel-desc">{{ i18n.t().p1RightDesc }}</p>
+        <div class="panel-tags">
+          <span class="zen-chip">{{ i18n.t().p1RightBadge }}</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- FASE 2: Backend Enterprise y Frontend Reactivo (Asimétrico) -->
+    <aside class="lateral-panel side-left pos-f2-left" [class.active]="activePhase() === 2" [attr.aria-label]="i18n.t().heroAriaBackend">
+      <div class="panel-card">
+        <span class="panel-eyebrow">{{ i18n.t().p2LeftTag }}</span>
+        <h2 class="panel-title">{{ i18n.t().p2LeftTitle }}</h2>
+        <p class="panel-desc">{{ i18n.t().p2LeftDesc }}</p>
+        <div class="panel-tags">
+          <span class="zen-chip chip-gold">{{ i18n.t().p2LeftBadge1 }}</span>
+          <span class="zen-chip">{{ i18n.t().p2LeftBadge2 }}</span>
+        </div>
+      </div>
+    </aside>
+
+    <aside class="lateral-panel side-right pos-f2-right" [class.active]="activePhase() === 2" [attr.aria-label]="i18n.t().heroAriaFrontend">
+      <div class="panel-card">
+        <span class="panel-eyebrow">{{ i18n.t().p2RightTag }}</span>
+        <h2 class="panel-title">{{ i18n.t().p2RightTitle }}</h2>
+        <p class="panel-desc">{{ i18n.t().p2RightDesc }}</p>
+        <div class="panel-tags">
+          <span class="zen-chip chip-matcha">{{ i18n.t().p2RightBadge1 }}</span>
+          <span class="zen-chip">{{ i18n.t().p2RightBadge2 }}</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- FASE 3: Estándares de Código y Laboratorio en Vivo (Asimétrico) -->
+    <aside class="lateral-panel side-left pos-f3-left" [class.active]="activePhase() === 3" [attr.aria-label]="i18n.t().heroAriaStandards">
+      <div class="panel-card compact-card">
+        <span class="panel-eyebrow">{{ i18n.t().p3LeftTag }}</span>
+        <h2 class="panel-title">{{ i18n.t().p3LeftTitle }}</h2>
+        <p class="panel-desc">{{ i18n.t().p3LeftDesc }}</p>
+        <div class="panel-tags">
+          <span class="zen-chip">{{ i18n.t().p3LeftBadge1 }}</span>
+          <span class="zen-chip">{{ i18n.t().p3LeftBadge2 }}</span>
+        </div>
+      </div>
+    </aside>
+
+    <aside class="lateral-panel side-right pos-f3-right" [class.active]="activePhase() === 3" [attr.aria-label]="i18n.t().heroAriaInteractive">
+      <div class="panel-card">
+        <span class="panel-eyebrow">{{ i18n.t().p3RightTag }}</span>
+        <h2 class="panel-title">{{ i18n.t().p3RightTitle }}</h2>
+        <p class="panel-desc">{{ i18n.t().p3RightDesc }}</p>
+        <div class="panel-tags">
+          <span class="zen-chip chip-gold">{{ i18n.t().p3RightBadge1 }}</span>
+          <span class="zen-chip chip-matcha">{{ i18n.t().p3RightBadge2 }}</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>

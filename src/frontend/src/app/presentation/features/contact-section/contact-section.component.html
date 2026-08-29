@@ -1,0 +1,184 @@
+<section class="contact-section" id="contacto">
+  <div class="contact-container">
+    <div class="contact-grid">
+      <!-- 1. COLUMNA IZQUIERDA (Textos Corporativos & Servicios) -->
+      <div class="contact-info-col">
+        <!-- Eyebrow -->
+        <span class="contact-eyebrow">
+          {{ i18n.t().contactEyebrow }}
+        </span>
+
+        <!-- Título Principal H2 -->
+        <h2 class="contact-title">
+          {{ i18n.t().contactTitle }}
+        </h2>
+
+        <!-- Párrafo Principal -->
+        <p class="contact-lead">
+          {{ i18n.t().contactLead }}
+        </p>
+
+        <!-- Bloque de Servicio 1 -->
+        <div class="service-block">
+          <h3 class="service-title">{{ i18n.t().contactService1Title }}</h3>
+          <p class="service-desc">
+            {{ i18n.t().contactService1Desc }}
+          </p>
+        </div>
+
+        <!-- Bloque de Servicio 2 -->
+        <div class="service-block">
+          <h3 class="service-title">{{ i18n.t().contactService2Title }}</h3>
+          <p class="service-desc">
+            {{ i18n.t().contactService2Desc }}
+          </p>
+        </div>
+      </div>
+
+      <!-- 2. COLUMNA DERECHA (Tarjeta Formulario) -->
+      <div class="contact-card-col">
+        <div class="contact-card">
+          <!-- Cabecera del Formulario -->
+          <div class="form-header">
+            <h3 class="form-title">{{ i18n.t().contactFormTitle }}</h3>
+            <p class="form-subtitle">
+              {{ i18n.t().contactFormSubtitle }}
+            </p>
+          </div>
+
+          @if (isSuccess()) {
+            <!-- Estado de Éxito al Enviar -->
+            <div class="success-banner" role="alert">
+              <div class="success-icon-badge">✔</div>
+              <h4 class="success-title">{{ i18n.t().contactSuccessTitle }}</h4>
+              <p class="success-desc">
+                {{ i18n.t().contactSuccessDesc }}
+              </p>
+              <button type="button" class="btn-new-message" (click)="resetForm()">
+                {{ i18n.t().contactSuccessBtn }}
+              </button>
+            </div>
+          } @else {
+            <!-- Formulario Reactivo -->
+            <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" novalidate class="contact-form">
+              <!-- Fila 1: Nombre o Empresa (100% ancho) -->
+              <div class="form-group">
+                <label for="fullNameOrCompany" class="form-label">{{ i18n.t().contactLabelName }}</label>
+                <input
+                  id="fullNameOrCompany"
+                  type="text"
+                  formControlName="fullNameOrCompany"
+                  [placeholder]="i18n.t().contactPlaceholderName"
+                  class="form-input"
+                  [class.input-error]="
+                    contactForm.controls.fullNameOrCompany.invalid &&
+                    contactForm.controls.fullNameOrCompany.touched
+                  "
+                />
+                @if (
+                  contactForm.controls.fullNameOrCompany.invalid &&
+                  contactForm.controls.fullNameOrCompany.touched
+                ) {
+                  <span class="field-error">{{ i18n.t().contactErrorName }}</span>
+                }
+              </div>
+
+              <!-- Fila 2: Grid de 2 Columnas (Email y Teléfono) -->
+              <div class="form-row-2col">
+                <div class="form-group">
+                  <label for="email" class="form-label">{{ i18n.t().contactLabelEmail }}</label>
+                  <input
+                    id="email"
+                    type="email"
+                    formControlName="email"
+                    [placeholder]="i18n.t().contactPlaceholderEmail"
+                    class="form-input"
+                    [class.input-error]="
+                      contactForm.controls.email.invalid && contactForm.controls.email.touched
+                    "
+                  />
+                  @if (
+                    contactForm.controls.email.invalid && contactForm.controls.email.touched
+                  ) {
+                    <span class="field-error">{{ i18n.t().contactErrorEmail }}</span>
+                  }
+                </div>
+
+                <div class="form-group">
+                  <label for="phone" class="form-label">{{ i18n.t().contactLabelPhone }}</label>
+                  <input
+                    id="phone"
+                    type="tel"
+                    formControlName="phone"
+                    placeholder="+593 99 999 9999"
+                    class="form-input"
+                  />
+                </div>
+              </div>
+
+              <!-- Fila 3: Select Servicio (100% ancho) -->
+              <div class="form-group">
+                <label for="serviceType" class="form-label">{{ i18n.t().contactLabelService }}</label>
+                <div class="select-wrapper">
+                  <select id="serviceType" formControlName="serviceType" class="form-select">
+                    <option value="" disabled selected>{{ i18n.t().contactServiceSelect }}</option>
+                    <option value="Desarrollo Backend">{{ i18n.t().contactServiceBackend }}</option>
+                    <option value="Desarrollo Frontend">{{ i18n.t().contactServiceFrontend }}</option>
+                    <option value="Arquitectura Cloud">{{ i18n.t().contactServiceCloud }}</option>
+                    <option value="Otro">{{ i18n.t().contactServiceOther }}</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Fila 4: Textarea Detalles (100% ancho, mínimo 4 filas) -->
+              <div class="form-group">
+                <label for="projectDetails" class="form-label">
+                  {{ i18n.t().contactLabelDetails }}
+                </label>
+                <textarea
+                  id="projectDetails"
+                  rows="4"
+                  formControlName="projectDetails"
+                  [placeholder]="i18n.t().contactPlaceholderDetails"
+                  class="form-textarea"
+                  [class.input-error]="
+                    contactForm.controls.projectDetails.invalid &&
+                    contactForm.controls.projectDetails.touched
+                  "
+                ></textarea>
+                @if (
+                  contactForm.controls.projectDetails.invalid &&
+                  contactForm.controls.projectDetails.touched
+                ) {
+                  <span class="field-error">{{ i18n.t().contactErrorDetails }}</span>
+                }
+              </div>
+
+              <!-- Mensaje de Error Global si aplica -->
+              @if (errorMessage()) {
+                <div class="error-banner" role="alert">
+                  {{ errorMessage() }}
+                </div>
+              }
+
+              <!-- Botón de Envío -->
+              <button
+                type="submit"
+                class="submit-btn"
+                [disabled]="isSubmitting()"
+                [attr.aria-label]="i18n.t().contactBtnAria"
+              >
+                @if (isSubmitting()) {
+                  <span class="spinner" aria-hidden="true"></span>
+                  <span>{{ i18n.t().contactBtnSubmitting }}</span>
+                } @else {
+                  <span>{{ i18n.t().contactBtnSubmit }}</span>
+                }
+              </button>
+            </form>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

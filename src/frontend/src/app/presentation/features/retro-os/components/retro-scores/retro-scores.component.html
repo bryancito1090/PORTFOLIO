@@ -1,0 +1,38 @@
+<div class="scores-panel">
+  <header class="scores-header">
+    <div class="header-title-box">
+      <span class="hall-badge">{{ i18n.t().retroScoresHeader }}</span>
+      <h3 class="game-name">{{ i18n.t().retroScoresTitle }}</h3>
+    </div>
+    <button type="button" class="refresh-btn" (click)="onRefresh()">
+      {{ i18n.t().retroScoresRefresh }}
+    </button>
+  </header>
+
+  <div class="table-wrapper">
+    <table class="scores-table">
+      <thead>
+        <tr>
+          <th>{{ i18n.t().retroScoresRank }}</th>
+          <th>{{ i18n.t().retroScoresTag }}</th>
+          <th>{{ i18n.t().retroScoresScore }}</th>
+          <th>{{ i18n.t().retroScoresDate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of scores(); track item.id; let i = $index) {
+          <tr [class.gold-rank]="i === 0" [class.silver-rank]="i === 1" [class.bronze-rank]="i === 2">
+            <td class="rank-col">{{ i + 1 }}</td>
+            <td class="tag-col">{{ item.playerTag }}</td>
+            <td class="score-col">{{ item.score }}</td>
+            <td class="date-col">{{ item.createdAtUtc.slice(0, 10) }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="4" class="empty-state">{{ i18n.t().retroScoresEmpty }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

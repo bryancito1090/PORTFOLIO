@@ -1,0 +1,67 @@
+<div
+  class="retro-window xp-window"
+  [class.window-active]="isActive()"
+  [class.window-dragging]="isDragging()"
+  [class.window-maximized]="window().isMaximized"
+  [style.left.px]="window().isMaximized ? null : window().position.x"
+  [style.top.px]="window().isMaximized ? null : window().position.y"
+  [style.width.px]="window().isMaximized ? null : window().size.width"
+  [style.height.px]="window().isMaximized ? null : window().size.height"
+  [style.z-index]="window().zIndex"
+  (click)="onWindowClick()"
+>
+  <!-- Barra de Título Windows XP Luna Blue -->
+  <header
+    #windowHeader
+    class="window-header window-header-drag-area xp-titlebar"
+    (pointerdown)="onPointerDown($event)"
+    (pointermove)="onPointerMove($event)"
+    (pointerup)="onPointerUp($event)"
+    (pointercancel)="onPointerUp($event)"
+    (dblclick)="onToggleMaximize($event)"
+  >
+    <div class="xp-header-left">
+      <span class="xp-win-icon"></span>
+      <span class="xp-window-title">{{ window().title }}</span>
+    </div>
+
+    <!-- Botones Clásicos Luna: Minimizar, Maximizar, Cerrar -->
+    <div class="xp-caption-buttons" (pointerdown)="$event.stopPropagation()">
+      <button
+        type="button"
+        class="xp-btn-caption btn-min"
+        (click)="onMinimize($event)"
+        (pointerdown)="$event.stopPropagation()"
+        [attr.aria-label]="i18n.t().retroWinMin"
+        [title]="i18n.t().retroWinMin"
+      >
+        <span class="btn-symbol">_</span>
+      </button>
+      <button
+        type="button"
+        class="xp-btn-caption btn-max"
+        (click)="onToggleMaximize($event)"
+        (pointerdown)="$event.stopPropagation()"
+        [attr.aria-label]="window().isMaximized ? i18n.t().retroWinRestore : i18n.t().retroWinMax"
+        [title]="window().isMaximized ? i18n.t().retroWinRestore : i18n.t().retroWinMax"
+      >
+        <span class="btn-symbol">{{ window().isMaximized ? '🗗' : '🗖' }}</span>
+      </button>
+      <button
+        type="button"
+        class="xp-btn-caption btn-close"
+        (click)="onClose($event)"
+        (pointerdown)="$event.stopPropagation()"
+        [attr.aria-label]="i18n.t().retroWinClose"
+        [title]="i18n.t().retroWinClose"
+      >
+        <span class="btn-symbol">✕</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Área de Contenido Windows XP -->
+  <div class="window-content xp-client-area">
+    <ng-content></ng-content>
+  </div>
+</div>

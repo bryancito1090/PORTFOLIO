@@ -1,0 +1,175 @@
+/* ==============================================================================
+   TOKENS VISUALES GLOBALES: ZEN JAPONÉS + DARK + RETRO (portfolio-ui-design)
+   ============================================================================== */
+
+:root {
+  /* Tipografía */
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-retro: 'VT323', monospace;
+
+  /* Espaciado (Grid de 8px) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Bordes & Curvaturas (Nítidas estilo Zen/Retro) */
+  --zen-radius-xs: 2px;
+  --zen-radius-sm: 4px;
+  --zen-radius-md: 6px;
+
+  /* Elevaciones & Sombras */
+  --zen-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
+  --zen-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.6);
+  --zen-shadow-window: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 1px 1px rgba(255, 255, 255, 0.05);
+
+  /* Transiciones */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==============================================================================
+   TEMA ÚNICO: ZEN DARK (Sumi-e & Kintsugi Gold)
+   ============================================================================== */
+
+:root,
+[data-theme='zen-dark'] {
+  --zen-bg-abyss: #07080b;
+  --zen-bg-base: #0c0e14;
+  --zen-bg-surface: #131720;
+  --zen-bg-elevated: #1a202c;
+  --zen-bg-overlay: rgba(12, 14, 20, 0.85);
+
+  --zen-border-subtle: #1e2533;
+  --zen-border-focus: #3d4a63;
+  --zen-border-kintsugi: #c59b27;
+
+  --zen-text-primary: #f0f3f8;
+  --zen-text-secondary: #9aa5b8;
+  --zen-text-muted: #5e697d;
+  --zen-text-gold: #e2b94a;
+
+  --zen-accent-kintsugi: #c59b27;
+  --zen-accent-matcha: #4e9b6f;
+  --zen-accent-sakura: #d96f88;
+  --zen-accent-amber: #e69d45;
+  --zen-accent-cyan: #38bdf8;
+
+  --term-bg: #090b0e;
+  --term-prompt: #4e9b6f;
+  --term-text: #d8dee9;
+  --term-cursor: #e2b94a;
+}
+
+/* Tema 2: Retro CRT Ámbar (Estación de trabajo vintage) */
+[data-theme='retro-amber'] {
+  --zen-bg-abyss: #060401;
+  --zen-bg-base: #0a0702;
+  --zen-bg-surface: #140f06;
+  --zen-bg-elevated: #1e160a;
+  --zen-border-subtle: #2d1e0a;
+  --zen-border-focus: #523814;
+  --zen-border-kintsugi: #ffb833;
+  --zen-text-primary: #ffb833;
+  --zen-text-secondary: #cc8e20;
+  --zen-text-muted: #805710;
+  --zen-accent-kintsugi: #ffb833;
+  --zen-accent-matcha: #ffb833;
+  --zen-accent-amber: #ffb833;
+  --term-bg: #0d0903;
+  --term-prompt: #ffb833;
+  --term-text: #ffcf70;
+  --term-cursor: #ffb833;
+}
+
+/* Tema 3: Matrix / Cyber-Zen Verde */
+[data-theme='matrix-green'] {
+  --zen-bg-abyss: #020603;
+  --zen-bg-base: #040a06;
+  --zen-bg-surface: #0a140d;
+  --zen-bg-elevated: #102115;
+  --zen-border-subtle: #122819;
+  --zen-border-focus: #1f452b;
+  --zen-border-kintsugi: #33ff77;
+  --zen-text-primary: #33ff77;
+  --zen-text-secondary: #22aa4e;
+  --zen-text-muted: #15662f;
+  --zen-accent-kintsugi: #33ff77;
+  --zen-accent-matcha: #33ff77;
+  --zen-accent-amber: #66ff99;
+  --term-bg: #040a06;
+  --term-prompt: #33ff77;
+  --term-text: #66ff99;
+  --term-cursor: #33ff77;
+}
+
+/* ==============================================================================
+   RESET Y ESTILOS BASE
+   ============================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--zen-bg-base);
+  color: var(--zen-text-primary);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+body, button, input, select, textarea {
+  font-family: var(--font-sans);
+}
+
+/* Escala jerárquica de títulos normalizados con fuente única */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  color: var(--zen-text-primary);
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: clamp(2.25rem, 4vw, 3.25rem); font-weight: 800; line-height: 1.15; }
+h2 { font-size: clamp(1.75rem, 3vw, 2.35rem); font-weight: 800; line-height: 1.2; }
+h3 { font-size: clamp(1.25rem, 2vw, 1.5rem); font-weight: 700; line-height: 1.3; }
+h4 { font-size: 1.125rem; font-weight: 700; line-height: 1.4; }
+
+/* Scrollbar minimalista Zen */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--zen-bg-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--zen-border-subtle);
+  border-radius: var(--zen-radius-xs);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--zen-border-focus);
+}
+
+/* Selección de texto kintsugi */
+::selection {
+  background-color: var(--zen-accent-kintsugi);
+  color: #000000;
+}

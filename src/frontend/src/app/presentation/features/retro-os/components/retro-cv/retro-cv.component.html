@@ -1,0 +1,64 @@
+<div class="xp-pdf-container">
+  <!-- Barra de Herramientas Estilo Windows XP Luna -->
+  <header class="xp-toolbar">
+    <div class="doc-info-block">
+      <span class="pdf-icon-badge" aria-hidden="true">PDF</span>
+      <span class="doc-title" title="CV Bryan Baño.pdf">CV Bryan Baño.pdf</span>
+      <span class="doc-size">(154 KB)</span>
+    </div>
+
+    <div class="actions-block">
+      <!-- Botón de Descarga Directa -->
+      <a
+        [href]="pdfUrl"
+        download="CV-Bryan-Baño.pdf"
+        class="xp-tool-btn xp-btn-primary"
+        [title]="i18n.t().retroCvDownloadAria"
+        [attr.aria-label]="i18n.t().retroCvDownloadAria"
+      >
+        <svg class="btn-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+          <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+        </svg>
+        <span>{{ i18n.t().retroCvDownload }}</span>
+      </a>
+
+      <!-- Abrir en pestaña nueva para lectura a pantalla completa -->
+      <a
+        [href]="pdfUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="xp-tool-btn"
+        [title]="i18n.t().retroCvOpen"
+      >
+        <span>{{ i18n.t().retroCvOpen }}</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Visor Nativo de PDF Embebido (0 dependencias) -->
+  <div class="xp-pdf-viewport">
+    <object
+      [data]="safePdfUrl"
+      type="application/pdf"
+      class="pdf-embed-object"
+    >
+      <iframe
+        [src]="safePdfUrl"
+        class="pdf-embed-frame"
+        title="Curriculum Vitae - Bryan Baño"
+      >
+        <div class="pdf-fallback-card">
+          <p class="fallback-text">{{ i18n.t().retroCvFallback }}</p>
+          <a
+            [href]="pdfUrl"
+            download="CV-Bryan-Baño.pdf"
+            class="xp-tool-btn xp-btn-primary"
+          >
+            {{ i18n.t().retroCvDownload }}
+          </a>
+        </div>
+      </iframe>
+    </object>
+  </div>
+</div>
