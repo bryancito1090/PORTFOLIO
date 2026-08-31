@@ -1,0 +1,179 @@
+:host {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  pointer-events: auto;
+}
+
+.power-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ==============================================================================
+   1. PANTALLA APAGADA (CRT STANDBY)
+   ============================================================================== */
+.crt-off-screen {
+  position: absolute;
+  inset: 0;
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.standby-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(18, 21, 27, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.standby-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e69d45;
+  box-shadow: 0 0 8px #e69d45;
+  animation: crt-standby-blink 1.8s infinite ease-in-out;
+}
+
+.standby-text {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #a0aab8;
+}
+
+@keyframes crt-standby-blink {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* ==============================================================================
+   2. PANTALLA DE INICIO WINDOWS XP (BOOT SCREEN)
+   ============================================================================== */
+.xp-boot-screen {
+  position: absolute;
+  inset: 0;
+  background: #000000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.xp-boot-logo {
+  margin-bottom: 28px;
+}
+
+.logo-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.boot-flag-svg {
+  width: 44px;
+  height: 44px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+}
+
+.boot-text-brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.brand-ms {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.brand-xp {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.brand-windows {
+  font-family: var(--font-sans);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.brand-xp-badge {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 900;
+  color: #EB3C00;
+  letter-spacing: 0.02em;
+}
+
+/* Barra de Carga de XP */
+.xp-loader-container {
+  width: 140px;
+  height: 14px;
+  background: #000000;
+  border: 1px solid #5a5a5a;
+  border-radius: 3px;
+  padding: 2px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.9);
+  overflow: hidden;
+  position: relative;
+}
+
+.xp-loader-track {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.xp-loader-slider {
+  display: flex;
+  gap: 2px;
+  position: absolute;
+  top: 0;
+  left: -40px;
+  height: 100%;
+  animation: xp-progress-slide 1.4s linear infinite;
+}
+
+.xp-loader-slider .block {
+  width: 9px;
+  height: 100%;
+  background: linear-gradient(180deg, #3870e8 0%, #204db5 50%, #153282 100%);
+  border-radius: 1px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+@keyframes xp-progress-slide {
+  0% { left: -36px; }
+  100% { left: 140px; }
+}
+
+.boot-footer-note {
+  position: absolute;
+  bottom: 12px;
+  font-family: var(--font-sans);
+  font-size: 0.5625rem;
+  color: #666666;
+}

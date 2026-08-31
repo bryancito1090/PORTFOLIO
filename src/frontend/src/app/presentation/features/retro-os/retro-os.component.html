@@ -4,6 +4,11 @@
 
   <!-- 2. Pantalla Windows XP Sobrepuesta en el Área del Tubo (100% Visible e Interactiva) -->
   <div class="monitor-screen-glass">
+    <!-- Pantalla de Estado de Energía (Apagado / Booting / Welcome / Shutdown) -->
+    @if (store.powerState() !== 'desktop') {
+    <app-retro-power-screen [powerState]="store.powerState()" (powerOn)="store.startBootSequence()" />
+    }
+
     <div class="xp-desktop-canvas">
       <!-- Iconos de Escritorio de Windows XP -->
       <app-retro-desktop-icons [icons]="store.desktopIcons()"

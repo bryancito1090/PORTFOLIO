@@ -1,5 +1,5 @@
 import { Injectable, signal, computed, inject, effect } from '@angular/core';
-import { WindowId, RetroWindow, DesktopIcon, ZenOsTheme, ZenOsConfig, WindowPosition, WindowSize } from '../../domain/models/retro-os.model';
+import { WindowId, RetroWindow, DesktopIcon, ZenOsTheme, ZenOsConfig, WindowPosition, WindowSize, OsPowerState } from '../../domain/models/retro-os.model';
 import { RetroAudioService } from '../services/retro-audio.service';
 import { I18nService } from '../services/i18n.service';
 
@@ -56,6 +56,7 @@ export class RetroOsStore {
   private readonly audio = inject(RetroAudioService);
   private readonly i18n = inject(I18nService);
 
+  private readonly _powerState = signal<OsPowerState>('off');
   private readonly _windows = signal<Record<WindowId, RetroWindow>>(INITIAL_WINDOWS);
   private readonly _activeWindowId = signal<WindowId | null>(null);
   private readonly _topZIndex = signal<number>(20);
@@ -63,6 +64,8 @@ export class RetroOsStore {
   private readonly _theme = signal<ZenOsTheme>(this.getSavedTheme());
   private readonly _scanlines = signal<boolean>(this.getSavedBoolean('zenos_scanlines', true));
   private readonly _soundEnabled = signal<boolean>(this.getSavedBoolean('zenos_sound', true));
+
+  readonly powerState = this._powerState.asReadonly();
 
   readonly desktopIcons = computed<DesktopIcon[]>(() => {
     const t = this.i18n.t();
@@ -217,6 +220,29 @@ export class RetroOsStore {
       }
       return next;
     });
+  }
+
+  startBootSequence(): void {
+    if (this._powerState() !== 'off') return;
+    this._powerState.set('booting');
+
+    // Transición directa de barra de carga XP a escritorio
+    setTimeout(() => {
+      if (this._powerState() === 'booting') {
+        this.audio.playStartup();
+        this._powerState.set('desktop');
+      }
+    }, 2400);
+  }
+
+  forceDesktop(): void {
+    this._powerState.set('desktop');
+  }
+
+  resetToOff(): void {
+    this._powerState.set('off');
+    this._windows.set(INITIAL_WINDOWS);
+    this._activeWindowId.set(null);
   }
 
   private applyThemeToDocument(theme: ZenOsTheme): void {

@@ -1,5 +1,7 @@
 export type WindowId = 'games' | 'cv' | 'settings' | 'scores';
 
+export type OsPowerState = 'off' | 'booting' | 'desktop';
+
 export type ZenOsTheme = 'zen-dark' | 'retro-amber' | 'matrix-green';
 
 export interface WindowPosition {

@@ -106,9 +106,10 @@
 
 .interactive-stage {
   width: 100%;
-  padding: var(--space-12) clamp(1rem, 3vw, 2.5rem) var(--space-16) clamp(1rem, 3vw, 2.5rem);
+  padding: var(--space-16) clamp(1rem, 3vw, 2.5rem) var(--space-16) clamp(1rem, 3vw, 2.5rem);
   background-color: #121517;
   background: linear-gradient(180deg, #000000 0%, #121517 var(--space-12));
+  scroll-margin-top: 40px;
 }
 
 .stage-grid {

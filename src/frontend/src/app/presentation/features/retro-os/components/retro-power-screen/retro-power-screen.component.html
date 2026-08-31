@@ -1,0 +1,52 @@
+<div class="power-overlay" [class.state-off]="powerState() === 'off'"
+  [class.state-booting]="powerState() === 'booting'" (click)="onScreenClick()">
+
+  <!-- 1. Pantalla Apagada (CRT Standby) -->
+  @if (powerState() === 'off') {
+  <div class="crt-off-screen">
+    <div class="standby-indicator">
+      <span class="standby-dot"></span>
+      <span class="standby-text">STANDBY // CLICK TO POWER ON</span>
+    </div>
+  </div>
+  }
+
+  <!-- 2. Pantalla de Inicio Windows XP (Microsoft Windows XP + Barra de carga) -->
+  @if (powerState() === 'booting') {
+  <div class="xp-boot-screen">
+    <!-- Logo Oficial Minimalista de Windows XP en SVG Nítido -->
+    <div class="xp-boot-logo">
+      <div class="logo-row">
+        <svg viewBox="0 0 88 88" class="boot-flag-svg" aria-hidden="true">
+          <path d="M4 14C12 10 24 11 32 17C35 20 35 30 35 39C27 34 16 32 4 36V14Z" fill="#EB3C00" />
+          <path d="M43 19C52 13 65 11 75 13V36C65 33 53 35 43 40V19Z" fill="#46A200" />
+          <path d="M4 44C16 40 27 42 35 47V70C27 64 16 66 4 71V44Z" fill="#0080FF" />
+          <path d="M43 48C53 43 65 41 75 44V68C65 65 52 67 43 72V48Z" fill="#FFB700" />
+        </svg>
+        <div class="boot-text-brand">
+          <span class="brand-ms">Microsoft</span>
+          <div class="brand-xp">
+            <span class="brand-windows">Windows</span>
+            <span class="brand-xp-badge">XP</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mítica Barra de Progreso XP con los 3 bloques azules deslizantes -->
+    <div class="xp-loader-container">
+      <div class="xp-loader-track">
+        <div class="xp-loader-slider">
+          <span class="block"></span>
+          <span class="block"></span>
+          <span class="block"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="boot-footer-note">
+      <span>Copyright © Microsoft Corporation</span>
+    </div>
+  </div>
+  }
+</div>

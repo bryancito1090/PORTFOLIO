@@ -101,4 +101,36 @@ export class RetroAudioService {
       osc.stop(startTime + 0.06);
     });
   }
+
+  playStartup(): void {
+    const ctx = this.getContext();
+    if (!ctx) return;
+    // Acorde de inicio ascendente emblemático (Eb, Bb, Eb, G, Ab, Bb)
+    const startupChords = [
+      { f: 155.56, t: 0.0, d: 1.2, v: 0.04 }, // Eb3
+      { f: 233.08, t: 0.15, d: 1.2, v: 0.04 }, // Bb3
+      { f: 311.13, t: 0.35, d: 1.4, v: 0.05 }, // Eb4
+      { f: 392.00, t: 0.55, d: 1.4, v: 0.05 }, // G4
+      { f: 466.16, t: 0.75, d: 1.8, v: 0.06 }, // Bb4
+      { f: 622.25, t: 0.95, d: 2.2, v: 0.05 }  // Eb5
+    ];
+
+    startupChords.forEach(note => {
+      const startTime = ctx.currentTime + note.t;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(note.f, startTime);
+
+      gain.gain.setValueAtTime(0.001, startTime);
+      gain.gain.linearRampToValueAtTime(note.v, startTime + 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + note.d);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(startTime);
+      osc.stop(startTime + note.d);
+    });
+  }
 }
