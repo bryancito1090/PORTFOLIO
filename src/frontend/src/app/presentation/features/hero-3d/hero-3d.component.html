@@ -11,9 +11,9 @@
       </div>
     }
 
-    <!-- FASE 1: Tarjeta Insignia Principal de Bryan (Izquierda) y Filosofía Asimétrica (Derecha) -->
+    <!-- FASE 1: Información Insignia Principal de Bryan (Izquierda) y Filosofía Asimétrica (Derecha) -->
     <aside class="lateral-panel side-left pos-f1-left" [class.active]="activePhase() === 1" [attr.aria-label]="i18n.t().heroAriaLead">
-      <div class="hero-lead-card">
+      <div class="hero-floating-lead">
         <div class="lead-header">
           <span class="lead-status">{{ i18n.t().p1LeadStatus }}</span>
           <span class="lead-tag">{{ i18n.t().p1LeadTag }}</span>
@@ -33,7 +33,7 @@
     </aside>
 
     <aside class="lateral-panel side-right pos-f1-right" [class.active]="activePhase() === 1" [attr.aria-label]="i18n.t().heroAriaPhilosophy">
-      <div class="panel-card compact-card">
+      <div class="hero-floating-item">
         <span class="panel-eyebrow">{{ i18n.t().p1RightTag }}</span>
         <h2 class="panel-title">{{ i18n.t().p1RightTitle }}</h2>
         <p class="panel-desc">{{ i18n.t().p1RightDesc }}</p>
@@ -45,7 +45,7 @@
 
     <!-- FASE 2: Backend Enterprise y Frontend Reactivo (Asimétrico) -->
     <aside class="lateral-panel side-left pos-f2-left" [class.active]="activePhase() === 2" [attr.aria-label]="i18n.t().heroAriaBackend">
-      <div class="panel-card">
+      <div class="hero-floating-item">
         <span class="panel-eyebrow">{{ i18n.t().p2LeftTag }}</span>
         <h2 class="panel-title">{{ i18n.t().p2LeftTitle }}</h2>
         <p class="panel-desc">{{ i18n.t().p2LeftDesc }}</p>
@@ -57,7 +57,7 @@
     </aside>
 
     <aside class="lateral-panel side-right pos-f2-right" [class.active]="activePhase() === 2" [attr.aria-label]="i18n.t().heroAriaFrontend">
-      <div class="panel-card">
+      <div class="hero-floating-item">
         <span class="panel-eyebrow">{{ i18n.t().p2RightTag }}</span>
         <h2 class="panel-title">{{ i18n.t().p2RightTitle }}</h2>
         <p class="panel-desc">{{ i18n.t().p2RightDesc }}</p>
@@ -70,7 +70,7 @@
 
     <!-- FASE 3: Estándares de Código y Laboratorio en Vivo (Asimétrico) -->
     <aside class="lateral-panel side-left pos-f3-left" [class.active]="activePhase() === 3" [attr.aria-label]="i18n.t().heroAriaStandards">
-      <div class="panel-card compact-card">
+      <div class="hero-floating-item">
         <span class="panel-eyebrow">{{ i18n.t().p3LeftTag }}</span>
         <h2 class="panel-title">{{ i18n.t().p3LeftTitle }}</h2>
         <p class="panel-desc">{{ i18n.t().p3LeftDesc }}</p>
@@ -82,7 +82,7 @@
     </aside>
 
     <aside class="lateral-panel side-right pos-f3-right" [class.active]="activePhase() === 3" [attr.aria-label]="i18n.t().heroAriaInteractive">
-      <div class="panel-card">
+      <div class="hero-floating-item">
         <span class="panel-eyebrow">{{ i18n.t().p3RightTag }}</span>
         <h2 class="panel-title">{{ i18n.t().p3RightTitle }}</h2>
         <p class="panel-desc">{{ i18n.t().p3RightDesc }}</p>

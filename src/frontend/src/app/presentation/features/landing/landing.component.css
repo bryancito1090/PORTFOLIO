@@ -34,23 +34,14 @@
 .brand-block {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  font-family: var(--font-sans);
-  font-size: 0.875rem;
-  letter-spacing: 0.04em;
 }
 
-.brand-monogram {
-  font-weight: 800;
-  color: var(--zen-accent-matcha);
-  background: rgba(158, 206, 106, 0.12);
-  padding: 2px 6px;
+.brand-logo {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
   border-radius: var(--zen-radius-xs);
-  border: 1px solid rgba(158, 206, 106, 0.25);
 }
-
-.brand-separator { color: var(--zen-border-subtle); }
-.brand-name { font-weight: 700; color: var(--zen-text-primary); }
 
 .header-right-group {
   display: flex;

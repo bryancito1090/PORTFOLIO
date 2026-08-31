@@ -31,61 +31,145 @@
 .side-right { right: clamp(1.5rem, 4vw, 4rem); transform: translateY(calc(-50% + 16px)); }
 .lateral-panel.active { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(-50%); }
 
-.pos-f1-left { top: 45%; max-width: 440px; }
-.pos-f1-right { top: 58%; max-width: 275px; }
-.pos-f2-left { top: 54%; max-width: 370px; }
-.pos-f2-right { top: 40%; max-width: 330px; }
-.pos-f3-left { top: 42%; max-width: 300px; }
-.pos-f3-right { top: 52%; max-width: 380px; }
+.pos-f1-left { top: 48%; max-width: 460px; }
+.pos-f1-right { top: 56%; max-width: 320px; }
+.pos-f2-left { top: 52%; max-width: 390px; }
+.pos-f2-right { top: 42%; max-width: 350px; }
+.pos-f3-left { top: 45%; max-width: 340px; }
+.pos-f3-right { top: 52%; max-width: 400px; }
 
-/* Tarjeta Insignia Principal de Bryan */
-.hero-lead-card, .panel-card {
-  border: 1px solid var(--zen-border-subtle); border-radius: 2px;
-  backdrop-filter: blur(12px);
+/* Contenedores Flotantes (Sin Cards) */
+.hero-floating-lead, .hero-floating-item {
+  background: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
 }
-.hero-lead-card {
-  background: rgba(11, 14, 20, 0.9);
-  border-color: rgba(197, 155, 39, 0.45);
-  border-left: 4px solid var(--zen-accent-kintsugi);
-  padding: 24px;
-  box-shadow: 0 0 35px rgba(197, 155, 39, 0.18), 0 20px 50px rgba(0, 0, 0, 0.9);
+
+.lead-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
 }
-.lead-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.lead-status { font-family: var(--font-sans); font-size: 0.75rem; color: var(--zen-accent-matcha); font-weight: 700; }
-.lead-tag { font-family: var(--font-sans); font-size: 0.75rem; color: var(--zen-text-muted); font-weight: 600; }
+.lead-status {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  color: var(--zen-accent-matcha);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+}
+.lead-status::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--zen-accent-matcha);
+  box-shadow: 0 0 8px var(--zen-accent-matcha);
+}
+.lead-tag {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  color: var(--zen-text-muted);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+}
 .lead-name {
   font-family: var(--font-sans);
-  font-size: clamp(2rem, 3vw, 2.5rem); font-weight: 800; color: var(--zen-text-primary);
-  line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 2px;
+  font-size: clamp(2.25rem, 3.5vw, 3rem);
+  font-weight: 800;
+  color: var(--zen-text-primary);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 0 0 4px 0;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95), 0 4px 24px rgba(0, 0, 0, 0.9);
 }
 .lead-role, .panel-eyebrow {
-  display: block; font-family: var(--font-sans); font-size: 0.8125rem; font-weight: 700;
-  letter-spacing: 0.06em; text-transform: uppercase;
-  color: var(--zen-accent-kintsugi); margin-bottom: 8px;
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--zen-accent-kintsugi);
+  margin-bottom: 8px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
 }
-.lead-desc { font-family: var(--font-sans); font-size: 0.9375rem; color: var(--zen-text-secondary); line-height: 1.6; margin-bottom: 16px; }
-.lead-badges, .panel-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-.lead-footer { border-top: 1px solid var(--zen-border-subtle); padding-top: 10px; margin-top: 14px; }
-.lead-metric { font-family: var(--font-sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; color: var(--zen-text-muted); }
-
-/* Tarjetas Secundarias */
-.panel-card {
-  background: rgba(10, 12, 16, 0.82);
-  border-left: 3px solid var(--zen-accent-kintsugi);
-  padding: 18px;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85);
+.lead-desc {
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  color: var(--zen-text-secondary);
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
 }
-.compact-card { padding: 14px; }
-.panel-title { font-family: var(--font-sans); font-size: 1.3rem; font-weight: 800; line-height: 1.25; color: var(--zen-text-primary); margin-bottom: 6px; }
-.panel-desc { font-family: var(--font-sans); font-size: 0.875rem; color: var(--zen-text-secondary); line-height: 1.55; margin-bottom: 12px; }
+.lead-badges, .panel-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.lead-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 10px;
+  margin-top: 14px;
+}
+.lead-metric {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--zen-text-muted);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+}
 
-/* Chips de Etiquetas */
+.panel-title {
+  font-family: var(--font-sans);
+  font-size: clamp(1.35rem, 2vw, 1.65rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--zen-text-primary);
+  margin: 0 0 8px 0;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95), 0 4px 24px rgba(0, 0, 0, 0.9);
+}
+.panel-desc {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--zen-text-secondary);
+  line-height: 1.55;
+  margin: 0 0 12px 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+}
+
+/* Chips de Etiquetas Flotantes */
 .zen-chip {
-  font-family: var(--font-sans); font-size: 0.75rem; font-weight: 600; padding: 3px 9px; border-radius: 2px;
-  background: rgba(255, 255, 255, 0.04); border: 1px solid var(--zen-border-subtle); color: var(--zen-text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 2px;
+  background: rgba(16, 20, 26, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--zen-text-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
-.chip-gold { border-color: rgba(197, 155, 39, 0.45); color: var(--zen-accent-kintsugi); background: rgba(197, 155, 39, 0.08); }
-.chip-matcha { border-color: rgba(78, 155, 111, 0.45); color: var(--zen-accent-matcha); background: rgba(78, 155, 111, 0.08); }
+.chip-gold {
+  border-color: rgba(197, 155, 39, 0.45);
+  color: var(--zen-accent-kintsugi);
+  background: rgba(197, 155, 39, 0.12);
+}
+.chip-matcha {
+  border-color: rgba(78, 155, 111, 0.45);
+  color: var(--zen-accent-matcha);
+  background: rgba(78, 155, 111, 0.12);
+}
 
 @media (max-width: 900px) {
   .lateral-panel {
