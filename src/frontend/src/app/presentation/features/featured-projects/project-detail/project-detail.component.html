@@ -1,0 +1,59 @@
+@if (project) {
+  <section class="project-detail-panel" [style.--prj-accent]="project.accentColor" aria-live="polite">
+    <div class="project-detail-header">
+      <div>
+        <span class="detail-kicker">{{ project.code }}</span>
+        <h3>{{ project.title }}</h3>
+      </div>
+      <button type="button" class="close-button" (click)="onClose()" [attr.aria-label]="i18n.t().projectDetailCloseAria">
+        ×
+      </button>
+    </div>
+
+    <div class="project-detail-layout">
+      <div class="project-detail-visual">
+        @if (project.imageUrl) {
+          <img [src]="project.imageUrl" [alt]="project.title" loading="lazy" />
+        } @else {
+          <div class="detail-placeholder">
+            <span>{{ project.code }}</span>
+          </div>
+        }
+      </div>
+
+      <div class="project-detail-body">
+        <div class="project-detail-meta">
+          <span class="meta-pill">{{ project.institution }}</span>
+          <span class="meta-pill subtle">{{ project.subtitle }}</span>
+        </div>
+
+        <p class="project-detail-summary">{{ project.description }}</p>
+
+        <div class="detail-block">
+          <h4>{{ i18n.t().projectDetailChallenge }}</h4>
+          <p>{{ project.challenge }}</p>
+        </div>
+
+        <div class="detail-block">
+          <h4>{{ i18n.t().projectDetailSolution }}</h4>
+          <p>{{ project.solution }}</p>
+        </div>
+
+        <div class="detail-block results-block">
+          <h4>{{ i18n.t().projectDetailResults }}</h4>
+          <ul>
+            @for (result of project.results; track result) {
+              <li>{{ result }}</li>
+            }
+          </ul>
+        </div>
+
+        <div class="detail-tags">
+          @for (tag of project.tags; track tag) {
+            <span>{{ tag }}</span>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+}

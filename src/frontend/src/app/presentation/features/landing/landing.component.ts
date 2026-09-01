@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, signal, inject }
 import { Hero3dComponent } from '../hero-3d/hero-3d.component';
 import { RetroOsComponent } from '../retro-os/retro-os.component';
 import { TerminalComponent } from '../terminal/terminal.component';
-import { FeaturedProjectsComponent } from '../featured-projects/featured-projects.component';
+import { FeaturedProjectsComponent } from '../featured-projects/featured-projects/featured-projects.component';
 import { ContactSectionComponent } from '../contact-section/contact-section.component';
 import { TechnicalProfileComponent } from '../technical-profile/technical-profile.component';
 import { I18nService } from '../../../application/services/i18n.service';

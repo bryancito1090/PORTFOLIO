@@ -75,17 +75,36 @@ export interface TranslationDictionary {
   readonly fpAriaLabel: string;
   readonly fpPlaceholderImage: string;
   readonly fpAltPrefix: string;
+  readonly projectDetailChallenge: string;
+  readonly projectDetailSolution: string;
+  readonly projectDetailResults: string;
+  readonly projectDetailCloseAria: string;
   readonly prj1Subtitle: string;
   readonly prj1Desc: string;
   readonly prj1Impact: string;
+  readonly prj1Challenge: string;
+  readonly prj1Solution: string;
+  readonly prj1Result1: string;
+  readonly prj1Result2: string;
+  readonly prj1Result3: string;
   readonly prj2Subtitle: string;
   readonly prj2Institution: string;
   readonly prj2Desc: string;
   readonly prj2Impact: string;
+  readonly prj2Challenge: string;
+  readonly prj2Solution: string;
+  readonly prj2Result1: string;
+  readonly prj2Result2: string;
+  readonly prj2Result3: string;
   readonly prj3Subtitle: string;
   readonly prj3Institution: string;
   readonly prj3Desc: string;
   readonly prj3Impact: string;
+  readonly prj3Challenge: string;
+  readonly prj3Solution: string;
+  readonly prj3Result1: string;
+  readonly prj3Result2: string;
+  readonly prj3Result3: string;
 
   // Terminal & Workstation
   readonly terminalWorkstationTag: string;
