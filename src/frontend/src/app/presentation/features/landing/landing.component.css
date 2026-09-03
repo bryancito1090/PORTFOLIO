@@ -140,6 +140,23 @@
   flex-direction: column;
 }
 
+.profile-module-card app-technical-profile {
+  display: block;
+  height: 100%;
+}
+
+.matrix-stage {
+  width: 100%;
+  height: clamp(64px, 10vh, 104px);
+  background: #121517;
+}
+
+.matrix-stage app-technical-profile {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 /* ==============================================================================
    SECCIÓN DE PROYECTOS DESTACADOS (CASOS REALES A ANCHO COMPLETO)
    ============================================================================== */

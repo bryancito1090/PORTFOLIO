@@ -1,74 +1,32 @@
 <div class="profile-editorial-content">
-  <!-- Eyebrow en Dorado Kintsugi -->
-  <span class="editorial-eyebrow">
-    {{ i18n.t().tpEyebrow }}
-  </span>
+  @if (showProfile()) {
+    <section class="about-me" [attr.aria-label]="i18n.t().tpAboutAria">
+      <div class="about-copy">
+        <span class="editorial-eyebrow">{{ i18n.t().tpEyebrow }}</span>
+        <p class="about-greeting">{{ i18n.t().tpAboutGreeting }}</p>
 
-  <!-- Título Principal H2 -->
-  <h2 class="editorial-title">
-    {{ i18n.t().tpTitle }}
-  </h2>
+        <figure class="ascii-portrait">
+          @if (asciiArt()) {
+            <pre aria-label="Retrato ASCII de Bryan">{{ asciiArt() }}</pre>
+          } @else if (asciiLoadError()) {
+            <figcaption class="ascii-status" role="status">No se pudo cargar el retrato.</figcaption>
+          } @else {
+            <figcaption class="ascii-status" role="status">Cargando retrato...</figcaption>
+          }
+        </figure>
 
-  <!-- Breve Perfil Extraído del CV -->
-  <p class="editorial-lead">
-    {{ i18n.t().tpLeadStudent }} <strong>Escuela Politécnica Nacional (EPN)</strong>.
-    {{ i18n.t().tpLeadSpecialization }} <strong>{{ i18n.t().tpLeadStack }}</strong>{{ i18n.t().tpLeadEnd }}
-  </p>
-
-  <!-- 1. Bloque: Habilidades Técnicas Principales -->
-  <div class="editorial-section">
-    <div class="section-title-row">
-      <span class="section-bullet">▹</span>
-      <h3 class="editorial-subtitle">{{ i18n.t().tpSkillsSubtitle }}</h3>
-    </div>
-
-    <div class="skills-grid">
-      <!-- Backend -->
-      <div class="skill-category">
-        <strong class="cat-label">{{ i18n.t().tpCatBackend }}</strong>
-        <span class="cat-techs">.NET 8/9, C#, Clean Architecture, CQRS (MediatR), FluentValidation, REST APIs.</span>
+        <h2 class="editorial-title">{{ i18n.t().tpAboutName }}</h2>
+        @for (paragraph of aboutParagraphs(); track $index) {
+          <p class="about-description">{{ paragraph }}</p>
+        }
+        <span class="about-link">About me <span aria-hidden="true">→</span></span>
       </div>
+    </section>
+  }
 
-      <!-- Frontend -->
-      <div class="skill-category">
-        <strong class="cat-label">{{ i18n.t().tpCatFrontend }}</strong>
-        <span class="cat-techs">Angular 16+, Signals reactivos, ChangeDetection OnPush, TypeScript, Canvas 2D.</span>
-      </div>
-
-      <!-- Datos & Cloud -->
-      <div class="skill-category">
-        <strong class="cat-label">{{ i18n.t().tpCatData }}</strong>
-        <span class="cat-techs">MySQL, PostgreSQL, SQLite, Docker, AWS (Academy Graduate), Git/GitHub CI/CD.</span>
-      </div>
-
-      <!-- Ciberseguridad & Redes -->
-      <div class="skill-category">
-        <strong class="cat-label">{{ i18n.t().tpCatSecurity }}</strong>
-        <span class="cat-techs">{{ i18n.t().tpCatSecurityDesc }}</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- 2. Bloque: Áreas de Interés & Cultura Dev -->
-  <div class="editorial-section">
-    <div class="section-title-row">
-      <span class="section-bullet">▹</span>
-      <h3 class="editorial-subtitle">{{ i18n.t().tpInterestsSubtitle }}</h3>
-    </div>
-
-    <ul class="interests-list">
-      <li class="interest-item">
-        <strong class="interest-key">{{ i18n.t().tpInterest1Key }}</strong>
-        <span>{{ i18n.t().tpInterest1Desc }}</span>
-      </li>
-      <li class="interest-item">
-        <strong class="interest-key">{{ i18n.t().tpInterest2Key }}</strong>
-        <span>{{ i18n.t().tpInterest2Desc }}</span>
-      </li>
-      <li class="interest-item">
-        <strong class="interest-key">{{ i18n.t().tpInterest3Key }}</strong>
-        <span>{{ i18n.t().tpInterest3Desc }}</span>
-      </li>
-    </ul>
-  </div>
+  @if (showMatrix()) {
+    <section class="hacker-screen" aria-label="Lluvia de codigo Matrix">
+      <canvas #rainCanvas class="hacker-rain" aria-hidden="true"></canvas>
+    </section>
+  }
 </div>

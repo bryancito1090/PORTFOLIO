@@ -28,7 +28,7 @@
     <div class="stage-grid">
       <!-- Slot 1: Perfil Técnico & Filosofía de Ingeniería -->
       <article class="module-card profile-module-card">
-        <app-technical-profile></app-technical-profile>
+        <app-technical-profile [showMatrix]="false"></app-technical-profile>
       </article>
 
       <!-- Slot 2: Retro OS en Monitor CRT Antiguo (50% Horizontal) -->
@@ -36,6 +36,10 @@
         <app-retro-os></app-retro-os>
       </article>
     </div>
+  </section>
+
+  <section class="matrix-stage" aria-label="Lluvia de codigo Matrix">
+    <app-technical-profile [showProfile]="false"></app-technical-profile>
   </section>
 
   <!-- Sección de Proyectos Destacados (Casos Reales del CV a Ancho Completo) -->

@@ -50,6 +50,10 @@ export interface TranslationDictionary {
   readonly p3RightBadge2: string;
 
   // Technical Profile
+  readonly tpAboutGreeting: string;
+  readonly tpAboutName: string;
+  readonly tpAboutDescription: string;
+  readonly tpAboutAria: string;
   readonly tpEyebrow: string;
   readonly tpTitle: string;
   readonly tpLeadStudent: string;

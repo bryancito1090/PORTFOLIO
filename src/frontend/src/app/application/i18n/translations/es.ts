@@ -50,6 +50,10 @@ export const ES_TRANSLATIONS: TranslationDictionary = {
   p3RightBadge2: 'Live .NET API',
 
   // Technical Profile
+  tpAboutGreeting: 'Hola, soy',
+  tpAboutName: 'Bryan Baño',
+  tpAboutDescription: 'Soy ingeniero de software enfocado en construir experiencias digitales claras, accesibles y técnicamente sólidas. Me interesa combinar arquitectura limpia, desarrollo frontend moderno y soluciones backend escalables. Trabajo con .NET, Angular, Signals, APIs REST y bases de datos relacionales.\n\nMi proceso combina ingeniería y diseño. Primero entiendo el problema, después simplifico la experiencia y finalmente construyo una solución mantenible. Priorizo el rendimiento, la accesibilidad, la separación de responsabilidades y la calidad del código.\n\nTambién exploro interfaces inspiradas en terminales Unix, sistemas retro, estética Cyber-Zen y nuevas formas de presentar información técnica sin sacrificar legibilidad. Cada proyecto debe ser funcional, expresivo y fácil de mantener.\n\nActualmente desarrollo soluciones que conectan frontend, backend, diseño visual e interacción digital. Me interesa crear productos que no solo funcionen correctamente, sino que también comuniquen una identidad clara y memorable.',
+  tpAboutAria: 'Sobre Bryan Baño',
   tpEyebrow: 'INGENIERÍA EN COMPUTACIÓN & EXPERTISE',
   tpTitle: 'Habilidades Técnicas & Áreas de Interés',
   tpLeadStudent: 'Estudiante de 9no semestre de Ingeniería en Computación en la',
