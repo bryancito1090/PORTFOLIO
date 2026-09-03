@@ -1,13 +1,39 @@
 <div class="featured-projects-wrapper" role="region" [attr.aria-label]="i18n.t().fpAriaLabel">
+  <!-- Cabecera de la sección con controles del carrusel -->
   <header class="section-micro-header">
     <div class="header-left">
       <span class="pulse-indicator" aria-hidden="true"></span>
       <span class="header-tag">{{ i18n.t().fpHeaderTag }}</span>
     </div>
+
+    <div class="carousel-nav-controls">
+      <span class="carousel-counter" aria-live="polite">
+        0{{ currentIndex() + 1 }} / 0{{ totalPages() }}
+      </span>
+      <div class="carousel-buttons">
+        <button
+          type="button"
+          class="carousel-nav-btn"
+          (click)="prev()"
+          [attr.aria-label]="i18n.t().fpCarouselPrev"
+        >
+          ‹
+        </button>
+        <button
+          type="button"
+          class="carousel-nav-btn"
+          (click)="next()"
+          [attr.aria-label]="i18n.t().fpCarouselNext"
+        >
+          ›
+        </button>
+      </div>
+    </div>
   </header>
 
-  <div class="projects-stack">
-    @for (prj of projects(); track prj.id) {
+  <!-- Cuadrícula de Proyectos (Grid estático sin scroll horizontal) -->
+  <div class="projects-grid">
+    @for (prj of visibleProjects(); track prj.id) {
       <button
         type="button"
         class="project-card"
@@ -16,20 +42,32 @@
         [attr.aria-pressed]="selectedProjectId() === prj.id"
         (click)="selectProject(prj.id)"
       >
-        <div class="project-image-slot">
-          @if (!imageErrors()[prj.id] && prj.imageUrl) {
+        <div class="project-image-slot" [class.no-image]="!prj.imageUrl">
+          @if (prj.imageUrl && !imageErrors()[prj.imageUrl]) {
             <img
               [src]="prj.imageUrl"
               [alt]="i18n.t().fpAltPrefix + prj.title"
               class="project-img"
-              (error)="onImageError(prj.id)"
+              (error)="onImageError(prj.imageUrl)"
               loading="lazy"
             />
           } @else {
-            <div class="image-placeholder">
-              <span class="placeholder-icon">◧</span>
-              <span class="placeholder-code">{{ prj.code }}</span>
-              <span class="placeholder-label">{{ i18n.t().fpPlaceholderImage }}</span>
+            <!-- Diseño Blueprint / Ficha Técnica para SIPLECE o proyectos sin capturas -->
+            <div class="tech-blueprint-slot">
+              <div class="blueprint-grid-overlay" aria-hidden="true"></div>
+              <div class="blueprint-content">
+                <span class="blueprint-icon">◧</span>
+                <span class="blueprint-code">{{ prj.code }}</span>
+                <span class="blueprint-title">{{ prj.title }}</span>
+                <span class="blueprint-spec">{{ i18n.t().fpNoImagesTechnical }}</span>
+              </div>
+            </div>
+          }
+
+          @if (prj.inDevelopment) {
+            <div class="in-dev-badge">
+              <span class="in-dev-dot"></span>
+              <span>{{ i18n.t().fpInDevelopment }}</span>
             </div>
           }
         </div>
@@ -52,12 +90,33 @@
             }
           </div>
 
-          <span class="project-action">{{ selectedProjectId() === prj.id ? 'Detalle abierto' : 'Ver detalle' }}</span>
+          <span class="project-action">
+            {{ selectedProjectId() === prj.id ? 'Detalle abierto' : 'Ver detalle' }}
+          </span>
         </div>
       </button>
     }
   </div>
 
+  <!-- Indicadores de página (Dots) -->
+  @if (totalPages() > 1) {
+    <div class="carousel-dots-row" role="tablist" aria-label="Selector de proyectos">
+      @for (pageIdx of pagesArray(); track pageIdx) {
+        <button
+          type="button"
+          class="carousel-dot"
+          [class.is-active]="currentIndex() === pageIdx"
+          (click)="goToPage(pageIdx)"
+          [attr.aria-label]="'Página ' + (pageIdx + 1)"
+          [attr.aria-selected]="currentIndex() === pageIdx"
+        >
+          <span class="dot-inner"></span>
+        </button>
+      }
+    </div>
+  }
+
+  <!-- Modal Detalle del Proyecto Seleccionado -->
   @if (selectedProject(); as selected) {
     <div class="project-detail-overlay" (click)="clearSelection()">
       <div class="project-detail-shell" (click)="$event.stopPropagation()">

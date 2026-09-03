@@ -79,6 +79,10 @@ export interface TranslationDictionary {
   readonly fpAriaLabel: string;
   readonly fpPlaceholderImage: string;
   readonly fpAltPrefix: string;
+  readonly fpCarouselPrev: string;
+  readonly fpCarouselNext: string;
+  readonly fpInDevelopment: string;
+  readonly fpNoImagesTechnical: string;
   readonly projectDetailChallenge: string;
   readonly projectDetailSolution: string;
   readonly projectDetailResults: string;
@@ -109,6 +113,15 @@ export interface TranslationDictionary {
   readonly prj3Result1: string;
   readonly prj3Result2: string;
   readonly prj3Result3: string;
+  readonly prj4Subtitle: string;
+  readonly prj4Institution: string;
+  readonly prj4Desc: string;
+  readonly prj4Impact: string;
+  readonly prj4Challenge: string;
+  readonly prj4Solution: string;
+  readonly prj4Result1: string;
+  readonly prj4Result2: string;
+  readonly prj4Result3: string;
 
   // Terminal & Workstation
   readonly terminalWorkstationTag: string;

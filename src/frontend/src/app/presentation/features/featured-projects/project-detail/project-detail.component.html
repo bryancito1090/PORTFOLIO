@@ -2,7 +2,12 @@
   <section class="project-detail-panel" [style.--prj-accent]="project.accentColor" aria-live="polite">
     <div class="project-detail-header">
       <div>
-        <span class="detail-kicker">{{ project.code }}</span>
+        <span class="detail-kicker">
+          {{ project.code }}
+          @if (project.inDevelopment) {
+            <span class="detail-dev-tag">● {{ i18n.t().fpInDevelopment }}</span>
+          }
+        </span>
         <h3>{{ project.title }}</h3>
       </div>
       <button type="button" class="close-button" (click)="onClose()" [attr.aria-label]="i18n.t().projectDetailCloseAria">
@@ -12,11 +17,65 @@
 
     <div class="project-detail-layout">
       <div class="project-detail-visual">
-        @if (project.imageUrl) {
-          <img [src]="project.imageUrl" [alt]="project.title" loading="lazy" />
+        @if (project.images && project.images.length > 0) {
+          <div class="main-image-viewport">
+            @if (getCurrentImage(); as currentImg) {
+              @if (!imageErrors()[currentImg]) {
+                <img
+                  [src]="currentImg"
+                  [alt]="project.title + ' vista ' + (activeImageIndex() + 1)"
+                  (error)="onImageError(currentImg)"
+                  loading="lazy"
+                />
+              } @else {
+                <div class="detail-placeholder">
+                  <span class="placeholder-icon">◧</span>
+                  <span class="placeholder-code">{{ project.code }}</span>
+                </div>
+              }
+            } @else {
+              <div class="detail-placeholder">
+                <span class="placeholder-icon">◧</span>
+                <span class="placeholder-code">{{ project.code }}</span>
+              </div>
+            }
+          </div>
+
+          @if (project.images.length > 1) {
+            <div class="gallery-thumbs" role="tablist" aria-label="Miniaturas de capturas">
+              @for (img of project.images; track img; let i = $index) {
+                <button
+                  type="button"
+                  class="thumb-btn"
+                  [class.is-active]="activeImageIndex() === i"
+                  [attr.aria-selected]="activeImageIndex() === i"
+                  (click)="selectImage(i)"
+                >
+                  @if (!imageErrors()[img]) {
+                    <img [src]="img" [alt]="project.title + ' miniatura ' + (i + 1)" (error)="onImageError(img)" loading="lazy" />
+                  } @else {
+                    <span class="thumb-label">{{ i + 1 }}</span>
+                  }
+                </button>
+              }
+            </div>
+          }
         } @else {
-          <div class="detail-placeholder">
-            <span>{{ project.code }}</span>
+          <!-- Ficha de Arquitectura Técnica para proyectos sin imágenes (SIPLECE) -->
+          <div class="technical-blueprint-panel">
+            <div class="blueprint-circuit-bg" aria-hidden="true"></div>
+            <div class="blueprint-panel-content">
+              <span class="blueprint-panel-icon">◧</span>
+              <span class="blueprint-panel-code">{{ project.code }}</span>
+              <h4 class="blueprint-panel-title">{{ project.title }}</h4>
+              <p class="blueprint-panel-subtitle">{{ i18n.t().fpNoImagesTechnical }}</p>
+              <div class="blueprint-specs-list">
+                <span class="spec-item">🏛 {{ project.institution }}</span>
+                <span class="spec-item">🔒 Autenticación JWT & RBAC</span>
+                <span class="spec-item">⚡ Clean Architecture (.NET + Angular)</span>
+                <span class="spec-item">📊 Trazabilidad & Auditoría CACES</span>
+              </div>
+            </div>
           </div>
         }
       </div>
