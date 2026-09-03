@@ -3,182 +3,179 @@
   width: 100%;
 }
 
-/* 1. CONTENEDOR PRINCIPAL NORMALIZADO (Fondo #121517 & Padding Amplio) */
+/* 1. SECCION PRINCIPAL — Sumi-e Background & Ma (Espacio Negativo) */
 .contact-section {
   width: 100%;
   background-color: #121517;
-  padding: clamp(6rem, 10vw, 8rem) 0; /* py-24 sm:py-32 */
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding: clamp(5rem, 8vw, 7rem) 0;
 }
 
 .contact-container {
-  max-width: 80rem; /* max-w-7xl */
+  max-width: 72rem;
   margin: 0 auto;
-  padding: 0 1.5rem; /* px-6 */
+  padding: 0 clamp(1rem, 3vw, 2.5rem);
 }
 
-@media (min-width: 1024px) {
-  .contact-container {
-    padding: 0 2rem; /* lg:px-8 */
-  }
+/* 2. MICRO-HEADER — Patrón de Estado Retro */
+.contact-micro-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-12);
 }
 
+.contact-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--zen-accent-kintsugi);
+  box-shadow: 0 0 8px var(--zen-accent-kintsugi);
+  flex-shrink: 0;
+}
+
+.contact-header-tag {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--zen-text-muted);
+}
+
+/* 3. GRID DE CONTENIDO — 2 Columnas Responsive */
 .contact-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 4rem; /* gap-16 */
-  align-items: center;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
 }
 
 @media (min-width: 1024px) {
   .contact-grid {
     grid-template-columns: 1fr 1fr;
-    gap: 6rem; /* lg:gap-24 */
+    gap: clamp(3rem, 6vw, 5rem);
   }
 }
 
-/* 2. COLUMNA IZQUIERDA (Textos en Paleta Zen Dark) */
+/* 4. COLUMNA IZQUIERDA — Textos Corporativos */
 .contact-info-col {
   display: flex;
   flex-direction: column;
 }
 
-.contact-eyebrow {
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.14em; /* tracking-widest */
-  color: var(--zen-accent-kintsugi); /* Dorado Kintsugi Normalizado */
-  text-transform: uppercase;
-  margin-bottom: 1.25rem;
-  display: inline-block;
-}
-
 .contact-title {
   font-family: var(--font-sans);
-  font-size: clamp(2.25rem, 4.5vw, 3.5rem); /* text-5xl o text-6xl */
-  font-weight: 800; /* font-bold */
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 700;
   color: var(--zen-text-primary);
-  line-height: 1.15; /* leading-tight */
+  line-height: 1.15;
   letter-spacing: -0.02em;
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 var(--space-6) 0;
 }
 
 .contact-lead {
-  font-size: 1.0625rem; /* text-lg */
+  font-size: 0.9375rem;
   color: var(--zen-text-secondary);
   line-height: 1.7;
-  margin: 0 0 2rem 0;
-  max-width: 580px;
+  margin: 0 0 var(--space-8) 0;
+  max-width: 520px;
 }
 
 .service-block {
-  margin-top: 1.5rem;
-}
-
-.service-block:first-of-type {
-  margin-top: 2rem; /* mt-10 */
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--zen-border-subtle);
+  margin-bottom: var(--space-6);
 }
 
 .service-title {
   font-family: var(--font-sans);
-  font-size: 1.2rem; /* text-xl */
-  font-weight: 700; /* font-bold */
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--zen-text-primary);
-  margin: 0 0 0.5rem 0;
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.service-title::before {
-  content: '▹';
-  color: var(--zen-accent-kintsugi);
-  font-size: 0.8125rem;
+  margin: 0 0 var(--space-2) 0;
 }
 
 .service-desc {
-  font-size: 0.875rem; /* text-sm */
+  font-size: 0.8125rem;
   color: var(--zen-text-muted);
   line-height: 1.6;
-  margin: 0 0 0 1.25rem;
-  max-width: 540px;
+  margin: 0;
 }
 
-/* 3. COLUMNA DERECHA (Tarjeta Formulario Zen Dark) */
-.contact-card-col {
-  width: 100%;
-}
-
+/* 5. COLUMNA DERECHA — Tarjeta Formulario (Retro Window Frame) */
 .contact-card {
-  background-color: var(--zen-bg-surface); /* #131720 Normalizado */
-  border-radius: 1.5rem; /* rounded-3xl */
-  border: 1px solid var(--zen-border-subtle); /* #1e2533 Normalizado */
-  padding: clamp(2rem, 4vw, 3rem); /* p-8 sm:p-12 */
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75);
+  background-color: var(--zen-bg-surface);
+  border: 1px solid var(--zen-border-subtle);
+  border-radius: var(--zen-radius-sm);
+  box-shadow: var(--zen-shadow-window);
+}
+
+/* 6. CUERPO DEL FORMULARIO */
+.contact-card-body {
+  padding: clamp(1.5rem, 3vw, 2rem);
 }
 
 .form-header {
-  margin-bottom: 2rem; /* mb-8 */
+  margin-bottom: var(--space-6);
 }
 
 .form-title {
   font-family: var(--font-sans);
-  font-size: 1.5rem; /* text-2xl */
-  font-weight: 700; /* font-semibold */
+  font-size: 1.25rem;
+  font-weight: 600;
   color: var(--zen-text-primary);
-  margin: 0 0 0.5rem 0; /* mb-2 */
+  margin: 0 0 var(--space-1) 0;
 }
 
 .form-subtitle {
-  font-size: 0.875rem; /* text-sm */
-  color: var(--zen-text-secondary);
+  font-size: 0.8125rem;
+  color: var(--zen-text-muted);
   margin: 0;
 }
 
-/* Campos del Formulario Normalizados */
+/* 7. CAMPOS DEL FORMULARIO — Estilo Zen Minimalista */
 .contact-form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: var(--space-4);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: var(--space-1);
 }
 
 .form-row-2col {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
 @media (min-width: 640px) {
   .form-row-2col {
-    grid-template-columns: 1fr 1fr; /* sm:grid-cols-2 */
+    grid-template-columns: 1fr 1fr;
   }
 }
 
 .form-label {
-  font-family: var(--font-sans);
-  font-size: 0.8125rem; /* text-sm */
-  color: var(--zen-text-secondary);
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--zen-text-muted);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .form-input,
 .form-select,
 .form-textarea {
   width: 100%;
-  background-color: var(--zen-bg-base); /* #0c0e14 Normalizado */
+  background-color: var(--zen-bg-base);
   color: var(--zen-text-primary);
-  padding: 0.875rem 1rem; /* p-3 o p-4 */
-  border-radius: 0.75rem; /* rounded-xl */
-  border: 1px solid var(--zen-border-subtle); /* #1e2533 Normalizado */
+  padding: var(--space-3) var(--space-3);
+  border-radius: var(--zen-radius-xs);
+  border: 1px solid var(--zen-border-subtle);
   font-family: inherit;
   font-size: 0.875rem;
   line-height: 1.5;
@@ -189,6 +186,7 @@
 .form-input::placeholder,
 .form-textarea::placeholder {
   color: var(--zen-text-muted);
+  font-style: italic;
 }
 
 .form-input:focus,
@@ -196,12 +194,12 @@
 .form-textarea:focus {
   outline: none;
   border-color: var(--zen-accent-kintsugi);
-  box-shadow: 0 0 0 2px rgba(197, 155, 39, 0.25);
+  box-shadow: 0 0 0 2px rgba(197, 155, 39, 0.2);
 }
 
 .form-textarea {
   resize: vertical;
-  min-height: 110px;
+  min-height: 100px;
 }
 
 .select-wrapper {
@@ -211,11 +209,11 @@
 .form-select {
   appearance: none;
   cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239aa5b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%235e697d'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 1.25rem;
-  padding-right: 2.5rem;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+  padding-right: 2.25rem;
 }
 
 .form-select option {
@@ -223,63 +221,68 @@
   color: var(--zen-text-primary);
 }
 
+/* 8. VALIDACION Y ERRORES */
 .input-error {
-  border-color: #f7768e !important;
+  border-color: var(--zen-accent-sakura) !important;
 }
 
 .field-error {
-  font-size: 0.6875rem;
-  color: #f7768e;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  color: var(--zen-accent-sakura);
+  letter-spacing: 0.02em;
 }
 
 .error-banner {
-  padding: 0.75rem 1rem;
-  background-color: rgba(247, 118, 142, 0.1);
-  border: 1px solid rgba(247, 118, 142, 0.3);
-  border-radius: 0.5rem;
-  color: #f7768e;
-  font-size: 0.8125rem;
+  padding: var(--space-3) var(--space-4);
+  background-color: rgba(217, 111, 136, 0.08);
+  border: 1px solid rgba(217, 111, 136, 0.25);
+  border-radius: var(--zen-radius-xs);
+  color: var(--zen-accent-sakura);
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
 }
 
-/* Botón de Envío Kintsugi Gold */
+/* 9. BOTON DE ENVIO — Kintsugi Flat */
 .submit-btn {
-  width: 100%; /* w-full */
-  background: linear-gradient(135deg, var(--zen-accent-kintsugi) 0%, #e2b94a 100%);
-  color: #07080b; /* text-black de alto contraste */
-  font-weight: 700; /* font-semibold */
-  padding: 1rem; /* py-4 */
-  border-radius: 0.75rem; /* rounded-xl */
+  width: 100%;
+  background-color: var(--zen-accent-kintsugi);
+  color: #07080b;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--zen-radius-xs);
   border: none;
-  font-size: 0.9375rem;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(197, 155, 39, 0.3);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
+  gap: var(--space-2);
 }
 
 .submit-btn:hover:not(:disabled) {
-  box-shadow: 0 0 24px rgba(197, 155, 39, 0.55);
-  transform: translateY(-2px);
+  background-color: #d4a932;
+  box-shadow: 0 0 16px rgba(197, 155, 39, 0.35);
 }
 
 .submit-btn:active:not(:disabled) {
-  transform: scale(0.99);
+  transform: scale(0.98);
 }
 
 .submit-btn:disabled {
-  opacity: 0.7;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(0, 0, 0, 0.2);
-  border-top-color: #000000;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(7, 8, 11, 0.2);
+  border-top-color: #07080b;
   border-radius: 50%;
   animation: spin 600ms linear infinite;
 }
@@ -288,57 +291,59 @@
   to { transform: rotate(360deg); }
 }
 
-/* Estado de Éxito */
+/* 10. ESTADO DE EXITO */
 .success-banner {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 2.5rem 1rem;
-  gap: 1rem;
+  padding: var(--space-8) var(--space-4);
+  gap: var(--space-4);
 }
 
 .success-icon-badge {
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background-color: rgba(197, 155, 39, 0.15);
-  border: 1px solid rgba(197, 155, 39, 0.35);
+  background-color: rgba(197, 155, 39, 0.12);
+  border: 1px solid rgba(197, 155, 39, 0.3);
   color: var(--zen-accent-kintsugi);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 1.25rem;
 }
 
 .success-title {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  font-weight: 600;
   color: var(--zen-text-primary);
   margin: 0;
 }
 
 .success-desc {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--zen-text-secondary);
   line-height: 1.6;
   margin: 0;
-  max-width: 420px;
+  max-width: 380px;
 }
 
 .btn-new-message {
-  margin-top: 0.5rem;
-  background: rgba(255, 255, 255, 0.06);
+  margin-top: var(--space-2);
+  background: transparent;
   border: 1px solid var(--zen-border-subtle);
-  color: var(--zen-text-primary);
-  padding: 0.625rem 1.25rem;
-  border-radius: 0.5rem;
-  font-size: 0.8125rem;
+  border-radius: var(--zen-radius-xs);
+  color: var(--zen-text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: var(--space-2) var(--space-4);
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: border-color var(--transition-fast), color var(--transition-fast);
 }
 
 .btn-new-message:hover {
-  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--zen-border-focus);
+  color: var(--zen-text-primary);
 }

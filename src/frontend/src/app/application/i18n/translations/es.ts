@@ -52,7 +52,7 @@ export const ES_TRANSLATIONS: TranslationDictionary = {
   // Technical Profile
   tpAboutGreeting: 'Hola, soy',
   tpAboutName: 'Bryan Baño',
-  tpAboutDescription: 'Soy ingeniero de software enfocado en construir experiencias digitales claras, accesibles y técnicamente sólidas. Me interesa combinar arquitectura limpia, desarrollo frontend moderno y soluciones backend escalables. Trabajo con .NET, Angular, Signals, APIs REST y bases de datos relacionales.\n\nMi proceso combina ingeniería y diseño. Primero entiendo el problema, después simplifico la experiencia y finalmente construyo una solución mantenible. Priorizo el rendimiento, la accesibilidad, la separación de responsabilidades y la calidad del código.\n\nTambién exploro interfaces inspiradas en terminales Unix, sistemas retro, estética Cyber-Zen y nuevas formas de presentar información técnica sin sacrificar legibilidad. Cada proyecto debe ser funcional, expresivo y fácil de mantener.\n\nActualmente desarrollo soluciones que conectan frontend, backend, diseño visual e interacción digital. Me interesa crear productos que no solo funcionen correctamente, sino que también comuniquen una identidad clara y memorable.',
+  tpAboutDescription: 'Egresado de Ingeniería en Computación (EPN) | Desarrollador Full Stack apasionado por crear arquitecturas eficientes. Me enfoco en construir experiencias digitales claras, accesibles y técnicamente sólidas. Me interesa combinar arquitectura limpia, desarrollo frontend moderno y soluciones backend escalables. Trabajo con .NET, Angular, Signals, APIs REST y bases de datos relacionales.\n\nMi proceso combina ingeniería y diseño. Primero entiendo el problema, después simplifico la experiencia y finalmente construyo una solución mantenible. Priorizo el rendimiento, la accesibilidad, la separación de responsabilidades y la calidad del código.\n\nTambién exploro interfaces inspiradas en terminales Unix, sistemas retro, estética Cyber-Zen y nuevas formas de presentar información técnica sin sacrificar legibilidad. Cada proyecto debe ser funcional, expresivo y fácil de mantener.\n\nActualmente desarrollo soluciones que conectan frontend, backend, diseño visual e interacción digital. Me interesa crear productos que no solo funcionen correctamente, sino que también comuniquen una identidad clara y memorable.',
   tpAboutAria: 'Sobre Bryan Baño',
   tpEyebrow: 'INGENIERÍA EN COMPUTACIÓN & EXPERTISE',
   tpTitle: 'Habilidades Técnicas & Áreas de Interés',
@@ -114,13 +114,14 @@ export const ES_TRANSLATIONS: TranslationDictionary = {
   terminalWorkstationTag: '02 // INTERACTIVE WORKSTATION',
   terminalHeading: 'Terminal Arch Linux // Fish Shell',
   terminalSectionDesc: 'Consola interactiva a escala completa para consultar el ecosistema técnico, habilidades y base de datos.',
-  terminalBanner: `      /\\         bryan@archlinux
-     /  \\        OS: Arch Linux x86_64
-    /\\   \\       Host: ThinkPad Z13 Gen 2
-   /      \\      Kernel: 6.10.7-arch1-1
-  /   ,,   \\     Shell: fish 3.7.0
- /   |  |  -\\    Terminal: zen-alacritty
-/_-''    ''-_\\   Escribe "help" para comenzar.`,
+  terminalBanner: `bryan@archlinux
+OS: Arch Linux x86_64
+Host: ThinkPad Z13 Gen 2
+Kernel: 6.10.7-arch1-1
+Shell: fish 3.7.0
+Terminal: zen-alacritty
+
+Escribe "help" para comenzar.`,
   terminalHint: 'Bienvenido al entorno interactivo Arch Linux / Fish Shell.\nEscribe "help" para ver los comandos disponibles.',
   terminalHelpContent: `Arch Linux (x86_64) — fish, version 3.7.0
 Comandos disponibles para la sesión interactiva:

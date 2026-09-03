@@ -114,13 +114,14 @@ export const EN_TRANSLATIONS: TranslationDictionary = {
   terminalWorkstationTag: '02 // INTERACTIVE WORKSTATION',
   terminalHeading: 'Arch Linux Terminal // Fish Shell',
   terminalSectionDesc: 'Full-scale interactive console to query technical ecosystem, skills, and live database.',
-  terminalBanner: `      /\\         bryan@archlinux
-     /  \\        OS: Arch Linux x86_64
-    /\\   \\       Host: ThinkPad Z13 Gen 2
-   /      \\      Kernel: 6.10.7-arch1-1
-  /   ,,   \\     Shell: fish 3.7.0
- /   |  |  -\\    Terminal: zen-alacritty
-/_-''    ''-_\\   Type "help" to start.`,
+  terminalBanner: `bryan@archlinux
+OS: Arch Linux x86_64
+Host: ThinkPad Z13 Gen 2
+Kernel: 6.10.7-arch1-1
+Shell: fish 3.7.0
+Terminal: zen-alacritty
+
+Type "help" to start.`,
   terminalHint: 'Welcome to the interactive Arch Linux / Fish Shell environment.\nType "help" to view available commands.',
   terminalHelpContent: `Arch Linux (x86_64) — fish, version 3.7.0
 Available commands for this interactive session:

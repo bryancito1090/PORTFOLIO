@@ -1,24 +1,22 @@
-<section class="contact-section" id="contacto">
+<section class="contact-section" id="contacto" role="region" [attr.aria-label]="i18n.t().contactEyebrow">
   <div class="contact-container">
+    <!-- Micro-Header -->
+    <header class="contact-micro-header">
+      <span class="contact-pulse-dot" aria-hidden="true"></span>
+      <span class="contact-header-tag">{{ i18n.t().contactEyebrow }}</span>
+    </header>
+
     <div class="contact-grid">
       <!-- 1. COLUMNA IZQUIERDA (Textos Corporativos & Servicios) -->
       <div class="contact-info-col">
-        <!-- Eyebrow -->
-        <span class="contact-eyebrow">
-          {{ i18n.t().contactEyebrow }}
-        </span>
-
-        <!-- Título Principal H2 -->
         <h2 class="contact-title">
           {{ i18n.t().contactTitle }}
         </h2>
 
-        <!-- Párrafo Principal -->
         <p class="contact-lead">
           {{ i18n.t().contactLead }}
         </p>
 
-        <!-- Bloque de Servicio 1 -->
         <div class="service-block">
           <h3 class="service-title">{{ i18n.t().contactService1Title }}</h3>
           <p class="service-desc">
@@ -26,7 +24,6 @@
           </p>
         </div>
 
-        <!-- Bloque de Servicio 2 -->
         <div class="service-block">
           <h3 class="service-title">{{ i18n.t().contactService2Title }}</h3>
           <p class="service-desc">
@@ -36,20 +33,11 @@
       </div>
 
       <!-- 2. COLUMNA DERECHA (Tarjeta Formulario) -->
-      <div class="contact-card-col">
-        <div class="contact-card">
-          <!-- Cabecera del Formulario -->
-          <div class="form-header">
-            <h3 class="form-title">{{ i18n.t().contactFormTitle }}</h3>
-            <p class="form-subtitle">
-              {{ i18n.t().contactFormSubtitle }}
-            </p>
-          </div>
-
+      <div class="contact-card">
+        <div class="contact-card-body">
           @if (isSuccess()) {
-            <!-- Estado de Éxito al Enviar -->
             <div class="success-banner" role="alert">
-              <div class="success-icon-badge">✔</div>
+              <div class="success-icon-badge" aria-hidden="true">&#10003;</div>
               <h4 class="success-title">{{ i18n.t().contactSuccessTitle }}</h4>
               <p class="success-desc">
                 {{ i18n.t().contactSuccessDesc }}
@@ -59,9 +47,14 @@
               </button>
             </div>
           } @else {
-            <!-- Formulario Reactivo -->
+            <div class="form-header">
+              <h3 class="form-title">{{ i18n.t().contactFormTitle }}</h3>
+              <p class="form-subtitle">
+                {{ i18n.t().contactFormSubtitle }}
+              </p>
+            </div>
+
             <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" novalidate class="contact-form">
-              <!-- Fila 1: Nombre o Empresa (100% ancho) -->
               <div class="form-group">
                 <label for="fullNameOrCompany" class="form-label">{{ i18n.t().contactLabelName }}</label>
                 <input
@@ -83,7 +76,6 @@
                 }
               </div>
 
-              <!-- Fila 2: Grid de 2 Columnas (Email y Teléfono) -->
               <div class="form-row-2col">
                 <div class="form-group">
                   <label for="email" class="form-label">{{ i18n.t().contactLabelEmail }}</label>
@@ -116,7 +108,6 @@
                 </div>
               </div>
 
-              <!-- Fila 3: Select Servicio (100% ancho) -->
               <div class="form-group">
                 <label for="serviceType" class="form-label">{{ i18n.t().contactLabelService }}</label>
                 <div class="select-wrapper">
@@ -130,7 +121,6 @@
                 </div>
               </div>
 
-              <!-- Fila 4: Textarea Detalles (100% ancho, mínimo 4 filas) -->
               <div class="form-group">
                 <label for="projectDetails" class="form-label">
                   {{ i18n.t().contactLabelDetails }}
@@ -154,14 +144,12 @@
                 }
               </div>
 
-              <!-- Mensaje de Error Global si aplica -->
               @if (errorMessage()) {
                 <div class="error-banner" role="alert">
                   {{ errorMessage() }}
                 </div>
               }
 
-              <!-- Botón de Envío -->
               <button
                 type="submit"
                 class="submit-btn"

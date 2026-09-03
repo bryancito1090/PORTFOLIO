@@ -8,7 +8,7 @@
     </div>
 
     <div class="term-title-block">
-      <span class="arch-icon">󰣇</span>
+      <img src="assets/images/gengar.png" alt="" class="gengar-icon" aria-hidden="true" />
       <span class="term-window-title">bryan&#64;archlinux: ~ (fish)</span>
     </div>
 
@@ -18,6 +18,12 @@
   <div #terminalBody class="term-body">
     @for (entry of entries(); track entry.id) {
     @switch (entry.type) {
+    @case ('image') {
+    <div class="term-image-banner">
+      <img [src]="entry.content" alt="" class="term-image" aria-hidden="true" />
+      <pre class="term-banner-text">{{ entry.textContent }}</pre>
+    </div>
+    }
     @case ('banner') {
     <pre class="term-banner" aria-label="Información del sistema Arch Linux">{{ entry.content }}</pre>
     }

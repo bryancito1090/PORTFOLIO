@@ -14,9 +14,10 @@ import { I18nService } from '../../../application/services/i18n.service';
 
 export interface TerminalEntry {
   readonly id: string;
-  readonly type: 'input' | 'output' | 'error' | 'success' | 'banner' | 'ascii';
+  readonly type: 'input' | 'output' | 'error' | 'success' | 'banner' | 'ascii' | 'image';
   readonly command?: string;
   readonly content?: string;
+  readonly textContent?: string;
 }
 
 @Component({
@@ -44,9 +45,10 @@ export class TerminalComponent implements AfterViewInit {
 
   protected readonly entries = signal<TerminalEntry[]>([
     {
-      id: 'init-banner',
-      type: 'banner',
-      content: this.i18n.t().terminalBanner
+      id: 'init-gengar',
+      type: 'image',
+      content: 'assets/images/gengar.png',
+      textContent: this.i18n.t().terminalBanner
     },
     {
       id: 'init-hint',
@@ -60,8 +62,8 @@ export class TerminalComponent implements AfterViewInit {
       const t = this.i18n.t();
       this.entries.update(prev =>
         prev.map(e => {
-          if (e.id === 'init-banner') {
-            return { ...e, content: t.terminalBanner };
+          if (e.id === 'init-gengar') {
+            return { ...e, textContent: t.terminalBanner };
           }
           if (e.id === 'init-hint') {
             return { ...e, content: t.terminalHint };
