@@ -1,89 +1,153 @@
-<div class="xp-game-wrapper">
-  <!-- Barra Superior Clásica de Juegos de Windows XP -->
-  <header class="xp-game-header">
-    <div class="xp-hud-stats">
-      <div class="hud-item">
-        <span class="hud-tag">{{ i18n.t().retroGameScore }}</span>
-        <span class="hud-num">{{ score() }}</span>
+<div class="xp-minesweeper-window" (contextmenu)="$event.preventDefault()">
+  <!-- Marco Exterior Biselado Clásico (Windows 95/XP Style) -->
+  <div class="xp-minesweeper-frame">
+    <!-- Barra Superior de HUD (Contador Minas, Cara Sonriente, Cronómetro) -->
+    <header class="xp-ms-hud">
+      <!-- Pantalla LED 7-Segmentos: Minas Restantes -->
+      <div class="xp-led-display" title="Minas restantes">
+        <span class="led-ghost">888</span>
+        <span class="led-digits">{{ formattedMines() }}</span>
       </div>
-      <div class="hud-item">
-        <span class="hud-tag">{{ i18n.t().retroGameHigh }}</span>
-        <span class="hud-num highlight">{{ highScore() }}</span>
-      </div>
-    </div>
 
-    <div class="xp-hud-actions">
+      <!-- Botón Cara Sonriente Clásica -->
       <button
         type="button"
-        class="xp-classic-btn"
-        (click)="startGame()"
-        title="Iniciar o reiniciar la partida"
+        class="xp-smiley-btn"
+        (click)="onFaceClick()"
+        (mousedown)="onFaceMouseDown()"
+        (mouseup)="onFaceMouseUp()"
+        title="Reiniciar partida"
+        [attr.aria-label]="'Reiniciar Buscaminas'"
       >
-        {{ isPlaying() ? i18n.t().retroGameRestart : i18n.t().retroGameStart }}
+        @switch (face()) {
+          @case ('dead') {
+            <span class="face-icon">😵</span>
+          }
+          @case ('won') {
+            <span class="face-icon">😎</span>
+          }
+          @case ('pressed') {
+            <span class="face-icon">😮</span>
+          }
+          @default {
+            <span class="face-icon">🙂</span>
+          }
+        }
       </button>
-      <button
-        type="button"
-        class="xp-classic-btn"
-        [disabled]="!isPlaying() || isGameOver()"
-        (click)="togglePause()"
-        title="Pausar el juego"
-      >
-        {{ isPaused() ? i18n.t().retroGameResume : i18n.t().retroGamePause }}
-      </button>
-    </div>
-  </header>
 
-  <!-- Contenedor del Tablero Canvas (Siempre visible, interactivo al clic) -->
-  <div class="xp-canvas-box" (click)="onCanvasClick()" title="Haz clic aquí o pulsa cualquier flecha para jugar">
-    <canvas #gameCanvas width="300" height="300" class="xp-snake-canvas"></canvas>
-
-    <!-- Banner sutil de instrucciones (sin tapar a la serpiente) -->
-    @if (!isPlaying() && !isGameOver()) {
-      <div class="xp-start-banner">
-        <span>{{ i18n.t().retroGameBanner }}</span>
+      <!-- Pantalla LED 7-Segmentos: Tiempo Transcurrido -->
+      <div class="xp-led-display" title="Tiempo transcurrido (segundos)">
+        <span class="led-ghost">888</span>
+        <span class="led-digits">{{ formattedTime() }}</span>
       </div>
-    }
+    </header>
 
-    <!-- Banner de Game Over -->
-    @if (isGameOver()) {
-      <div class="xp-gameover-card" (click)="$event.stopPropagation()">
-        <span class="gameover-text">{{ i18n.t().retroGameOver }}</span>
-        <span class="gameover-pts">{{ i18n.t().retroGameScoreLabel }} {{ score() }}</span>
-
-        @if (!isScoreSaved() && score() > 0) {
-          <div class="xp-save-row">
-            <input
-              type="text"
-              maxlength="4"
-              [value]="playerTag()"
-              (input)="playerTag.set($any($event.target).value.toUpperCase())"
-              class="xp-input-tag"
-              placeholder="TAG"
-            />
-            <button type="button" class="xp-classic-btn btn-save" (click)="submitScore()">
-              {{ i18n.t().retroGameSave }}
-            </button>
+    <!-- Tablero Cuadrícula 9x9 con Bisel Inset -->
+    <div class="xp-ms-board-inset">
+      <div class="xp-ms-grid">
+        @for (row of grid(); track $index; let r = $index) {
+          <div class="xp-ms-row">
+            @for (cell of row; track cell.col; let c = $index) {
+              <button
+                type="button"
+                class="xp-ms-cell"
+                [class.revealed]="cell.isRevealed"
+                [class.exploded]="cell.isExploded"
+                [class.flagged]="cell.isFlagged"
+                [class.mine]="cell.isMine && cell.isRevealed"
+                [class.num-1]="cell.isRevealed && cell.adjacentMines === 1"
+                [class.num-2]="cell.isRevealed && cell.adjacentMines === 2"
+                [class.num-3]="cell.isRevealed && cell.adjacentMines === 3"
+                [class.num-4]="cell.isRevealed && cell.adjacentMines === 4"
+                [class.num-5]="cell.isRevealed && cell.adjacentMines === 5"
+                [class.num-6]="cell.isRevealed && cell.adjacentMines === 6"
+                [class.num-7]="cell.isRevealed && cell.adjacentMines === 7"
+                [class.num-8]="cell.isRevealed && cell.adjacentMines === 8"
+                (click)="onCellClick(r, c)"
+                (contextmenu)="onCellRightClick($event, r, c)"
+                (mousedown)="onCellMouseDown(cell)"
+                (dblclick)="onCellDblClick(r, c)"
+                [attr.aria-label]="'Fila ' + (r + 1) + ', Columna ' + (c + 1)"
+              >
+                @if (cell.isFlagged && !(isGameOver() && !cell.isMine)) {
+                  <span class="cell-icon flag">🚩</span>
+                } @else if (isGameOver() && !cell.isMine && cell.isFlagged) {
+                  <span class="cell-icon false-flag">❌</span>
+                } @else if (cell.isRevealed && cell.isMine) {
+                  <span class="cell-icon bomb">💣</span>
+                } @else if (cell.isRevealed && cell.adjacentMines > 0) {
+                  <span class="cell-num">{{ cell.adjacentMines }}</span>
+                }
+              </button>
+            }
           </div>
         }
-
-        @if (isScoreSaved()) {
-          <span class="xp-saved-label">{{ i18n.t().retroGameSaved }}</span>
-        }
-
-        <button type="button" class="xp-classic-btn btn-retry" (click)="startGame()">
-          {{ i18n.t().retroGamePlayAgain }}
-        </button>
       </div>
-    }
+    </div>
   </div>
 
-  <!-- Controles Direccionales Táctiles / Ratón (D-Pad) -->
-  <footer class="xp-dpad-container" (click)="$event.stopPropagation()">
-    <div class="xp-dpad-grid">
-      <button type="button" class="xp-arrow-btn up" (click)="setDirection('UP')" [attr.aria-label]="i18n.t().retroGameUp">▲</button>
-      <button type="button" class="xp-arrow-btn left" (click)="setDirection('LEFT')" [attr.aria-label]="i18n.t().retroGameLeft">◀</button>
-      <button type="button" class="xp-arrow-btn down" (click)="setDirection('DOWN')" [attr.aria-label]="i18n.t().retroGameDown">▼</button>
-      <button type="button" class="xp-arrow-btn right" (click)="setDirection('RIGHT')" [attr.aria-label]="i18n.t().retroGameRight">▶</button>
-    </div>
+  <!-- Barra de Estado Clásica Inferior (Windows 95/XP Style) -->
+  <footer class="xp-ms-statusbar">
+    <button
+      type="button"
+      class="xp-status-mode-btn"
+      (click)="toggleFlagMode()"
+      [title]="isFlagMode() ? 'Modo actual: Banderas (clic para Cavar)' : 'Modo actual: Cavar (clic para Banderas)'"
+    >
+      <span class="mode-icon">{{ isFlagMode() ? '🚩' : '⛏️' }}</span>
+      <span class="mode-text">{{ isFlagMode() ? i18n.t().retroGameFlagMode : i18n.t().retroGameDigMode }}</span>
+    </button>
+    @if (bestTime() !== null) {
+      <div class="xp-status-record" title="Mejor récord registrado">
+        <span>★ {{ bestTime() }}s</span>
+      </div>
+    }
   </footer>
+
+  <!-- Cuadro de Diálogo Clásico Modal de Récord / Victoria (Estilo Windows Win32) -->
+  @if (showWinDialog()) {
+    <div class="xp-dialog-overlay" (click)="closeWinDialog()">
+      <div class="xp-dialog-window" (click)="$event.stopPropagation()">
+        <!-- Barra de título clásica del diálogo -->
+        <header class="xp-dialog-titlebar">
+          <span class="xp-dialog-title">Buscaminas</span>
+          <button type="button" class="xp-dialog-btn-close" (click)="closeWinDialog()" aria-label="Cerrar">✕</button>
+        </header>
+
+        <!-- Cuerpo del diálogo -->
+        <div class="xp-dialog-body">
+          <div class="xp-dialog-content-row">
+            <span class="xp-dialog-trophy">🏆</span>
+            <div class="xp-dialog-message-box">
+              <p class="xp-dialog-main-msg">¡Enhorabuena!</p>
+              <p class="xp-dialog-sub-msg">Has despejado el campo en <strong>{{ elapsedSeconds() }}</strong> segundos.</p>
+              <div class="xp-dialog-input-group">
+                <label for="xpPlayerName" class="xp-dialog-label">Nombre:</label>
+                <input
+                  id="xpPlayerName"
+                  type="text"
+                  maxlength="4"
+                  [value]="playerTag()"
+                  (input)="playerTag.set($any($event.target).value.toUpperCase())"
+                  class="xp-dialog-textbox"
+                  placeholder="XP"
+                  autofocus
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Botonera clásica Windows -->
+          <div class="xp-dialog-button-row">
+            <button type="button" class="xp-dialog-button default-btn" (click)="submitScoreAndClose()">
+              Aceptar
+            </button>
+            <button type="button" class="xp-dialog-button" (click)="closeWinDialog()">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 </div>

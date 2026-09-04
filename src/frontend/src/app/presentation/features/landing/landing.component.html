@@ -1,9 +1,72 @@
 <div class="landing-container">
   <!-- Header Minimalista Flotante (Glassmorphism & Zen High-Contrast) -->
   <header class="zen-header">
-    <div class="brand-block">
+    <button type="button" class="brand-block-btn" (click)="setSection('hero')" [attr.aria-label]="i18n.t().navHome">
       <img src="assets/images/logo.jpg" alt="Bryan Baño" class="brand-logo" />
-    </div>
+    </button>
+
+    <!-- Barra de Navegación Rápida Zen -->
+    <nav #navContainer class="zen-nav" aria-label="Navegación principal">
+      <button
+        type="button"
+        class="nav-item"
+        data-nav="hero"
+        [class.active]="activeSection() === 'hero'"
+        (click)="setSection('hero')"
+      >
+        {{ i18n.t().navHome }}
+      </button>
+
+      <button
+        type="button"
+        class="nav-item"
+        data-nav="retro"
+        [class.active]="activeSection() === 'retro'"
+        (click)="setSection('retro')"
+      >
+        {{ i18n.t().navRetro }}
+      </button>
+
+      <button
+        type="button"
+        class="nav-item"
+        data-nav="projects"
+        [class.active]="activeSection() === 'projects'"
+        (click)="setSection('projects')"
+      >
+        {{ i18n.t().navProjects }}
+      </button>
+
+      <button
+        type="button"
+        class="nav-item"
+        data-nav="simulator"
+        [class.active]="activeSection() === 'simulator'"
+        (click)="setSection('simulator')"
+      >
+        {{ i18n.t().navSimulator }}
+      </button>
+
+      <button
+        type="button"
+        class="nav-item"
+        data-nav="terminal"
+        [class.active]="activeSection() === 'terminal'"
+        (click)="setSection('terminal')"
+      >
+        {{ i18n.t().navTerminal }}
+      </button>
+
+      <button
+        type="button"
+        class="nav-item"
+        data-nav="contact"
+        [class.active]="activeSection() === 'contact'"
+        (click)="setSection('contact')"
+      >
+        {{ i18n.t().navContact }}
+      </button>
+    </nav>
 
     <div class="header-right-group">
       <div class="time-location-block">
@@ -19,56 +82,67 @@
   </header>
 
   <!-- Hero con Laptop 3D desarmable al scroll (300 frames) -->
-  <main class="hero-container">
-    <app-hero-3d></app-hero-3d>
-  </main>
+  @if (activeSection() === 'hero') {
+    <main class="hero-container isolated-view">
+      <app-hero-3d></app-hero-3d>
+    </main>
+  }
 
   <!-- Contenedor Base para Módulos Interactivos (50/50 Perfil Técnico y Retro Monitor) -->
-  <section class="interactive-stage">
-    <div class="stage-grid">
-      <!-- Slot 1: Perfil Técnico & Filosofía de Ingeniería -->
-      <article class="module-card profile-module-card">
-        <app-technical-profile [showMatrix]="false"></app-technical-profile>
-      </article>
+  @if (activeSection() === 'retro') {
+    <section class="interactive-stage isolated-view">
+      <div class="stage-grid">
+        <!-- Slot 1: Perfil Técnico & Filosofía de Ingeniería -->
+        <article class="module-card profile-module-card">
+          <app-technical-profile></app-technical-profile>
+        </article>
 
-      <!-- Slot 2: Retro OS en Monitor CRT Antiguo (50% Horizontal) -->
-      <article class="module-card retro-module-card">
-        <app-retro-os></app-retro-os>
-      </article>
-    </div>
-  </section>
-
-  <section class="matrix-stage" aria-label="Lluvia de codigo Matrix">
-    <app-technical-profile [showProfile]="false"></app-technical-profile>
-  </section>
+        <!-- Slot 2: Retro OS en Monitor CRT Antiguo (50% Horizontal) -->
+        <article class="module-card retro-module-card">
+          <app-retro-os></app-retro-os>
+        </article>
+      </div>
+    </section>
+  }
 
   <!-- Sección de Proyectos Destacados (Casos Reales del CV a Ancho Completo) -->
-  <section class="projects-stage">
-    <div class="projects-stage-inner">
-      <app-featured-projects></app-featured-projects>
-    </div>
-  </section>
+  @if (activeSection() === 'projects') {
+    <section class="projects-stage isolated-view">
+      <div class="projects-stage-inner">
+        <app-featured-projects></app-featured-projects>
+      </div>
+    </section>
+  }
+
+  <!-- Sección Simulador de Respuesta a Incidentes (Visualización de Arquitectura Cloud Security Serverless) -->
+  @if (activeSection() === 'simulator') {
+    <section class="simulator-stage isolated-view">
+      <app-incident-simulator></app-incident-simulator>
+    </section>
+  }
 
   <!-- Sección Dedicada para la Terminal Interactiva Arch Linux / Fish Shell (Espaciosa y a Escala Completa) -->
-  <section class="terminal-stage">
-    <div class="terminal-stage-inner">
-      <div class="terminal-header-meta">
-        <span class="mono-section-tag">{{ i18n.t().terminalWorkstationTag }}</span>
-        <h2 class="terminal-section-heading">{{ i18n.t().terminalHeading }}</h2>
-        <p class="terminal-section-desc">
-          {{ i18n.t().terminalSectionDesc }}
-        </p>
+  @if (activeSection() === 'terminal') {
+    <section class="terminal-stage isolated-view">
+      <div class="terminal-stage-inner">
+        <!-- Cabecera Normalizada de Sección -->
+        <header class="terminal-section-header">
+          <div class="header-left">
+            <div class="title-with-badge">
+              <span class="pulse-indicator" aria-hidden="true"></span>
+              <h2 class="section-title">{{ i18n.t().navTerminal }}</h2>
+            </div>
+          </div>
+        </header>
+        <app-terminal></app-terminal>
       </div>
-      <app-terminal></app-terminal>
-    </div>
-  </section>
+    </section>
+  }
 
   <!-- Sección de Contacto Corporativa Premium (Full Width debajo de la Terminal) -->
-  <app-contact-section></app-contact-section>
-
-  <!-- Footer Minimalista -->
-  <footer class="zen-footer">
-    <p class="footer-copy">© {{ currentYear() }} {{ i18n.t().footerCopy }}</p>
-    <span class="footer-version">v1.0.0-alpha</span>
-  </footer>
+  @if (activeSection() === 'contact') {
+    <section class="contact-stage isolated-view">
+      <app-contact-section></app-contact-section>
+    </section>
+  }
 </div>

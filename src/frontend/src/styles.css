@@ -42,10 +42,10 @@
 :root,
 [data-theme='zen-dark'] {
   --zen-bg-abyss: #07080b;
-  --zen-bg-base: #0c0e14;
-  --zen-bg-surface: #131720;
-  --zen-bg-elevated: #1a202c;
-  --zen-bg-overlay: rgba(12, 14, 20, 0.85);
+  --zen-bg-base: #121517;
+  --zen-bg-surface: #181d24;
+  --zen-bg-elevated: #1f2530;
+  --zen-bg-overlay: rgba(18, 21, 23, 0.85);
 
   --zen-border-subtle: #1e2533;
   --zen-border-focus: #3d4a63;

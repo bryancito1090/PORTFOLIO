@@ -31,7 +31,7 @@ export interface DesktopIcon {
   readonly id: string;
   readonly label: string;
   readonly windowId: WindowId;
-  readonly iconType: 'gamepad' | 'document' | 'terminal' | 'gear' | 'trophy';
+  readonly iconType: 'gamepad' | 'document' | 'terminal' | 'gear' | 'trophy' | 'minesweeper';
 }
 
 export interface ZenOsConfig {

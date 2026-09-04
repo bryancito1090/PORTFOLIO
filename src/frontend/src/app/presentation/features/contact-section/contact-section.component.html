@@ -1,9 +1,16 @@
 <section class="contact-section" id="contacto" role="region" [attr.aria-label]="i18n.t().contactEyebrow">
+  <!-- Fondo Animado: Lluvia de Código Matrix Verde -->
+  <canvas #rainCanvas class="contact-matrix-canvas" aria-hidden="true"></canvas>
+
   <div class="contact-container">
-    <!-- Micro-Header -->
-    <header class="contact-micro-header">
-      <span class="contact-pulse-dot" aria-hidden="true"></span>
-      <span class="contact-header-tag">{{ i18n.t().contactEyebrow }}</span>
+    <!-- Cabecera Normalizada de Sección -->
+    <header class="contact-section-header">
+      <div class="header-left">
+        <div class="title-with-badge">
+          <span class="pulse-indicator" aria-hidden="true"></span>
+          <h2 class="section-title">{{ i18n.t().contactEyebrow }}</h2>
+        </div>
+      </div>
     </header>
 
     <div class="contact-grid">

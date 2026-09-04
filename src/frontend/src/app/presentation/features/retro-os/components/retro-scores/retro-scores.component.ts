@@ -25,7 +25,7 @@ export class RetroScoresComponent implements OnInit {
 
   loadScores(): void {
     this.isLoading.set(true);
-    this.scorePort.getTopScores('ZEN_SNAKE', 10).subscribe({
+    this.scorePort.getTopScores('MINESWEEPER', 10).subscribe({
       next: (data) => {
         this.scores.set(data);
         this.isLoading.set(false);

@@ -6,6 +6,15 @@ export const ES_TRANSLATIONS: TranslationDictionary = {
   switchLangAria: 'Cambiar a Inglés',
   footerCopy: 'Bryan. Clean Architecture & Diseño de Alto Contraste.',
 
+  // Navbar Quick Navigation
+  navHome: 'Inicio',
+  navRetro: 'Desktop Retro',
+  navProjects: 'Proyectos',
+  navSimulator: 'Simulador',
+  navTerminal: 'Terminal',
+  navContact: 'Contacto',
+  navAll: 'Ver Todo',
+
   // Hero 3D
   preloading: 'PRECARGANDO',
   heroAriaExperience: 'Experiencia 3D ThinkPad en Scroll',
@@ -75,7 +84,7 @@ export const ES_TRANSLATIONS: TranslationDictionary = {
   tpInterest3Desc: 'Participación activa en eventos de difusión tecnológica (FLISOL, Google Developers Group).',
 
   // Featured Projects
-  fpHeaderTag: '01 // PROYECTOS',
+  fpHeaderTag: 'PROYECTOS',
   fpAriaLabel: 'Proyectos reales de Bryan Baño',
   fpPlaceholderImage: 'Sin capturas',
   fpAltPrefix: 'Captura de pantalla de ',
@@ -132,7 +141,7 @@ export const ES_TRANSLATIONS: TranslationDictionary = {
   prj4Result3: 'Seguridad robusta con JWT, permisos por rol desde base de datos y control exhaustivo de requisitos previos.',
 
   // Terminal & Workstation
-  terminalWorkstationTag: '02 // INTERACTIVE WORKSTATION',
+  terminalWorkstationTag: 'INTERACTIVE WORKSTATION',
   terminalHeading: 'Terminal Arch Linux // Fish Shell',
   terminalSectionDesc: 'Consola interactiva a escala completa para consultar el ecosistema técnico, habilidades y base de datos.',
   terminalBanner: `bryan@archlinux
@@ -169,7 +178,7 @@ Enfoque: Cero sobreingeniería (Ponytail), alta concurrencia y diseño estético
   terminalUnknownCmd: "fish: Comando desconocido '{cmd}'. Escribe 'help' para ver la lista de comandos disponibles.",
 
   // Contact Section
-  contactEyebrow: '03  // CONTACTO',
+  contactEyebrow: 'CONTACTO',
   contactTitle: 'Software a Medida, Arquitectura Limpia & Seguridad por Diseño',
   contactLead: 'Desarrollo Full Stack (Angular, C# .NET), arquitecturas basadas en microservicios, optimización cloud en AWS y diseño de bases de datos relacionales. Cuéntame tu proyecto y te responderé con una propuesta técnica en menos de 24 horas.',
   contactService1Title: 'Desarrollo Full Stack & Arquitectura Limpia',
@@ -250,28 +259,50 @@ Enfoque: Cero sobreingeniería (Ponytail), alta concurrencia y diseño estético
   retroSetScanlinesDesc: 'Líneas de barrido de monitor CRT analógico',
   retroSetSound: 'Sonido Web Audio API',
   retroSetSoundDesc: 'Efectos mecánicos y arcade sintéticos',
-  retroScoresHeader: '★ ARCADE LEADERBOARD',
-  retroScoresTitle: 'ZEN SNAKE // TOP 10',
+  retroScoresHeader: '★ TABLA DE RÉCORDS',
+  retroScoresTitle: 'BUSCAMINAS // TOP 10',
   retroScoresRefresh: 'ACTUALIZAR',
   retroScoresRank: '#',
   retroScoresTag: 'TAG',
-  retroScoresScore: 'PUNTOS',
+  retroScoresScore: 'TIEMPO (S)',
   retroScoresDate: 'FECHA',
   retroScoresEmpty: 'No hay puntuaciones registradas',
-  retroGameScore: 'PUNTOS:',
-  retroGameHigh: 'RÉCORD:',
+  retroGameScore: 'TIEMPO:',
+  retroGameHigh: 'MEJOR:',
   retroGameStart: '▶ Iniciar',
   retroGameRestart: 'Reiniciar',
   retroGamePause: 'Pausa',
   retroGameResume: 'Reanudar',
-  retroGameBanner: 'Pulsa cualquier Flecha o haz clic para empezar',
-  retroGameOver: '¡FIN DE LA PARTIDA!',
-  retroGameScoreLabel: 'Puntuación:',
+  retroGameBanner: 'Haz clic en una casilla para comenzar',
+  retroGameOver: '¡BOOM! HAS PERDIDO',
+  retroGameScoreLabel: 'Tiempo:',
   retroGameSave: 'Guardar',
   retroGameSaved: '✓ Récord guardado',
-  retroGamePlayAgain: '↺ Jugar Otra Vez',
-  retroGameUp: 'Arriba',
-  retroGameLeft: 'Izquierda',
-  retroGameDown: 'Abajo',
-  retroGameRight: 'Derecha'
+  retroGameWin: '¡VICTORIA! MINAS DESPEJADAS',
+  retroGameMines: 'Minas:',
+  retroGameFlagMode: 'Marcar Bandera',
+  retroGameDigMode: 'Descubrir',
+
+  // Simulador de Respuesta a Incidentes Cloud
+  simTag: 'ARQUITECTURA CLOUD & SEGURIDAD SERVERLESS',
+  simHeading: 'Simulador de Respuesta a Incidentes en Tiempo Real',
+  simSubheading: 'Visualización interactiva de una arquitectura de contención reactiva en AWS. Experimenta cómo un evento de acceso IAM no autorizado es detectado, mitigado por una función Lambda y reportado vía SES en menos de 180 ms sin intervención manual.',
+  simBtnSimulate: 'Simular Acceso IAM No Autorizado',
+  simBtnSimulating: 'Conteniendo Amenaza en Tiempo Real...',
+  simBtnReset: 'Reiniciar Simulación',
+  simThreatNodeTitle: 'Vector de Amenaza',
+  simThreatNodeSub: 'iam:CreateAccessKey anómalo',
+  simCloudTrailNodeTitle: 'AWS CloudTrail & EventBridge',
+  simCloudTrailNodeSub: 'Ingesta y análisis de eventos',
+  simLambdaNodeTitle: 'AWS Lambda (Remediación)',
+  simLambdaNodeSub: 'Revocación de sesión & DenyAll',
+  simSesNodeTitle: 'Amazon SES / SecOps Alert',
+  simSesNodeSub: 'Reporte de incidente despachado',
+  simConsoleTitle: 'Consola de Telemetría SecOps // Live Stream',
+  simMetricLatency: 'Tiempo de Contención',
+  simMetricIntervention: 'Intervención Manual',
+  simMetricArchitecture: 'Arquitectura Serverless',
+  simStatusIdle: 'SISTEMA NOMINAL // ESCUCHANDO EVENTOS',
+  simStatusActive: 'AMENAZA DETECTADA // EJECUTANDO MITIGACIÓN',
+  simStatusContained: 'AMENAZA NEUTRALIZADA // ESTADO SEGURO RESTAURADO'
 };

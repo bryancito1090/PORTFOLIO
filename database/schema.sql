@@ -118,24 +118,7 @@ CREATE TABLE IF NOT EXISTS `project_skills` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------------------------
--- 6. TABLA: retro_scores (Tabla de Puntuaciones de Minijuegos Retro)
--- Justificación: Soporta la interactividad del videojuego retro en la ventana de
--- Retro OS. Los visitantes pueden ingresar su tag arcade de 3-4 letras (ej. 'BRY',
--- 'JDO') y competir por el Top 10 en tiempo real. Proporciona un endpoint público
--- interactivo perfecto para demostrar llamadas reales al backend .NET y MySQL.
--- ------------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `retro_scores` (
-  `id` CHAR(36) NOT NULL,
-  `player_tag` VARCHAR(4) NOT NULL,
-  `game_code` VARCHAR(20) NOT NULL DEFAULT 'ZEN_SNAKE',
-  `score` INT UNSIGNED NOT NULL,
-  `created_at_utc` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `idx_retro_leaderboard` (`game_code`, `score` DESC, `created_at_utc` ASC)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ------------------------------------------------------------------------------
--- 7. TABLA: interactive_messages (Libro de Visitas / Mensajes Interactivos)
+-- 6. TABLA: interactive_messages (Libro de Visitas / Mensajes Interactivos)
 -- Justificación: Permite a reclutadores y visitantes dejar una firma o mensaje
 -- desde el comando interactivo de la terminal Linux (`guestbook sign "Mensaje"`)
 -- o el probador de API en vivo. Demuestra operaciones de escritura inmediatas
@@ -151,6 +134,28 @@ CREATE TABLE IF NOT EXISTS `interactive_messages` (
   `created_at_utc` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_messages_approved_date` (`is_approved`, `created_at_utc` DESC)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------------------------
+-- 7. TABLA: contact_inquiries (Consultas Técnicas & Solicitudes de Propuesta)
+-- Justificación: Almacena leads comerciales B2B y requerimientos de clientes de
+-- forma privada y segura. Separada estrictamente de 'interactive_messages' (que es
+-- un libro de visitas público). Soporta filtrado por estado y auditoría por IP.
+-- ------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `contact_inquiries` (
+  `id` CHAR(36) NOT NULL,
+  `full_name_or_company` VARCHAR(100) NOT NULL,
+  `email` VARCHAR(100) NOT NULL,
+  `phone` VARCHAR(30) NULL DEFAULT NULL,
+  `service_type` VARCHAR(50) NOT NULL DEFAULT 'Otro',
+  `project_details` TEXT NOT NULL,
+  `status` ENUM('New', 'Read', 'Replied', 'Archived') NOT NULL DEFAULT 'New',
+  `ip_address` VARCHAR(45) NULL DEFAULT NULL,
+  `created_at_utc` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `replied_at_utc` DATETIME NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_inquiries_status_created` (`status`, `created_at_utc` DESC),
+  KEY `idx_inquiries_created` (`created_at_utc` DESC)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ==============================================================================
@@ -201,15 +206,7 @@ VALUES
   ('33333333-0001-0000-0000-000000000001', '22222222-0004-0000-0000-000000000004')
 ON DUPLICATE KEY UPDATE `project_id` = `project_id`;
 
--- 5. Scores de Prueba para el Minijuego Retro
-INSERT INTO `retro_scores` (`id`, `player_tag`, `game_code`, `score`)
-VALUES
-  (UUID(), 'ZEN', 'ZEN_SNAKE', 1450),
-  (UUID(), 'NEO', 'ZEN_SNAKE', 1120),
-  (UUID(), 'BRY', 'ZEN_SNAKE', 980)
-ON DUPLICATE KEY UPDATE `player_tag` = `player_tag`;
-
--- 6. Mensaje de Bienvenida en el Libro de Visitas
+-- 5. Mensaje de Bienvenida en el Libro de Visitas
 INSERT INTO `interactive_messages` (`id`, `sender_name`, `sender_contact`, `message`, `origin`)
 VALUES (
   UUID(),
@@ -218,3 +215,16 @@ VALUES (
   'Bienvenido a la terminal interactiva. Ejecuta "help" para comenzar.',
   'Terminal'
 ) ON DUPLICATE KEY UPDATE `sender_name` = `sender_name`;
+
+-- 6. Consulta de Contacto Inicial de Prueba
+INSERT INTO `contact_inquiries` (`id`, `full_name_or_company`, `email`, `phone`, `service_type`, `project_details`, `status`)
+VALUES (
+  '44444444-0001-0000-0000-000000000001',
+  'Enterprise Solutions Corp',
+  'contacto@enterprisesolutions.com',
+  '+593 99 123 4567',
+  'Desarrollo Backend',
+  'Requerimos modernización de arquitectura monolítica a microservicios con .NET 9, Clean Architecture y CQRS.',
+  'New'
+) ON DUPLICATE KEY UPDATE `full_name_or_company` = `full_name_or_company`;
+

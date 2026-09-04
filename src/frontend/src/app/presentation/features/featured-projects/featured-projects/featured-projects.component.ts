@@ -38,17 +38,25 @@ export interface ProjectCardData {
 export class FeaturedProjectsComponent {
   protected readonly i18n = inject(I18nService);
 
-  // Navegación de cuadrícula limpia (sin carrusel ni scroll horizontal)
+  // Navegación de cuadrícula limpia con carrusel responsivo
   protected readonly currentIndex = signal<number>(0);
-  protected readonly isMobile = signal<boolean>(
-    typeof window !== 'undefined' ? window.innerWidth < 768 : false
+  protected readonly screenCols = signal<number>(
+    typeof window !== 'undefined'
+      ? window.innerWidth >= 1200
+        ? 3
+        : window.innerWidth >= 768
+          ? 2
+          : 1
+      : 3
   );
 
   @HostListener('window:resize')
   onResize(): void {
-    const mobile = window.innerWidth < 768;
-    if (this.isMobile() !== mobile) {
-      this.isMobile.set(mobile);
+    if (typeof window === 'undefined') return;
+    const w = window.innerWidth;
+    const cols = w >= 1200 ? 3 : w >= 768 ? 2 : 1;
+    if (this.screenCols() !== cols) {
+      this.screenCols.set(cols);
       if (this.currentIndex() > this.maxIndex()) {
         this.currentIndex.set(this.maxIndex());
       }
@@ -138,8 +146,8 @@ export class FeaturedProjectsComponent {
     ];
   });
 
-  // Número de tarjetas visibles según tamaño de pantalla (1 en móvil, 3 en desktop)
-  protected readonly cardsPerPage = computed(() => (this.isMobile() ? 1 : 3));
+  // Número de tarjetas visibles según tamaño de pantalla (1 en móvil, 2 en tablet, 3 en desktop)
+  protected readonly cardsPerPage = computed(() => this.screenCols());
 
   // Índice máximo permitido para desplazamiento
   protected readonly maxIndex = computed(() => {

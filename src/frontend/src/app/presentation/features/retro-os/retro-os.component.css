@@ -174,3 +174,33 @@
 .tray-expand { font-size: 0.5rem; background: #1754ce; border-radius: 50%; width: 11px; height: 11px; display: flex; align-items: center; justify-content: center; }
 .tray-mini-icon { font-size: 0.625rem; }
 .xp-tray-clock { font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 600; margin-left: 2px; }
+
+@media (max-width: 640px) {
+  .xp-custom-taskbar {
+    height: 22px;
+  }
+  .xp-start-button {
+    height: 22px;
+    width: 64px;
+    padding: 0 4px;
+  }
+  .start-text {
+    font-size: 0.6875rem;
+  }
+  .start-flag, .xp-flag-svg {
+    width: 10px;
+    height: 10px;
+  }
+  .xp-quick-launch {
+    display: none;
+  }
+  .xp-tray-clock {
+    font-size: 0.5625rem;
+  }
+  .tray-mini-icon {
+    display: none;
+  }
+  .tray-expand {
+    display: none;
+  }
+}

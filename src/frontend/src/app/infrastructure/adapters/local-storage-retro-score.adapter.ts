@@ -9,22 +9,22 @@ const INITIAL_SEEDS: RetroScore[] = [
   {
     id: 'seed-1',
     playerTag: 'ZEN',
-    gameCode: 'ZEN_SNAKE',
-    score: 1450,
+    gameCode: 'MINESWEEPER',
+    score: 42,
     createdAtUtc: '2026-08-28T00:00:00.000Z'
   },
   {
     id: 'seed-2',
     playerTag: 'NEO',
-    gameCode: 'ZEN_SNAKE',
-    score: 1120,
+    gameCode: 'MINESWEEPER',
+    score: 68,
     createdAtUtc: '2026-08-28T00:00:00.000Z'
   },
   {
     id: 'seed-3',
     playerTag: 'BRY',
-    gameCode: 'ZEN_SNAKE',
-    score: 980,
+    gameCode: 'MINESWEEPER',
+    score: 95,
     createdAtUtc: '2026-08-28T00:00:00.000Z'
   }
 ];
@@ -54,9 +54,14 @@ export class LocalStorageRetroScoreAdapter implements RetroScorePort {
 
   getTopScores(gameCode: string, limit = 10): Observable<RetroScore[]> {
     const scores = this.readScores();
+    const isTimeBased = gameCode === 'MINESWEEPER';
     const filtered = scores
       .filter(s => s.gameCode === gameCode)
-      .sort((a, b) => b.score - a.score || a.createdAtUtc.localeCompare(b.createdAtUtc))
+      .sort((a, b) =>
+        isTimeBased
+          ? a.score - b.score || a.createdAtUtc.localeCompare(b.createdAtUtc)
+          : b.score - a.score || a.createdAtUtc.localeCompare(b.createdAtUtc)
+      )
       .slice(0, limit);
     return of(filtered);
   }

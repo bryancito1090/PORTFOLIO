@@ -1,22 +1,21 @@
 import {
   Component,
-  AfterViewInit,
+  OnInit,
   OnDestroy,
-  ElementRef,
-  viewChild,
   ChangeDetectionStrategy,
   signal,
+  computed,
   inject,
   HostListener
 } from '@angular/core';
 import { RetroAudioService } from '../../../../../application/services/retro-audio.service';
 import { RetroScorePort } from '../../../../../domain/ports/retro-score.port';
-import { Direction, Point } from '../../../../../domain/models/retro-game.model';
+import { MinesweeperCell, MinesweeperFace } from '../../../../../domain/models/retro-game.model';
 import { I18nService } from '../../../../../application/services/i18n.service';
 
-const GRID_SIZE = 15;
-const CELL_SIZE = 20; // 15 * 20 = 300px
-const TICK_RATE_MS = 110;
+const ROWS = 9;
+const COLS = 9;
+const TOTAL_MINES = 10;
 
 @Component({
   selector: 'app-retro-game-canvas',
@@ -25,332 +24,395 @@ const TICK_RATE_MS = 110;
   styleUrl: './retro-game-canvas.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RetroGameCanvasComponent implements AfterViewInit, OnDestroy {
+export class RetroGameCanvasComponent implements OnInit, OnDestroy {
   private readonly audio = inject(RetroAudioService);
   private readonly scorePort = inject(RetroScorePort);
   protected readonly i18n = inject(I18nService);
 
-  protected readonly canvasRef = viewChild<ElementRef<HTMLCanvasElement>>('gameCanvas');
-  private ctx: CanvasRenderingContext2D | null = null;
-
-  protected readonly score = signal<number>(0);
-  protected readonly highScore = signal<number>(0);
-  protected readonly isGameOver = signal<boolean>(false);
-  protected readonly isPaused = signal<boolean>(false);
+  // Estados del juego con Angular Signals
+  protected readonly grid = signal<MinesweeperCell[][]>([]);
   protected readonly isPlaying = signal<boolean>(false);
+  protected readonly isGameOver = signal<boolean>(false);
+  protected readonly isWon = signal<boolean>(false);
+  protected readonly face = signal<MinesweeperFace>('idle');
+  protected readonly elapsedSeconds = signal<number>(0);
+  protected readonly bestTime = signal<number | null>(null);
+  protected readonly isFlagMode = signal<boolean>(false); // Para dispositivos táctiles
   protected readonly playerTag = signal<string>('XP');
   protected readonly isScoreSaved = signal<boolean>(false);
+  protected readonly showWinDialog = signal<boolean>(false);
 
-  private snake: Point[] = [{ x: 7, y: 7 }, { x: 7, y: 8 }, { x: 7, y: 9 }];
-  private direction: Direction = 'UP';
-  private nextDirection: Direction = 'UP';
-  private food: Point = { x: 7, y: 3 };
+  private timerInterval: ReturnType<typeof setInterval> | null = null;
+  private minesPlaced = false;
 
-  private animationFrameId: number | null = null;
-  private lastTickTime = 0;
-
-  ngAfterViewInit(): void {
-    const canvas = this.canvasRef()?.nativeElement;
-    if (!canvas) return;
-    this.ctx = canvas.getContext('2d');
-    if (this.ctx) {
-      this.ctx.imageSmoothingEnabled = false;
+  // Contador de minas restantes (Minas totales - banderas colocadas)
+  protected readonly remainingMines = computed<number>(() => {
+    let flags = 0;
+    const currentGrid = this.grid();
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        if (currentGrid[r]?.[c]?.isFlagged) {
+          flags++;
+        }
+      }
     }
-    this.loadHighScore();
-    // Dibujar inmediatamente el tablero con la serpiente y la manzana 100% visibles
-    this.resetState();
-    this.render();
+    return TOTAL_MINES - flags;
+  });
+
+  // Contador de minas en formato clásico 3 dígitos LED (ej: "010", "009", "-01")
+  protected readonly formattedMines = computed<string>(() => {
+    const rem = this.remainingMines();
+    if (rem < 0) {
+      return `-${Math.abs(rem).toString().padStart(2, '0')}`;
+    }
+    return Math.min(rem, 999).toString().padStart(3, '0');
+  });
+
+  // Contador de tiempo en formato 3 dígitos LED (ej: "000", "042", "999")
+  protected readonly formattedTime = computed<string>(() => {
+    const sec = this.elapsedSeconds();
+    return Math.min(sec, 999).toString().padStart(3, '0');
+  });
+
+  ngOnInit(): void {
+    this.loadBestTime();
+    this.resetGame();
   }
 
-  resetState(): void {
-    this.snake = [{ x: 7, y: 7 }, { x: 7, y: 8 }, { x: 7, y: 9 }];
-    this.direction = 'UP';
-    this.nextDirection = 'UP';
-    this.food = { x: 7, y: 3 };
-    this.score.set(0);
-    this.isGameOver.set(false);
-    this.isPaused.set(false);
+  resetGame(): void {
+    this.stopTimer();
+    this.minesPlaced = false;
     this.isPlaying.set(false);
+    this.isGameOver.set(false);
+    this.isWon.set(false);
+    this.showWinDialog.set(false);
+    this.face.set('idle');
+    this.elapsedSeconds.set(0);
     this.isScoreSaved.set(false);
-  }
 
-  startGame(): void {
-    if (this.animationFrameId !== null) {
-      cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
+    const newGrid: MinesweeperCell[][] = [];
+    for (let r = 0; r < ROWS; r++) {
+      const row: MinesweeperCell[] = [];
+      for (let c = 0; c < COLS; c++) {
+        row.push({
+          row: r,
+          col: c,
+          isMine: false,
+          isRevealed: false,
+          isFlagged: false,
+          adjacentMines: 0,
+          isExploded: false
+        });
+      }
+      newGrid.push(row);
     }
-    this.resetState();
-    this.spawnFood();
-    this.isPlaying.set(true);
-
-    this.audio.playClick();
-    this.lastTickTime = performance.now();
-    this.loop(performance.now());
+    this.grid.set(newGrid);
   }
 
-  onCanvasClick(): void {
-    if (!this.isPlaying()) {
-      this.startGame();
-    } else if (this.isGameOver()) {
-      this.startGame();
+  onFaceClick(): void {
+    this.audio.playClick();
+    this.resetGame();
+  }
+
+  onFaceMouseDown(): void {
+    if (!this.isGameOver() && !this.isWon()) {
+      this.face.set('pressed');
     }
   }
 
-  togglePause(): void {
-    if (!this.isPlaying() || this.isGameOver()) return;
-    this.isPaused.update(p => !p);
-    this.audio.playClick();
+  onFaceMouseUp(): void {
+    if (!this.isGameOver() && !this.isWon()) {
+      this.face.set('idle');
+    }
   }
 
-  @HostListener('window:keydown', ['$event'])
-  handleKeyDown(event: KeyboardEvent): void {
-    const validKeys = [
-      'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
-      'w', 's', 'a', 'd', 'W', 'S', 'A', 'D', ' ', 'Enter'
-    ];
+  toggleFlagMode(): void {
+    this.audio.playClick();
+    this.isFlagMode.update(v => !v);
+  }
 
-    if (!validKeys.includes(event.key)) return;
+  onCellClick(row: number, col: number): void {
+    if (this.isGameOver() || this.isWon()) {
+      this.audio.playClick();
+      this.resetGame();
+      return;
+    }
 
-    // Prevenir el scroll del navegador con las flechas
+    if (this.isFlagMode()) {
+      this.toggleFlag(row, col);
+      return;
+    }
+
+    this.revealCell(row, col);
+  }
+
+  onCellRightClick(event: MouseEvent, row: number, col: number): void {
     event.preventDefault();
+    if (this.isGameOver() || this.isWon()) return;
+    this.toggleFlag(row, col);
+  }
 
-    // Si aún no está jugando, iniciar inmediatamente al pulsar cualquier flecha o tecla de control
-    if (!this.isPlaying() || this.isGameOver()) {
-      this.startGame();
-      if (event.key === 'ArrowDown' || event.key === 's' || event.key === 'S') this.nextDirection = 'DOWN';
-      if (event.key === 'ArrowLeft' || event.key === 'a' || event.key === 'A') this.nextDirection = 'LEFT';
-      if (event.key === 'ArrowRight' || event.key === 'd' || event.key === 'D') this.nextDirection = 'RIGHT';
-      return;
-    }
+  onCellMouseDown(cell: MinesweeperCell): void {
+    if (this.isGameOver() || this.isWon() || cell.isRevealed || cell.isFlagged) return;
+    this.face.set('pressed');
+  }
 
-    switch (event.key) {
-      case 'ArrowUp':
-      case 'w':
-      case 'W':
-        if (this.direction !== 'DOWN') this.nextDirection = 'UP';
-        break;
-      case 'ArrowDown':
-      case 's':
-      case 'S':
-        if (this.direction !== 'UP') this.nextDirection = 'DOWN';
-        break;
-      case 'ArrowLeft':
-      case 'a':
-      case 'A':
-        if (this.direction !== 'RIGHT') this.nextDirection = 'LEFT';
-        break;
-      case 'ArrowRight':
-      case 'd':
-      case 'D':
-        if (this.direction !== 'LEFT') this.nextDirection = 'RIGHT';
-        break;
-      case ' ':
-        this.togglePause();
-        break;
+  @HostListener('window:mouseup')
+  onGlobalMouseUp(): void {
+    if (!this.isGameOver() && !this.isWon()) {
+      this.face.set('idle');
     }
   }
 
-  setDirection(newDir: Direction): void {
-    if (!this.isPlaying() || this.isGameOver()) {
-      this.startGame();
-      this.nextDirection = newDir;
-      return;
+  // Doble clic o clic en número descubierto (Chording clásico)
+  onCellDblClick(row: number, col: number): void {
+    if (this.isGameOver() || this.isWon()) return;
+    const currentGrid = this.grid();
+    const cell = currentGrid[row]?.[col];
+    if (!cell || !cell.isRevealed || cell.adjacentMines === 0) return;
+
+    // Contar banderas adyacentes
+    const neighbors = this.getNeighbors(row, col);
+    const flaggedCount = neighbors.filter(n => currentGrid[n.r][n.c].isFlagged).length;
+
+    if (flaggedCount === cell.adjacentMines) {
+      neighbors.forEach(n => {
+        const target = currentGrid[n.r][n.c];
+        if (!target.isRevealed && !target.isFlagged) {
+          this.revealCell(n.r, n.c);
+        }
+      });
     }
-    if (this.isPaused()) return;
-    if (newDir === 'UP' && this.direction !== 'DOWN') this.nextDirection = 'UP';
-    if (newDir === 'DOWN' && this.direction !== 'UP') this.nextDirection = 'DOWN';
-    if (newDir === 'LEFT' && this.direction !== 'RIGHT') this.nextDirection = 'LEFT';
-    if (newDir === 'RIGHT' && this.direction !== 'LEFT') this.nextDirection = 'RIGHT';
   }
 
-  private loop = (timestamp: number): void => {
-    if (!this.isPlaying()) return;
+  private startTimer(): void {
+    this.stopTimer();
+    this.timerInterval = setInterval(() => {
+      this.elapsedSeconds.update(s => Math.min(s + 1, 999));
+    }, 1000);
+  }
 
-    if (!this.isPaused() && !this.isGameOver()) {
-      if (timestamp - this.lastTickTime >= TICK_RATE_MS) {
-        this.update();
-        this.lastTickTime = timestamp;
+  private stopTimer(): void {
+    if (this.timerInterval !== null) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
+  }
+
+  private generateMines(firstRow: number, firstCol: number): void {
+    const currentGrid = this.grid().map(row => row.map(cell => ({ ...cell })));
+    let placed = 0;
+
+    // Generar minas asegurando que la casilla inicial y sus 8 vecinas estén limpias
+    while (placed < TOTAL_MINES) {
+      const r = Math.floor(Math.random() * ROWS);
+      const c = Math.floor(Math.random() * COLS);
+
+      const isFirstSafeZone = Math.abs(r - firstRow) <= 1 && Math.abs(c - firstCol) <= 1;
+
+      if (!currentGrid[r][c].isMine && !isFirstSafeZone) {
+        currentGrid[r][c].isMine = true;
+        placed++;
       }
     }
-    this.render();
-    if (!this.isGameOver()) {
-      this.animationFrameId = requestAnimationFrame(this.loop);
-    }
-  };
 
-  private update(): void {
-    this.direction = this.nextDirection;
-    const head = { ...this.snake[0] };
-
-    switch (this.direction) {
-      case 'UP': head.y -= 1; break;
-      case 'DOWN': head.y += 1; break;
-      case 'LEFT': head.x -= 1; break;
-      case 'RIGHT': head.x += 1; break;
-    }
-
-    // Choque con paredes
-    if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
-      this.triggerGameOver();
-      return;
-    }
-
-    // Choque con el propio cuerpo
-    if (this.snake.some(segment => segment.x === head.x && segment.y === head.y)) {
-      this.triggerGameOver();
-      return;
-    }
-
-    this.snake.unshift(head);
-
-    // Comer fruta
-    if (head.x === this.food.x && head.y === this.food.y) {
-      const nextScore = this.score() + 10;
-      this.score.set(nextScore);
-      if (nextScore > this.highScore()) {
-        this.highScore.set(nextScore);
+    // Calcular números adyacentes
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        if (!currentGrid[r][c].isMine) {
+          let count = 0;
+          for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) {
+              if (dr === 0 && dc === 0) continue;
+              const nr = r + dr;
+              const nc = c + dc;
+              if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && currentGrid[nr][nc].isMine) {
+                count++;
+              }
+            }
+          }
+          currentGrid[r][c].adjacentMines = count;
+        }
       }
-      this.audio.playSnakeEat();
-      this.spawnFood();
-    } else {
-      this.snake.pop();
+    }
+
+    this.grid.set(currentGrid);
+    this.minesPlaced = true;
+  }
+
+  private revealCell(row: number, col: number): void {
+    const currentGrid = this.grid().map(r => r.map(c => ({ ...c })));
+    const cell = currentGrid[row]?.[col];
+
+    if (!cell || cell.isRevealed || cell.isFlagged) return;
+
+    // Primer clic: colocar minas e iniciar cronómetro
+    if (!this.minesPlaced) {
+      this.generateMines(row, col);
+      this.startTimer();
+      this.isPlaying.set(true);
+      // Re-obtener la celda actualizada tras colocar minas
+      const updatedGrid = this.grid().map(r => r.map(c => ({ ...c })));
+      this.floodFill(updatedGrid, row, col);
+      this.grid.set(updatedGrid);
+      this.audio.playCellReveal();
+      this.checkWinCondition(updatedGrid);
+      return;
+    }
+
+    // Si hace clic en una mina: GAME OVER
+    if (cell.isMine) {
+      cell.isRevealed = true;
+      cell.isExploded = true;
+      this.grid.set(currentGrid);
+      this.handleGameOver(row, col);
+      return;
+    }
+
+    // Casilla segura: descubrir con flood-fill si está vacía
+    this.floodFill(currentGrid, row, col);
+    this.grid.set(currentGrid);
+    this.audio.playCellReveal();
+    this.checkWinCondition(currentGrid);
+  }
+
+  private floodFill(grid: MinesweeperCell[][], row: number, col: number): void {
+    const cell = grid[row]?.[col];
+    if (!cell || cell.isRevealed || cell.isFlagged || cell.isMine) return;
+
+    cell.isRevealed = true;
+
+    // Si no tiene minas adyacentes (casilla vacía '0'), expandir en cascada
+    if (cell.adjacentMines === 0) {
+      const neighbors = this.getNeighbors(row, col);
+      for (const n of neighbors) {
+        this.floodFill(grid, n.r, n.c);
+      }
     }
   }
 
-  private triggerGameOver(): void {
+  private toggleFlag(row: number, col: number): void {
+    const currentGrid = this.grid().map(r => r.map(c => ({ ...c })));
+    const cell = currentGrid[row]?.[col];
+
+    if (!cell || cell.isRevealed) return;
+
+    cell.isFlagged = !cell.isFlagged;
+    this.grid.set(currentGrid);
+    this.audio.playFlagToggle();
+  }
+
+  private getNeighbors(r: number, c: number): Array<{ r: number; c: number }> {
+    const neighbors: Array<{ r: number; c: number }> = [];
+    for (let dr = -1; dr <= 1; dr++) {
+      for (let dc = -1; dc <= 1; dc++) {
+        if (dr === 0 && dc === 0) continue;
+        const nr = r + dr;
+        const nc = c + dc;
+        if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
+          neighbors.push({ r: nr, c: nc });
+        }
+      }
+    }
+    return neighbors;
+  }
+
+  private handleGameOver(explodedRow: number, explodedCol: number): void {
+    this.stopTimer();
     this.isGameOver.set(true);
-    this.audio.playGameOver();
-    this.render(); // Renderizar el estado de choque final
-  }
+    this.face.set('dead');
+    this.audio.playMineExplosion();
 
-  private spawnFood(): void {
-    let valid = false;
-    let newX = 0;
-    let newY = 0;
-    while (!valid) {
-      newX = Math.floor(Math.random() * GRID_SIZE);
-      newY = Math.floor(Math.random() * GRID_SIZE);
-      valid = !this.snake.some(s => s.x === newX && s.y === newY);
+    // Revelar todas las demás minas
+    const currentGrid = this.grid().map(r => r.map(c => ({ ...c })));
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const cell = currentGrid[r][c];
+        if (cell.isMine && !cell.isFlagged) {
+          cell.isRevealed = true;
+        }
+        // Bandera incorrecta
+        if (!cell.isMine && cell.isFlagged) {
+          cell.isRevealed = true;
+        }
+      }
     }
-    this.food = { x: newX, y: newY };
+    this.grid.set(currentGrid);
   }
 
-  private render(): void {
-    if (!this.ctx) return;
-    const ctx = this.ctx;
-    const width = GRID_SIZE * CELL_SIZE; // 300
-    const height = GRID_SIZE * CELL_SIZE; // 300
+  private checkWinCondition(grid: MinesweeperCell[][]): void {
+    let revealedSafeCount = 0;
+    const totalSafeCells = ROWS * COLS - TOTAL_MINES;
 
-    // Tablero estilo Arcade clásico con cuadrícula nítida
-    ctx.fillStyle = '#1c2833';
-    ctx.fillRect(0, 0, width, height);
-
-    // Cuadrícula suave de casillas
-    for (let r = 0; r < GRID_SIZE; r++) {
-      for (let c = 0; c < GRID_SIZE; c++) {
-        if ((r + c) % 2 === 0) {
-          ctx.fillStyle = '#212f3d';
-          ctx.fillRect(c * CELL_SIZE, r * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        if (!grid[r][c].isMine && grid[r][c].isRevealed) {
+          revealedSafeCount++;
         }
       }
     }
 
-    // Borde exterior
-    ctx.strokeStyle = '#34495e';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(1, 1, width - 2, height - 2);
+    if (revealedSafeCount === totalSafeCells) {
+      this.stopTimer();
+      this.isWon.set(true);
+      this.face.set('won');
+      this.showWinDialog.set(true);
+      this.audio.playVictory();
 
-    // 1. DIBUJAR FRUTA (Manzana roja con tallo y hoja)
-    const fx = this.food.x * CELL_SIZE + CELL_SIZE / 2;
-    const fy = this.food.y * CELL_SIZE + CELL_SIZE / 2;
+      // Auto-marcar todas las minas restantes con banderas
+      const finalGrid = grid.map(r => r.map(c => ({
+        ...c,
+        isFlagged: c.isMine ? true : c.isFlagged
+      })));
+      this.grid.set(finalGrid);
 
-    ctx.save();
-    // Brillo de la manzana
-    ctx.fillStyle = '#e74c3c';
-    ctx.beginPath();
-    ctx.arc(fx, fy, 8, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Tallo marrón y hoja verde
-    ctx.fillStyle = '#795548';
-    ctx.fillRect(fx - 1, fy - 10, 2, 4);
-    ctx.fillStyle = '#2ecc71';
-    ctx.beginPath();
-    ctx.ellipse(fx + 3, fy - 8, 3, 1.5, Math.PI / 4, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-
-    // 2. DIBUJAR SERPIENTE (Verde brillante y con ojos claramente visibles)
-    this.snake.forEach((seg, i) => {
-      const isHead = i === 0;
-      const px = seg.x * CELL_SIZE;
-      const py = seg.y * CELL_SIZE;
-
-      ctx.save();
-      if (isHead) {
-        // Cabeza verde lima destacada
-        ctx.fillStyle = this.isGameOver() ? '#e74c3c' : '#2ecc71';
-        ctx.fillRect(px + 1, py + 1, CELL_SIZE - 2, CELL_SIZE - 2);
-
-        // Ojos blancos con pupilas negras
-        ctx.fillStyle = '#ffffff';
-        if (this.direction === 'UP' || this.direction === 'DOWN') {
-          ctx.fillRect(px + 3, py + 4, 4, 4);
-          ctx.fillRect(px + 13, py + 4, 4, 4);
-          ctx.fillStyle = '#000000';
-          ctx.fillRect(px + 4, py + (this.direction === 'UP' ? 4 : 6), 2, 2);
-          ctx.fillRect(px + 14, py + (this.direction === 'UP' ? 4 : 6), 2, 2);
-        } else {
-          ctx.fillRect(px + 4, py + 3, 4, 4);
-          ctx.fillRect(px + 4, py + 13, 4, 4);
-          ctx.fillStyle = '#000000';
-          ctx.fillRect(px + (this.direction === 'LEFT' ? 4 : 6), py + 4, 2, 2);
-          ctx.fillRect(px + (this.direction === 'LEFT' ? 4 : 6), py + 14, 2, 2);
-        }
-      } else {
-        // Cuerpo verde esmeralda con borde
-        ctx.fillStyle = '#27ae60';
-        ctx.fillRect(px + 2, py + 2, CELL_SIZE - 4, CELL_SIZE - 4);
-        ctx.strokeStyle = '#1e8449';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(px + 2, py + 2, CELL_SIZE - 4, CELL_SIZE - 4);
+      const time = this.elapsedSeconds();
+      const currentBest = this.bestTime();
+      if (currentBest === null || time < currentBest) {
+        this.bestTime.set(time);
       }
-      ctx.restore();
-    });
+    }
+  }
+
+  closeWinDialog(): void {
+    this.audio.playClick();
+    this.showWinDialog.set(false);
+  }
+
+  submitScoreAndClose(): void {
+    this.submitScore();
+    this.showWinDialog.set(false);
   }
 
   submitScore(): void {
-    const finalScore = this.score();
+    const finalTime = this.elapsedSeconds();
     const tag = (this.playerTag() || 'XP').trim().toUpperCase().slice(0, 4);
-    if (finalScore <= 0 || this.isScoreSaved()) return;
+    if (finalTime <= 0 || this.isScoreSaved()) return;
 
     this.scorePort.saveScore({
       playerTag: tag,
-      gameCode: 'ZEN_SNAKE',
-      score: finalScore
+      gameCode: 'MINESWEEPER',
+      score: finalTime
     }).subscribe({
       next: () => {
         this.isScoreSaved.set(true);
         this.audio.playHighScore();
-        this.loadHighScore();
+        this.loadBestTime();
       }
     });
   }
 
-  private loadHighScore(): void {
-    this.scorePort.getTopScores('ZEN_SNAKE', 1).subscribe({
+  private loadBestTime(): void {
+    this.scorePort.getTopScores('MINESWEEPER', 1).subscribe({
       next: (scores) => {
-        if (scores.length > 0 && scores[0].score > this.highScore()) {
-          this.highScore.set(scores[0].score);
+        if (scores.length > 0) {
+          this.bestTime.set(scores[0].score);
         }
       }
     });
   }
 
   ngOnDestroy(): void {
-    this.isPlaying.set(false);
-    if (this.animationFrameId !== null) {
-      cancelAnimationFrame(this.animationFrameId);
-    }
+    this.stopTimer();
   }
 }

@@ -6,14 +6,14 @@ import { I18nService } from '../services/i18n.service';
 const INITIAL_WINDOWS: Record<WindowId, RetroWindow> = {
   games: {
     id: 'games',
-    title: 'Snake - Juegos de Windows XP',
-    icon: 'gamepad',
+    title: 'Buscaminas - Juegos Clásicos',
+    icon: 'minesweeper',
     isOpen: false,
     isMinimized: false,
     position: { x: 70, y: 20 },
-    size: { width: 360, height: 490 },
+    size: { width: 270, height: 360 },
     zIndex: 10,
-    minSize: { width: 320, height: 380 }
+    minSize: { width: 260, height: 340 }
   },
   cv: {
     id: 'cv',
@@ -70,7 +70,7 @@ export class RetroOsStore {
   readonly desktopIcons = computed<DesktopIcon[]>(() => {
     const t = this.i18n.t();
     return [
-      { id: 'icon-games', label: t.retroIconGames, windowId: 'games', iconType: 'gamepad' },
+      { id: 'icon-games', label: t.retroIconGames, windowId: 'games', iconType: 'minesweeper' },
       { id: 'icon-cv', label: t.retroIconCv, windowId: 'cv', iconType: 'document' },
       { id: 'icon-scores', label: t.retroIconScores, windowId: 'scores', iconType: 'trophy' },
       { id: 'icon-settings', label: t.retroIconSettings, windowId: 'settings', iconType: 'gear' }

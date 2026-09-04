@@ -1,17 +1,14 @@
-export interface Point {
-  readonly x: number;
-  readonly y: number;
+export interface MinesweeperCell {
+  readonly row: number;
+  readonly col: number;
+  isMine: boolean;
+  isRevealed: boolean;
+  isFlagged: boolean;
+  isExploded?: boolean;
+  adjacentMines: number;
 }
 
-export type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
-
-export type GameDifficulty = 'ZEN' | 'STANDARD' | 'TURBO';
-
-export interface FoodItem {
-  readonly position: Point;
-  readonly kanji: string;
-  readonly points: number;
-}
+export type MinesweeperFace = 'idle' | 'pressed' | 'dead' | 'won' | 'smile' | 'shock' | 'cool';
 
 export interface RetroScore {
   readonly id: string;
@@ -21,11 +18,3 @@ export interface RetroScore {
   readonly createdAtUtc: string;
 }
 
-export interface GameState {
-  readonly score: number;
-  readonly highScore: number;
-  readonly isGameOver: boolean;
-  readonly isPaused: boolean;
-  readonly isRunning: boolean;
-  readonly difficulty: GameDifficulty;
-}

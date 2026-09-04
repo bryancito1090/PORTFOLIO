@@ -6,6 +6,15 @@ export interface TranslationDictionary {
   readonly switchLangAria: string;
   readonly footerCopy: string;
 
+  // Navbar Quick Navigation
+  readonly navHome: string;
+  readonly navRetro: string;
+  readonly navProjects: string;
+  readonly navSimulator: string;
+  readonly navTerminal: string;
+  readonly navContact: string;
+  readonly navAll: string;
+
   // Hero 3D
   readonly preloading: string;
   readonly heroAriaExperience: string;
@@ -237,9 +246,31 @@ export interface TranslationDictionary {
   readonly retroGameScoreLabel: string;
   readonly retroGameSave: string;
   readonly retroGameSaved: string;
-  readonly retroGamePlayAgain: string;
-  readonly retroGameUp: string;
-  readonly retroGameLeft: string;
-  readonly retroGameDown: string;
-  readonly retroGameRight: string;
+  readonly retroGameWin: string;
+  readonly retroGameMines: string;
+  readonly retroGameFlagMode: string;
+  readonly retroGameDigMode: string;
+
+  // Cloud Incident Simulator
+  readonly simTag: string;
+  readonly simHeading: string;
+  readonly simSubheading: string;
+  readonly simBtnSimulate: string;
+  readonly simBtnSimulating: string;
+  readonly simBtnReset: string;
+  readonly simThreatNodeTitle: string;
+  readonly simThreatNodeSub: string;
+  readonly simCloudTrailNodeTitle: string;
+  readonly simCloudTrailNodeSub: string;
+  readonly simLambdaNodeTitle: string;
+  readonly simLambdaNodeSub: string;
+  readonly simSesNodeTitle: string;
+  readonly simSesNodeSub: string;
+  readonly simConsoleTitle: string;
+  readonly simMetricLatency: string;
+  readonly simMetricIntervention: string;
+  readonly simMetricArchitecture: string;
+  readonly simStatusIdle: string;
+  readonly simStatusActive: string;
+  readonly simStatusContained: string;
 }

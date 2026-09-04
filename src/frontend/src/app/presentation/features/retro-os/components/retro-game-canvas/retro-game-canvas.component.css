@@ -1,139 +1,417 @@
 :host {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: #ece9d8;
-  user-select: none;
-  font-family: var(--font-sans);
-}
-
-.xp-game-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 6px;
-  gap: 6px;
+  justify-content: center;
+  width: 100%;
   height: 100%;
+  background: #c0c0c0;
+  color: #000000;
+  user-select: none;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 4px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
-/* Barra Superior de Estadísticas y Acciones */
-.xp-game-header {
+.xp-minesweeper-window {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   width: 100%;
-  max-width: 300px;
+  height: 100%;
+  position: relative;
+}
+
+/* Marco exterior con relieve 3D sobresaliente (Outset) */
+.xp-minesweeper-frame {
+  background: #c0c0c0;
+  border-top: 3px solid #ffffff;
+  border-left: 3px solid #ffffff;
+  border-right: 3px solid #7b7b7b;
+  border-bottom: 3px solid #7b7b7b;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* HUD Superior con relieve 3D hundido (Inset) */
+.xp-ms-hud {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #f0ede0;
-  border: 1px solid #7f9db9;
-  border-radius: 3px;
-  padding: 4px 8px;
-  box-shadow: inset 0 1px 0 #ffffff;
+  background: #c0c0c0;
+  border-top: 2px solid #7b7b7b;
+  border-left: 2px solid #7b7b7b;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  padding: 4px 6px;
 }
 
-.xp-hud-stats { display: flex; gap: 10px; }
-.hud-item { display: flex; align-items: center; gap: 4px; }
-.hud-tag { font-size: 0.625rem; font-weight: 700; color: #333333; }
-.hud-num { font-size: 0.8125rem; font-weight: 700; color: #0055ea; }
-.hud-num.highlight { color: #d83a17; }
-.xp-hud-actions { display: flex; gap: 4px; }
-
-/* Botones Clásicos Windows XP con borde naranja al hacer hover */
-.xp-classic-btn {
-  background: linear-gradient(180deg, #ffffff 0%, #ece9d8 100%);
-  border: 1px solid #7f9db9;
-  border-radius: 3px;
-  color: #000000;
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 2px 8px;
-  cursor: pointer;
-  box-shadow: inset 0 1px 0 #ffffff, 0 1px 2px rgba(0, 0, 0, 0.15);
-  transition: all var(--transition-fast);
-}
-
-.xp-classic-btn:hover:not(:disabled) {
-  border-color: #f29536;
-  background: linear-gradient(180deg, #fff7ea 0%, #ffdca8 100%);
-  box-shadow: inset 0 1px 0 #ffffff, 0 0 4px rgba(242, 149, 54, 0.6);
-}
-
-.xp-classic-btn:active:not(:disabled) { background: #d8d4c2; transform: translateY(1px); }
-.xp-classic-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* Marco del Tablero Canvas */
-.xp-canvas-box {
+/* Contadores LED Digitales (7 Segmentos) */
+.xp-led-display {
   position: relative;
-  width: 300px;
-  height: 300px;
-  border: 2px inset #7f9db9;
-  border-radius: 2px;
-  background: #1c2833;
-  cursor: pointer;
-  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4);
+  background: #000000;
+  border-top: 1px solid #7b7b7b;
+  border-left: 1px solid #7b7b7b;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  padding: 1px 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 900;
+  font-size: 1.25rem;
+  line-height: 1;
+  letter-spacing: 2px;
+  min-width: 44px;
+  text-align: right;
+  display: inline-block;
 }
 
-.xp-snake-canvas { width: 300px; height: 300px; display: block; }
-
-/* Banner de Instrucción en la parte inferior del canvas */
-.xp-start-banner {
+.led-ghost {
   position: absolute;
-  bottom: 8px;
-  left: 8px;
-  right: 8px;
-  background: rgba(0, 0, 0, 0.78);
-  color: #ffffff;
-  font-size: 0.6875rem;
-  text-align: center;
-  padding: 4px 8px;
-  border-radius: 3px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  top: 1px;
+  right: 4px;
+  color: #380000;
   pointer-events: none;
+  z-index: 1;
 }
 
-/* Card de Game Over */
-.xp-gameover-card {
-  position: absolute;
-  inset: 20px;
-  background: rgba(236, 233, 216, 0.96);
-  border: 2px solid #0055ea;
-  border-radius: 6px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+.led-digits {
+  position: relative;
+  color: #ff0000;
+  text-shadow: 0 0 2px rgba(255, 0, 0, 0.8);
+  z-index: 2;
+}
+
+/* Botón Cara Sonriente Clásica */
+.xp-smiley-btn {
+  width: 28px;
+  height: 28px;
+  background: #c0c0c0;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #7b7b7b;
+  border-bottom: 2px solid #7b7b7b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+}
+
+.xp-smiley-btn:active {
+  border-top: 2px solid #7b7b7b;
+  border-left: 2px solid #7b7b7b;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+}
+
+.face-icon {
+  font-size: 1.125rem;
+  line-height: 1;
+  display: block;
+}
+
+/* Tablero de Juego con relieve hundido (Inset) */
+.xp-ms-board-inset {
+  border-top: 3px solid #7b7b7b;
+  border-left: 3px solid #7b7b7b;
+  border-right: 3px solid #ffffff;
+  border-bottom: 3px solid #ffffff;
+  background: #c0c0c0;
+  display: inline-block;
+}
+
+.xp-ms-grid {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px;
-  text-align: center;
 }
 
-.gameover-text { font-size: 1rem; font-weight: 700; color: #d83a17; }
-.gameover-pts { font-size: 0.8125rem; font-weight: 600; color: #000000; }
-.xp-save-row { display: flex; gap: 4px; }
-.xp-input-tag { width: 50px; text-align: center; font-weight: 700; border: 1px solid #7f9db9; font-size: 0.8125rem; text-transform: uppercase; }
-.xp-saved-label { font-size: 0.6875rem; color: #2e7d32; font-weight: 600; }
-.btn-retry { padding: 4px 12px; }
+.xp-ms-row {
+  display: flex;
+}
 
-/* Controles Direccionales D-Pad */
-.xp-dpad-container { width: 100%; max-width: 300px; display: flex; justify-content: center; }
-.xp-dpad-grid { display: grid; grid-template-columns: repeat(3, 36px); grid-template-rows: repeat(2, 30px); gap: 4px; }
-.xp-arrow-btn {
-  background: linear-gradient(180deg, #ffffff 0%, #ece9d8 100%);
-  border: 1px solid #7f9db9;
-  border-radius: 3px;
-  color: #0055ea;
-  font-size: 0.8125rem;
-  font-weight: 900;
-  cursor: pointer;
+/* Casilla Individual de Buscaminas */
+.xp-ms-cell {
+  width: 24px;
+  height: 24px;
+  background: #c0c0c0;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #7b7b7b;
+  border-bottom: 2px solid #7b7b7b;
+  padding: 0;
+  margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: inset 0 1px 0 #ffffff, 0 1px 2px rgba(0, 0, 0, 0.15);
+  font-family: 'Courier New', Tahoma, sans-serif;
+  font-weight: 900;
+  font-size: 0.9375rem;
+  line-height: 1;
+  cursor: pointer;
+  outline: none;
+  box-sizing: border-box;
 }
-.xp-arrow-btn:hover { border-color: #f29536; background: linear-gradient(180deg, #fff7ea 0%, #ffdca8 100%); }
-.xp-arrow-btn:active { background: #d8d4c2; transform: translateY(1px); }
-.xp-arrow-btn.up { grid-column: 2; grid-row: 1; }
-.xp-arrow-btn.left { grid-column: 1; grid-row: 2; }
-.xp-arrow-btn.down { grid-column: 2; grid-row: 2; }
-.xp-arrow-btn.right { grid-column: 3; grid-row: 2; }
+
+.xp-ms-cell:active:not(.revealed):not(.flagged) {
+  border: 1px solid #7b7b7b;
+}
+
+/* Casilla Descubierta */
+.xp-ms-cell.revealed {
+  border: 1px solid #7b7b7b;
+  background: #c0c0c0;
+  cursor: default;
+}
+
+/* Mina explotada */
+.xp-ms-cell.exploded {
+  background: #ff0000 !important;
+  border: 1px solid #7b7b7b;
+}
+
+/* Iconos de celda */
+.cell-icon {
+  font-size: 0.8125rem;
+  line-height: 1;
+}
+
+.cell-icon.flag {
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.4));
+}
+
+.cell-icon.false-flag {
+  color: #ff0000;
+  font-size: 0.875rem;
+  font-weight: 900;
+}
+
+.cell-num {
+  font-size: 0.9375rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+/* Paleta de Colores de Números Clásica de Buscaminas */
+.num-1 .cell-num { color: #0000ff; } /* 1: Azul */
+.num-2 .cell-num { color: #008000; } /* 2: Verde */
+.num-3 .cell-num { color: #ff0000; } /* 3: Rojo */
+.num-4 .cell-num { color: #000080; } /* 4: Azul marino */
+.num-5 .cell-num { color: #800000; } /* 5: Granate */
+.num-6 .cell-num { color: #008080; } /* 6: Verde azulado / Cyan oscuro */
+.num-7 .cell-num { color: #000000; } /* 7: Negro */
+.num-8 .cell-num { color: #808080; } /* 8: Gris */
+
+/* Barra de Estado Clásica Inferior (Windows 95/XP Style) */
+.xp-ms-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 236px;
+  background: #c0c0c0;
+  border-top: 2px solid #7b7b7b;
+  border-left: 2px solid #7b7b7b;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  padding: 1px 4px;
+  box-sizing: border-box;
+}
+
+.xp-status-mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #c0c0c0;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #7b7b7b;
+  border-bottom: 1px solid #7b7b7b;
+  padding: 1px 6px;
+  font-size: 0.6875rem;
+  font-family: inherit;
+  font-weight: 600;
+  color: #000000;
+  cursor: pointer;
+  outline: none;
+}
+
+.xp-status-mode-btn:active {
+  border-top: 1px solid #7b7b7b;
+  border-left: 1px solid #7b7b7b;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+}
+
+.mode-icon {
+  font-size: 0.75rem;
+}
+
+.mode-text {
+  font-size: 0.6875rem;
+}
+
+.xp-status-record {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #333333;
+}
+
+/* ==========================================================================
+   Cuadro de Diálogo Clásico Windows Win32 (Récord / Victoria)
+   ========================================================================== */
+.xp-dialog-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 8px;
+}
+
+.xp-dialog-window {
+  width: 220px;
+  background: #ece9d8;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #555555;
+  border-bottom: 2px solid #555555;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+  font-family: 'Tahoma', 'Segoe UI', Geneva, sans-serif;
+  overflow: hidden;
+}
+
+/* Barra de título azul clásica de Windows XP */
+.xp-dialog-titlebar {
+  background: linear-gradient(90deg, #0055ea 0%, #3f8cf3 100%);
+  color: #ffffff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 2px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.xp-dialog-btn-close {
+  width: 14px;
+  height: 14px;
+  background: #d13a17;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 2px;
+  font-size: 0.5625rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.xp-dialog-body {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.xp-dialog-content-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.xp-dialog-trophy {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.xp-dialog-message-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.6875rem;
+  color: #000000;
+}
+
+.xp-dialog-main-msg {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+.xp-dialog-sub-msg {
+  margin: 0;
+  font-size: 0.6875rem;
+  color: #333333;
+}
+
+.xp-dialog-input-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.xp-dialog-label {
+  font-weight: 600;
+}
+
+.xp-dialog-textbox {
+  width: 50px;
+  background: #ffffff;
+  border-top: 2px solid #7b7b7b;
+  border-left: 2px solid #7b7b7b;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  padding: 1px 4px;
+  font-weight: 700;
+  font-family: inherit;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  text-align: center;
+  outline: none;
+}
+
+/* Botonera clásica */
+.xp-dialog-button-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.xp-dialog-button {
+  background: #ece9d8;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #7b7b7b;
+  border-bottom: 2px solid #7b7b7b;
+  padding: 2px 10px;
+  font-size: 0.6875rem;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+.xp-dialog-button.default-btn {
+  border: 2px solid #000000;
+  font-weight: 700;
+}
+
+.xp-dialog-button:active {
+  border-top: 2px solid #7b7b7b;
+  border-left: 2px solid #7b7b7b;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+}
+

@@ -258,9 +258,10 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
       drawH = canvas.width / imgAspect;
       offsetY = (canvas.height - drawH) / 2;
     } else {
-      drawH = canvas.height;
-      drawW = canvas.height * imgAspect;
-      offsetX = (canvas.width - drawW) / 2;
+      drawW = canvas.width;
+      drawH = canvas.width / imgAspect;
+      offsetX = 0;
+      offsetY = (canvas.height - drawH) / 2;
     }
 
     ctx.imageSmoothingEnabled = true;

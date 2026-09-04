@@ -35,7 +35,6 @@
   line-height: 1.65;
 }
 
-/* Eyebrow */
 .editorial-eyebrow {
   display: block;
   margin: 0 0 var(--space-1) 0;
@@ -55,7 +54,6 @@
   line-height: 1.35;
 }
 
-/* Título Principal H2 */
 .editorial-title {
   margin: 0 0 var(--space-4) 0;
   font-family: var(--font-sans);
@@ -139,32 +137,6 @@
   font-size: 0.65rem;
   line-height: 1.4;
   color: var(--zen-text-muted);
-}
-
-.hacker-screen {
-  flex: 0 0 clamp(64px, 10vh, 104px);
-  width: 100%;
-  overflow: hidden;
-  position: relative;
-  background: none;
-  background-color: transparent;
-  font-family: var(--font-mono);
-  isolation: isolate;
-  border: 0;
-  box-shadow: none;
-}
-
-.hacker-rain {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  display: block;
-  background: transparent;
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-  pointer-events: none;
-  font-family: var(--font-mono);
 }
 
 @media (max-width: 960px) {

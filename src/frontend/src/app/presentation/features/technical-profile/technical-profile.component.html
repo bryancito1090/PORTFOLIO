@@ -1,32 +1,24 @@
 <div class="profile-editorial-content">
-  @if (showProfile()) {
-    <section class="about-me" [attr.aria-label]="i18n.t().tpAboutAria">
-      <div class="about-copy">
-        <span class="editorial-eyebrow">{{ i18n.t().tpEyebrow }}</span>
-        <p class="about-greeting">{{ i18n.t().tpAboutGreeting }}</p>
+  <section class="about-me" [attr.aria-label]="i18n.t().tpAboutAria">
+    <div class="about-copy">
+      <span class="editorial-eyebrow">{{ i18n.t().tpEyebrow }}</span>
+      <p class="about-greeting">{{ i18n.t().tpAboutGreeting }}</p>
 
-        <figure class="ascii-portrait">
-          @if (asciiArt()) {
-            <pre aria-label="Retrato ASCII de Bryan">{{ asciiArt() }}</pre>
-          } @else if (asciiLoadError()) {
-            <figcaption class="ascii-status" role="status">No se pudo cargar el retrato.</figcaption>
-          } @else {
-            <figcaption class="ascii-status" role="status">Cargando retrato...</figcaption>
-          }
-        </figure>
-
-        <h2 class="editorial-title">{{ i18n.t().tpAboutName }}</h2>
-        @for (paragraph of aboutParagraphs(); track $index) {
-          <p class="about-description">{{ paragraph }}</p>
+      <figure class="ascii-portrait">
+        @if (asciiArt()) {
+          <pre aria-label="Retrato ASCII de Bryan">{{ asciiArt() }}</pre>
+        } @else if (asciiLoadError()) {
+          <figcaption class="ascii-status" role="status">No se pudo cargar el retrato.</figcaption>
+        } @else {
+          <figcaption class="ascii-status" role="status">Cargando retrato...</figcaption>
         }
-        <span class="about-link">About me <span aria-hidden="true">→</span></span>
-      </div>
-    </section>
-  }
+      </figure>
 
-  @if (showMatrix()) {
-    <section class="hacker-screen" aria-label="Lluvia de codigo Matrix">
-      <canvas #rainCanvas class="hacker-rain" aria-hidden="true"></canvas>
-    </section>
-  }
+      <h2 class="editorial-title">{{ i18n.t().tpAboutName }}</h2>
+      @for (paragraph of aboutParagraphs(); track $index) {
+        <p class="about-description">{{ paragraph }}</p>
+      }
+      <span class="about-link">About me <span aria-hidden="true">→</span></span>
+    </div>
+  </section>
 </div>

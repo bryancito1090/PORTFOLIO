@@ -1,44 +1,46 @@
 <div class="featured-projects-wrapper" role="region" [attr.aria-label]="i18n.t().fpAriaLabel">
-  <!-- Cabecera de la sección con controles del carrusel -->
-  <header class="section-micro-header">
+  <!-- Cabecera limpia y prominente de la sección con controles del carrusel -->
+  <header class="projects-section-header">
     <div class="header-left">
-      <span class="pulse-indicator" aria-hidden="true"></span>
-      <span class="header-tag">{{ i18n.t().fpHeaderTag }}</span>
+      <div class="title-with-badge">
+        <span class="pulse-indicator" aria-hidden="true"></span>
+        <h2 class="section-title">{{ i18n.t().fpHeaderTag }}</h2>
+      </div>
     </div>
 
     <div class="carousel-nav-controls">
-      <span class="carousel-counter" aria-live="polite">
-        0{{ currentIndex() + 1 }} / 0{{ totalPages() }}
-      </span>
-      <div class="carousel-buttons">
-        <button
-          type="button"
-          class="carousel-nav-btn"
-          (click)="prev()"
-          [attr.aria-label]="i18n.t().fpCarouselPrev"
-        >
-          ‹
-        </button>
-        <button
-          type="button"
-          class="carousel-nav-btn"
-          (click)="next()"
-          [attr.aria-label]="i18n.t().fpCarouselNext"
-        >
-          ›
-        </button>
-      </div>
+      <button
+        type="button"
+        class="carousel-nav-btn"
+        (click)="prev()"
+        [attr.aria-label]="i18n.t().fpCarouselPrev"
+        title="Anterior"
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="carousel-nav-btn"
+        (click)="next()"
+        [attr.aria-label]="i18n.t().fpCarouselNext"
+        title="Siguiente"
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
     </div>
   </header>
 
-  <!-- Cuadrícula de Proyectos (Grid estático sin scroll horizontal) -->
+  <!-- Cuadrícula de Proyectos en Carrusel (Ocupa todo el espacio horizontal) -->
   <div class="projects-grid">
     @for (prj of visibleProjects(); track prj.id) {
       <button
         type="button"
         class="project-card"
         [class.is-selected]="selectedProjectId() === prj.id"
-        [style.--prj-accent]="prj.accentColor"
         [attr.aria-pressed]="selectedProjectId() === prj.id"
         (click)="selectProject(prj.id)"
       >
