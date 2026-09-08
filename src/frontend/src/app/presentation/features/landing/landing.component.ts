@@ -109,9 +109,14 @@ export class LandingComponent implements OnInit, OnDestroy {
     this.transitionTargetSection.set(section);
     this.isCurtainVisible.set(true);
 
+    if (typeof document !== 'undefined') {
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+    }
+
     if (this.transitionTimer) clearTimeout(this.transitionTimer);
 
-    // Brief fade-curtain duration before switching section component
+    // Initial phase: show curtain and animated logo
     this.transitionTimer = setTimeout(() => {
       if (section === 'hero') {
         this.heroEntryPosition.set(entryPosition);
@@ -135,14 +140,18 @@ export class LandingComponent implements OnInit, OnDestroy {
         }
       }
 
-      // Smoothly hide curtain after DOM mount and scroll placement
+      // Appreciate the animated logo for a full animation cycle before smoothly fading out
       setTimeout(() => {
         this.isCurtainVisible.set(false);
+        if (typeof document !== 'undefined') {
+          document.documentElement.style.overflow = '';
+          document.body.style.overflow = '';
+        }
         setTimeout(() => {
           this.isTransitioning = false;
-        }, 220);
-      }, 120);
-    }, 150);
+        }, 300);
+      }, 550);
+    }, 220);
   }
 
   private setupScrollTransitions(): void {
@@ -153,7 +162,10 @@ export class LandingComponent implements OnInit, OnDestroy {
   }
 
   private onWheel = (e: WheelEvent): void => {
-    if (this.isTransitioning) return;
+    if (this.isTransitioning || this.isCurtainVisible()) {
+      e.preventDefault();
+      return;
+    }
 
     // Ignorar si el usuario está interactuando con un modal o scroll interno
     const target = e.target as HTMLElement | null;
@@ -189,6 +201,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   };
 
   private onTouchStart = (e: TouchEvent): void => {
+    if (this.isTransitioning || this.isCurtainVisible()) return;
     if (e.touches.length > 0) {
       this.touchStartY = e.touches[0].clientY;
       this.touchStartX = e.touches[0].clientX;
@@ -196,7 +209,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   };
 
   private onTouchEnd = (e: TouchEvent): void => {
-    if (this.isTransitioning || e.changedTouches.length === 0) return;
+    if (this.isTransitioning || this.isCurtainVisible() || e.changedTouches.length === 0) return;
 
     const target = e.target as HTMLElement | null;
     if (target?.closest('.project-detail-overlay, .modal-scroll-area')) {
@@ -281,6 +294,10 @@ export class LandingComponent implements OnInit, OnDestroy {
     }
     if (this.transitionTimer !== null) {
       clearTimeout(this.transitionTimer);
+    }
+    if (typeof document !== 'undefined') {
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
     }
     if (typeof window !== 'undefined') {
       window.removeEventListener('wheel', this.onWheel);

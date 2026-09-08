@@ -1,4 +1,4 @@
-<div class="landing-container">
+<div class="landing-container" [class.transitioning-lock]="isCurtainVisible()">
   <!-- Header Minimalista Flotante (Glassmorphism & Zen High-Contrast) -->
   <header class="zen-header">
     <button type="button" class="brand-block-btn" (click)="setSection('hero')" [attr.aria-label]="i18n.t().navHome">
@@ -120,7 +120,6 @@
     [class.visible]="isCurtainVisible()"
     aria-hidden="true"
   >
-    <div class="curtain-scanline"></div>
     <div class="curtain-logo-wrapper">
       <div class="logo-glow-ring"></div>
       <div class="logo-image-container">
