@@ -15,6 +15,8 @@ import { I18nService } from '../../../application/services/i18n.service';
 
 const TOTAL_FRAMES = 240;
 const LERP_FACTOR = 0.09;
+const SHARED_IMAGE_CACHE: HTMLImageElement[] = new Array(TOTAL_FRAMES + 1);
+let isPreloadDone = false;
 
 @Component({
   selector: 'app-hero-3d',
@@ -32,13 +34,11 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
   protected readonly i18n = inject(I18nService);
   private readonly ngZone = inject(NgZone);
 
-  // Señales reactivas: Fase activa de tarjetas laterales y estado de carga
   protected readonly activePhase = signal<number>(1);
   protected readonly loadProgress = signal<number>(0);
   protected readonly isLoaded = signal<boolean>(false);
 
   private ctx: CanvasRenderingContext2D | null = null;
-  private readonly images: HTMLImageElement[] = new Array(TOTAL_FRAMES + 1);
   private targetFrame = 1;
   private currentInterpolatedFrame = 1;
   private lastRenderedFrame = 0;
@@ -50,12 +50,11 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
   private mediaQueryList?: MediaQueryList;
 
   ngOnInit(): void {
-    if (this.initialPosition() === 'bottom') {
-      this.targetFrame = TOTAL_FRAMES;
-      this.currentInterpolatedFrame = TOTAL_FRAMES;
-      this.lastRenderedFrame = TOTAL_FRAMES;
-      this.activePhase.set(3);
-    }
+    const isBottom = this.initialPosition() === 'bottom';
+    this.targetFrame = isBottom ? TOTAL_FRAMES : 1;
+    this.currentInterpolatedFrame = isBottom ? TOTAL_FRAMES : 1;
+    this.lastRenderedFrame = isBottom ? TOTAL_FRAMES : 1;
+    this.activePhase.set(isBottom ? 3 : 1);
 
     this.checkReducedMotion();
     if (typeof window !== 'undefined' && window.innerWidth <= 900) {
@@ -93,15 +92,16 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (typeof window !== 'undefined' && window.innerWidth > 900) {
       const container = this.containerRef.nativeElement;
-      const scrollableDistance = container.offsetHeight - window.innerHeight;
+      const isBottom = this.initialPosition() === 'bottom';
 
-      if (this.initialPosition() === 'bottom' && scrollableDistance > 0) {
-        window.scrollTo({ top: scrollableDistance, behavior: 'instant' });
+      if (isBottom) {
+        const scrollableDistance = container.offsetHeight - window.innerHeight;
+        window.scrollTo({ top: scrollableDistance > 0 ? scrollableDistance : 3000, behavior: 'instant' });
         this.targetFrame = TOTAL_FRAMES;
         this.currentInterpolatedFrame = TOTAL_FRAMES;
         this.lastRenderedFrame = TOTAL_FRAMES;
         this.activePhase.set(3);
-      } else if (this.initialPosition() === 'top') {
+      } else {
         window.scrollTo({ top: 0, behavior: 'instant' });
         this.targetFrame = 1;
         this.currentInterpolatedFrame = 1;
@@ -111,6 +111,21 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
 
       this.onResize();
       this.renderFrame(Math.round(this.currentInterpolatedFrame));
+
+      // Reasegurar la posición al desbloquear el scroll
+      if (isBottom) {
+        setTimeout(() => {
+          const maxDist = container.offsetHeight - window.innerHeight;
+          if (maxDist > 0) {
+            window.scrollTo({ top: maxDist, behavior: 'instant' });
+          }
+          this.targetFrame = TOTAL_FRAMES;
+          this.currentInterpolatedFrame = TOTAL_FRAMES;
+          this.lastRenderedFrame = TOTAL_FRAMES;
+          this.activePhase.set(3);
+          this.renderFrame(TOTAL_FRAMES);
+        }, 780);
+      }
     }
   }
 
@@ -133,36 +148,47 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private preloadImages(): void {
+    if (isPreloadDone) {
+      this.loadProgress.set(100);
+      this.isLoaded.set(true);
+      this.renderFrame(this.targetFrame);
+      return;
+    }
+
     let loaded = 0;
     const startFrame = this.initialPosition() === 'bottom' ? TOTAL_FRAMES : 1;
 
-    const firstImg = new Image();
-    firstImg.src = this.getFramePath(startFrame);
-    firstImg.onload = () => {
-      this.images[startFrame] = firstImg;
-      loaded++;
-      this.renderFrame(startFrame);
-
-      for (let i = 1; i <= TOTAL_FRAMES; i++) {
-        if (i === startFrame) continue;
-        const img = new Image();
-        img.src = this.getFramePath(i);
-        img.onload = () => {
-          this.images[i] = img;
-          loaded++;
-          if (loaded % 12 === 0 || loaded === TOTAL_FRAMES) {
-            const pct = Math.round((loaded / TOTAL_FRAMES) * 100);
-            this.loadProgress.set(pct);
-            if (loaded === TOTAL_FRAMES) {
-              this.isLoaded.set(true);
-            }
-          }
-        };
-        img.onerror = () => {
-          loaded++;
-        };
+    const loadSingle = (index: number, cb?: () => void) => {
+      if (SHARED_IMAGE_CACHE[index]?.complete) {
+        loaded++;
+        cb?.();
+        return;
       }
+      const img = new Image();
+      img.src = this.getFramePath(index);
+      img.onload = () => {
+        SHARED_IMAGE_CACHE[index] = img;
+        loaded++;
+        cb?.();
+        if (loaded % 12 === 0 || loaded === TOTAL_FRAMES) {
+          this.loadProgress.set(Math.round((loaded / TOTAL_FRAMES) * 100));
+          if (loaded === TOTAL_FRAMES) {
+            isPreloadDone = true;
+            this.isLoaded.set(true);
+          }
+        }
+      };
+      img.onerror = () => {
+        loaded++;
+      };
     };
+
+    loadSingle(startFrame, () => {
+      this.renderFrame(startFrame);
+      for (let i = 1; i <= TOTAL_FRAMES; i++) {
+        if (i !== startFrame) loadSingle(i);
+      }
+    });
   }
 
   private getFramePath(index: number): string {
@@ -184,7 +210,6 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
     const progress = Math.min(Math.max(rawProgress, 0), 1);
     this.targetFrame = Math.min(Math.max(1, 1 + progress * (TOTAL_FRAMES - 1)), TOTAL_FRAMES);
 
-    // Si ocurre un salto grande de posición inicial, sincronizar frame directamente sin animación forzada
     const jumpDiff = Math.abs(this.targetFrame - this.currentInterpolatedFrame);
     if (jumpDiff > 40 && !this.isLoopRunning) {
       this.currentInterpolatedFrame = this.targetFrame;
@@ -256,7 +281,7 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
     } else if (progress < 0.94) {
       phase = 3;
     } else {
-      phase = 0; // Desvanecimiento completo al final del scroll
+      phase = 0;
     }
 
     if (this.activePhase() !== phase) {
@@ -279,15 +304,15 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private getBestFrame(targetIndex: number): HTMLImageElement | null {
     const rounded = Math.min(Math.max(1, Math.round(targetIndex)), TOTAL_FRAMES);
-    if (this.images[rounded]?.complete) return this.images[rounded];
+    if (SHARED_IMAGE_CACHE[rounded]?.complete) return SHARED_IMAGE_CACHE[rounded];
 
     for (let offset = 1; offset < TOTAL_FRAMES; offset++) {
       const prev = rounded - offset;
-      if (prev >= 1 && this.images[prev]?.complete) return this.images[prev];
+      if (prev >= 1 && SHARED_IMAGE_CACHE[prev]?.complete) return SHARED_IMAGE_CACHE[prev];
       const next = rounded + offset;
-      if (next <= TOTAL_FRAMES && this.images[next]?.complete) return this.images[next];
+      if (next <= TOTAL_FRAMES && SHARED_IMAGE_CACHE[next]?.complete) return SHARED_IMAGE_CACHE[next];
     }
-    return this.images[1]?.complete ? this.images[1] : null;
+    return SHARED_IMAGE_CACHE[1]?.complete ? SHARED_IMAGE_CACHE[1] : null;
   }
 
   private renderFrame(targetIndex: number): void {
@@ -304,26 +329,13 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     const imgAspect = 16 / 9;
-    const screenAspect = canvas.width / canvas.height;
-    let drawW: number;
-    let drawH: number;
-    let offsetX = 0;
-    let offsetY = 0;
-
-    if (screenAspect > imgAspect) {
-      drawW = canvas.width;
-      drawH = canvas.width / imgAspect;
-      offsetY = (canvas.height - drawH) / 2;
-    } else {
-      drawW = canvas.width;
-      drawH = canvas.width / imgAspect;
-      offsetX = 0;
-      offsetY = (canvas.height - drawH) / 2;
-    }
+    const drawW = canvas.width;
+    const drawH = canvas.width / imgAspect;
+    const offsetY = (canvas.height - drawH) / 2;
 
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+    ctx.drawImage(img, 0, offsetY, drawW, drawH);
   }
 
   ngOnDestroy(): void {

@@ -1,0 +1,256 @@
+{
+  "name": "Portfolio Bryan - AI Chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "portfolio-chat",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        220,
+        340
+      ],
+      "id": "webhook-trigger",
+      "name": "Webhook - Incoming Chat"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Sanitización y validación de entrada para proteger cuota de API y prevenir abusos\nconst body = $input.item.json.body || {};\nconst rawMessage = typeof body.message === 'string' ? body.message.trim() : '';\nconst sessionId = typeof body.sessionId === 'string' && body.sessionId ? body.sessionId.slice(0, 64) : 'anon-' + Date.now();\n\nif (!rawMessage) {\n  return [{\n    json: {\n      isValid: false,\n      errorMessage: 'El mensaje no puede estar vacío.',\n      sessionId\n    }\n  }];\n}\n\n// Limitar a máximo 400 caracteres para cuidar tokens gratuitos\nconst cleanMessage = rawMessage.slice(0, 400).replace(/<[^>]*>?/gm, '');\n\nreturn [{\n  json: {\n    isValid: true,\n    cleanMessage,\n    sessionId\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        340
+      ],
+      "id": "code-sanitizer",
+      "name": "Sanitize & Validate"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-is-valid",
+              "leftValue": "={{ $json.isValid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        680,
+        340
+      ],
+      "id": "if-valid-input",
+      "name": "Is Input Valid?"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Sanitize & Validate').item.json.cleanMessage }}",
+        "options": {
+          "systemMessage": "=Eres el asistente virtual oficial de Bryan Baño en su portafolio web personal.\n\n### CONTEXTO DE BRYAN BAÑO:\n- Ingeniero en Computación (EPN, Quito - Ecuador).\n- Especialidad: .NET 8/9 Clean Architecture (CQRS MediatR, EF Core MySQL) y Angular Signals (OnPush, Canvas 2D).\n- Filosofía de Software: Ponytail (Simplicidad extrema, YAGNI, cero sobreingeniería, Web Platform nativa, 60 FPS).\n- Proyectos Destacados: Auditoría CACES (.NET), Incident Simulator Cloud Security (Serverless), Portafolio Interactivo Cyber-Zen.\n- Certificaciones: EC-Council Network Defense Essentials (NDE), Cisco Networking Academy.\n- Ubicación: Quito, Ecuador. Disponible para proyectos y contrataciones remotas globales.\n\n### REGLAS DE RESPUESTA:\n1. Responde siempre en el MISMO idioma del usuario (Español o Inglés).\n2. Sé técnico, conciso, profesional y cálido (máximo 2 a 3 párrafos o viñetas breves).\n3. No inventes experiencia que no esté en este contexto.\n4. Si el visitante desea contactar a Bryan o contratarlo, indícale amablemente que use el formulario de contacto del portafolio o su perfil de LinkedIn."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        920,
+        240
+      ],
+      "id": "ai-agent-bryan",
+      "name": "AI Agent - Bryan Assistant"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        880,
+        480
+      ],
+      "id": "gemini-model",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googleGeminiApi": {
+          "id": "gemini-free-cred",
+          "name": "Google Gemini Free API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionKey": "={{ $('Sanitize & Validate').item.json.sessionId }}",
+        "contextWindowLength": 8
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1040,
+        480
+      ],
+      "id": "window-memory",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"reply\": {{ JSON.stringify($json.output) }},\n  \"sessionId\": {{ JSON.stringify($('Sanitize & Validate').item.json.sessionId) }}\n}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1220,
+        240
+      ],
+      "id": "respond-success",
+      "name": "Respond - Success"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"reply\": {{ JSON.stringify($json.errorMessage || 'Mensaje no válido.') }},\n  \"sessionId\": {{ JSON.stringify($json.sessionId) }}\n}",
+        "options": {
+          "responseCode": 400,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1220,
+        420
+      ],
+      "id": "respond-error",
+      "name": "Respond - Error"
+    }
+  ],
+  "connections": {
+    "Webhook - Incoming Chat": {
+      "main": [
+        [
+          {
+            "node": "Sanitize & Validate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sanitize & Validate": {
+      "main": [
+        [
+          {
+            "node": "Is Input Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Input Valid?": {
+      "main": [
+        [
+          {
+            "node": "AI Agent - Bryan Assistant",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond - Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent - Bryan Assistant": {
+      "main": [
+        [
+          {
+            "node": "Respond - Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent - Bryan Assistant",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent - Bryan Assistant",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

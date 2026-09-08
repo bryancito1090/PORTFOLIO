@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: portfolio_n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=${N8N_PUBLIC_WEBHOOK_URL:-http://localhost:5678/}
+      - GENERIC_TIMEZONE=America/Guayaquil
+      - N8N_DEFAULT_BINARY_DATA_MODE=filesystem
+      - EXECUTIONS_DATA_PRUNE=true
+      - EXECUTIONS_DATA_MAX_AGE=168
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+  # Cloudflare Tunnel: Expone n8n a internet de forma segura, con HTTPS y sin abrir puertos en el router/firewall
+  # Para activarlo: obtén el token de tu túnel en el panel de Cloudflare Zero Trust y colócalo en el archivo .env
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: portfolio_tunnel
+    restart: always
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN:-}
+    depends_on:
+      - n8n
+
+volumes:
+  n8n_data:

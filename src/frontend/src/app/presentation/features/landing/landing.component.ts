@@ -6,6 +6,7 @@ import { FeaturedProjectsComponent } from '../featured-projects/featured-project
 import { ContactSectionComponent } from '../contact-section/contact-section.component';
 import { TechnicalProfileComponent } from '../technical-profile/technical-profile.component';
 import { IncidentSimulatorComponent } from '../incident-simulator/incident-simulator.component';
+import { ChatBotComponent } from '../chat-bot/chat-bot.component';
 import { I18nService } from '../../../application/services/i18n.service';
 
 export type LandingSection = 'hero' | 'retro' | 'projects' | 'simulator' | 'terminal' | 'contact';
@@ -29,7 +30,8 @@ export const LANDING_SECTIONS: readonly LandingSection[] = [
     FeaturedProjectsComponent,
     ContactSectionComponent,
     TechnicalProfileComponent,
-    IncidentSimulatorComponent
+    IncidentSimulatorComponent,
+    ChatBotComponent
   ],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css',
@@ -130,13 +132,11 @@ export class LandingComponent implements OnInit, OnDestroy {
         window.history.replaceState(null, '', url);
         this.scrollActiveNavIntoView(section);
 
-        if (section !== 'hero') {
-          if (entryPosition === 'bottom') {
-            const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-            window.scrollTo({ top: maxScroll, behavior: 'instant' });
-          } else {
-            window.scrollTo({ top: 0, behavior: 'instant' });
-          }
+        if (entryPosition === 'bottom') {
+          const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+          window.scrollTo({ top: maxScroll, behavior: 'instant' });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'instant' });
         }
       }
 
@@ -147,6 +147,16 @@ export class LandingComponent implements OnInit, OnDestroy {
           document.documentElement.style.overflow = '';
           document.body.style.overflow = '';
         }
+
+        if (typeof window !== 'undefined') {
+          if (entryPosition === 'bottom') {
+            const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+            window.scrollTo({ top: maxScroll, behavior: 'instant' });
+          } else {
+            window.scrollTo({ top: 0, behavior: 'instant' });
+          }
+        }
+
         setTimeout(() => {
           this.isTransitioning = false;
         }, 300);

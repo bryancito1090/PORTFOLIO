@@ -1,0 +1,167 @@
+<aside class="zen-chat-container" aria-label="Asistente virtual interactivo">
+  <!-- Botón Disparador Flotante Minimalista (Robot Avatar perfectamente centrado) -->
+  <div class="launcher-wrapper">
+    @if (!store.isOpen()) {
+      <span class="launcher-pulse-ring" aria-hidden="true"></span>
+    }
+
+    <button
+      type="button"
+      class="chat-launcher-btn"
+      [class.active]="store.isOpen()"
+      (click)="store.toggleChat()"
+      [attr.aria-expanded]="store.isOpen()"
+      [attr.aria-label]="store.isOpen() ? 'Cerrar asistente virtual' : 'Abrir asistente virtual con IA'"
+    >
+      <div class="launcher-icon-wrapper">
+        @if (store.isOpen()) {
+          <!-- Icono de Minimizar / Cerrar -->
+          <svg class="launcher-close-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        } @else {
+          <!-- Icono de Robot Cyber-Zen Minimalista Centrado -->
+          <svg class="launcher-bot-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3v4"></path>
+            <circle cx="12" cy="2.5" r="1.2" fill="currentColor"></circle>
+            <rect x="4" y="7" width="16" height="13" rx="3.5" fill="rgba(197, 155, 39, 0.15)"></rect>
+            <circle cx="8.5" cy="12.5" r="1.5" fill="currentColor"></circle>
+            <circle cx="15.5" cy="12.5" r="1.5" fill="currentColor"></circle>
+            <path d="M9 16.5h6"></path>
+            <path d="M2 12.5h2M20 12.5h2"></path>
+          </svg>
+        }
+      </div>
+
+      <!-- Indicador de Estado Online (Verde matcha con radar ping) -->
+      <span class="launcher-status-dot" aria-hidden="true">
+        <span class="status-radar-ping"></span>
+      </span>
+
+      <!-- Badge de Mensajes no Leídos -->
+      @if (!store.isOpen() && store.hasUnread()) {
+        <span class="launcher-badge" aria-label="Mensajes nuevos">{{ store.unreadCount() }}</span>
+      }
+    </button>
+  </div>
+
+  <!-- Ventana de Chat Flotante Cyber-Zen -->
+  @if (store.isOpen()) {
+    <div class="chat-window-card" role="dialog" aria-modal="true" aria-label="Conversación con asistente">
+      <!-- Cabecera de la Ventana -->
+      <header class="chat-header">
+        <div class="header-identity">
+          <div class="avatar-ring">
+            <svg class="header-bot-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 3v4"></path>
+              <circle cx="12" cy="2.5" r="1.2" fill="currentColor"></circle>
+              <rect x="4" y="7" width="16" height="13" rx="3.5" fill="rgba(197, 155, 39, 0.25)"></rect>
+              <circle cx="8.5" cy="12.5" r="1.5" fill="currentColor"></circle>
+              <circle cx="15.5" cy="12.5" r="1.5" fill="currentColor"></circle>
+              <path d="M9 16.5h6"></path>
+            </svg>
+          </div>
+          <div class="identity-info">
+            <span class="identity-name">Bryan Bot</span>
+            <span class="identity-meta">Online // n8n & Gemini</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button
+            type="button"
+            class="header-btn"
+            (click)="store.clearHistory()"
+            title="Reiniciar conversación"
+            aria-label="Reiniciar conversación"
+          >
+            <svg class="action-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="1 4 1 10 7 10"></polyline>
+              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="header-btn"
+            (click)="store.closeChat()"
+            title="Minimizar chat"
+            aria-label="Minimizar chat"
+          >
+            <svg class="action-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Contenedor de Mensajes -->
+      <div #messagesContainer class="chat-messages-area">
+        @for (msg of store.messages(); track msg.id) {
+          <div class="message-row" [class.user-row]="msg.role === 'user'" [class.bot-row]="msg.role === 'assistant'">
+            <div class="message-bubble" [class.error-bubble]="msg.status === 'error'">
+              <p class="message-text">{{ msg.content }}</p>
+              <span class="message-time">{{ msg.timestamp }}</span>
+            </div>
+          </div>
+        }
+
+        <!-- Indicador de Escritura -->
+        @if (store.isTyping()) {
+          <div class="message-row bot-row">
+            <div class="message-bubble typing-bubble">
+              <span class="typing-dot"></span>
+              <span class="typing-dot"></span>
+              <span class="typing-dot"></span>
+            </div>
+          </div>
+        }
+
+        <!-- Sugerencias Rápidas -->
+        @if (store.messages().length <= 2 && !store.isTyping()) {
+          <div class="quick-prompts-group">
+            <span class="quick-title">Preguntas sugeridas:</span>
+            <div class="chips-container">
+              @for (prompt of store.quickPrompts(); track prompt) {
+                <button
+                  type="button"
+                  class="quick-chip-btn"
+                  (click)="onSelectPrompt(prompt)"
+                >
+                  {{ prompt }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Barra de Envío / Input -->
+      <footer class="chat-input-bar">
+        <input
+          #chatInput
+          type="text"
+          class="chat-text-input"
+          placeholder="Escribe una pregunta sobre mi perfil..."
+          maxlength="400"
+          [disabled]="store.isTyping()"
+          (keydown)="onKeyDown($event, chatInput)"
+          aria-label="Mensaje para el asistente"
+        />
+        <button
+          type="button"
+          class="chat-send-btn"
+          [disabled]="store.isTyping()"
+          (click)="onSend(chatInput)"
+          aria-label="Enviar mensaje"
+        >
+          <svg class="send-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </footer>
+    </div>
+  }
+</aside>
