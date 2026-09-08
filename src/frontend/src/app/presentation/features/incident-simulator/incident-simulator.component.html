@@ -1,173 +1,350 @@
 <section class="zen-sim-container" aria-label="Simulador de Respuesta a Incidentes Cloud">
-  <!-- Cabecera Normalizada de Sección -->
+  <!-- Cabecera de Sección con Selector de Modo y Status -->
   <header class="sim-section-header">
     <div class="header-left">
       <div class="title-with-badge">
         <span class="pulse-indicator" aria-hidden="true"></span>
         <h2 class="section-title">{{ i18n.t().navSimulator }}</h2>
       </div>
+      <span class="section-tag">{{ i18n.t().simTag }}</span>
     </div>
 
-    <div class="status-pill" [class.danger]="stage() === 'breach' || stage() === 'detection'" [class.contained]="isContained()" [class.active]="stage() === 'remediation' || stage() === 'notification'">
-      <span class="status-beacon"></span>
-      <span class="status-text">
-        @if (stage() === 'idle') {
-          {{ i18n.t().simStatusIdle }}
-        } @else if (isContained()) {
-          {{ i18n.t().simStatusContained }}
-        } @else {
-          {{ i18n.t().simStatusActive }}
-        }
-      </span>
+    <div class="header-controls">
+      <!-- Selector de Modo de Vista (Humana vs Técnica) -->
+      <div class="view-mode-toggle" role="group" aria-label="Modo de visualización">
+        <button
+          type="button"
+          class="mode-btn"
+          [class.active]="viewMode() === 'story'"
+          (click)="setViewMode('story')"
+        >
+          <svg class="mode-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+          <span>{{ i18n.t().simModeStory }}</span>
+        </button>
+
+        <button
+          type="button"
+          class="mode-btn"
+          [class.active]="viewMode() === 'tech'"
+          (click)="setViewMode('tech')"
+        >
+          <svg class="mode-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4 17 10 11 4 5"/>
+            <line x1="12" y1="19" x2="20" y2="19"/>
+          </svg>
+          <span>{{ i18n.t().simModeTech }}</span>
+        </button>
+      </div>
+
+      <!-- Status Pill -->
+      <div class="status-pill" [class.danger]="stage() === 'breach' || stage() === 'detection'" [class.contained]="isContained()" [class.active]="stage() === 'remediation' || stage() === 'notification'">
+        <span class="status-beacon"></span>
+        <span class="status-text">
+          @if (stage() === 'idle') {
+            {{ i18n.t().simStatusIdle }}
+          } @else if (isContained()) {
+            {{ i18n.t().simStatusContained }}
+          } @else {
+            {{ i18n.t().simStatusActive }}
+          }
+        </span>
+      </div>
     </div>
   </header>
 
-  <!-- Panel Principal: Diagrama de Arquitectura Interactivo -->
+  <!-- Panel Principal del Simulador -->
   <div class="zen-sim-board">
-    <!-- Diagrama de Flujo en 4 Nodos -->
-    <div class="diagram-canvas">
-      <!-- NODO 1: Vector de Amenaza -->
-      <div class="arch-node threat-node" [class.active]="stage() === 'breach'" [class.past]="stage() !== 'idle' && stage() !== 'breach'">
-        <div class="node-badge-tag threat">VECTOR // 01</div>
-        <div class="node-icon-frame">
-          <svg class="node-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M12 2L3 7v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z"/>
-            <path d="M12 8v4m0 4h.01" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <div class="node-info">
-          <h3 class="node-title">{{ i18n.t().simThreatNodeTitle }}</h3>
-          <span class="node-detail">{{ i18n.t().simThreatNodeSub }}</span>
-          <span class="node-meta-ip">IP: {{ threatIp() }}</span>
-        </div>
-        <div class="node-status-indicator" [class.ping]="stage() === 'breach'"></div>
-      </div>
-
-      <!-- CONECTOR 1 -> 2 -->
-      <div class="flow-connector" [class.flowing]="stage() === 'breach' || stage() === 'detection' || stage() === 'remediation' || stage() === 'notification' || isContained()">
-        <div class="beam-line"></div>
-        <span class="flow-arrow">►</span>
-      </div>
-
-      <!-- NODO 2: AWS CloudTrail & EventBridge -->
-      <div class="arch-node detection-node" [class.active]="stage() === 'detection'" [class.past]="stage() === 'remediation' || stage() === 'notification' || isContained()">
-        <div class="node-badge-tag detection">AWS // 02</div>
-        <div class="node-icon-frame">
-          <svg class="node-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-          </svg>
-        </div>
-        <div class="node-info">
-          <h3 class="node-title">{{ i18n.t().simCloudTrailNodeTitle }}</h3>
-          <span class="node-detail">{{ i18n.t().simCloudTrailNodeSub }}</span>
-          <span class="node-meta-svc">us-east-1 // EventBridge Rule</span>
-        </div>
-        <div class="node-status-indicator" [class.ping]="stage() === 'detection'"></div>
-      </div>
-
-      <!-- CONECTOR 2 -> 3 -->
-      <div class="flow-connector" [class.flowing]="stage() === 'detection' || stage() === 'remediation' || stage() === 'notification' || isContained()">
-        <div class="beam-line"></div>
-        <span class="flow-arrow">►</span>
-      </div>
-
-      <!-- NODO 3: AWS Lambda (Mitigación) -->
-      <div class="arch-node remediation-node" [class.active]="stage() === 'remediation'" [class.past]="stage() === 'notification' || isContained()">
-        <div class="node-badge-tag remediation">SERVERLESS // 03</div>
-        <div class="node-icon-frame">
-          <svg class="node-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-          </svg>
-        </div>
-        <div class="node-info">
-          <h3 class="node-title">{{ i18n.t().simLambdaNodeTitle }}</h3>
-          <span class="node-detail">{{ i18n.t().simLambdaNodeSub }}</span>
-          <span class="node-meta-svc">STS Invalidation & DenyPolicy</span>
-        </div>
-        <div class="node-status-indicator" [class.ping]="stage() === 'remediation'"></div>
-      </div>
-
-      <!-- CONECTOR 3 -> 4 -->
-      <div class="flow-connector" [class.flowing]="stage() === 'remediation' || stage() === 'notification' || isContained()">
-        <div class="beam-line"></div>
-        <span class="flow-arrow">►</span>
-      </div>
-
-      <!-- NODO 4: Amazon SES / SecOps Alert -->
-      <div class="arch-node notification-node" [class.active]="stage() === 'notification'" [class.past]="isContained()">
-        <div class="node-badge-tag notification">SECOPS // 04</div>
-        <div class="node-icon-frame">
-          <svg class="node-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+    <!-- Barra Interactiva de Captura de Correo y Ejecución -->
+    <div class="email-control-deck">
+      <div class="email-input-wrapper">
+        <label for="sim-email-input" class="email-label">
+          <svg class="email-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
             <polyline points="22,6 12,13 2,6"/>
           </svg>
-        </div>
-        <div class="node-info">
-          <h3 class="node-title">{{ i18n.t().simSesNodeTitle }}</h3>
-          <span class="node-detail">{{ i18n.t().simSesNodeSub }}</span>
-          <span class="node-meta-svc">secops-team@bryan.dev</span>
-        </div>
-        <div class="node-status-indicator" [class.ping]="stage() === 'notification'"></div>
+          <span>{{ i18n.t().simEmailLabel }}</span>
+        </label>
+        <input
+          id="sim-email-input"
+          type="email"
+          class="email-field"
+          [value]="userEmail()"
+          (input)="onEmailInput($event)"
+          [placeholder]="i18n.t().simEmailPlaceholder"
+          [disabled]="isSimulating()"
+        />
+      </div>
+
+      <div class="action-buttons">
+        <button
+          type="button"
+          class="sim-trigger-btn"
+          [disabled]="isSimulating()"
+          (click)="startSimulation()"
+          [attr.aria-label]="i18n.t().simBtnSimulate"
+        >
+          <span class="btn-glow"></span>
+          <span class="btn-icon">⚡</span>
+          <span class="btn-text">
+            @if (isSimulating()) {
+              {{ i18n.t().simBtnSimulating }}
+            } @else {
+              {{ i18n.t().simBtnSimulate }}
+            }
+          </span>
+        </button>
+
+        <button
+          type="button"
+          class="sim-reset-btn"
+          [disabled]="isSimulating()"
+          (click)="resetSimulation()"
+          [attr.aria-label]="i18n.t().simBtnReset"
+        >
+          <span>↺ {{ i18n.t().simBtnReset }}</span>
+        </button>
       </div>
     </div>
 
-    <!-- Botonera de Control de la Simulación -->
-    <div class="sim-action-deck">
-      <button
-        type="button"
-        class="sim-trigger-btn"
-        [disabled]="isSimulating()"
-        (click)="startSimulation()"
-        [attr.aria-label]="i18n.t().simBtnSimulate"
-      >
-        <span class="btn-glow"></span>
-        <span class="btn-icon">⚡</span>
-        <span class="btn-text">
-          @if (isSimulating()) {
-            {{ i18n.t().simBtnSimulating }}
-          } @else {
-            {{ i18n.t().simBtnSimulate }}
-          }
-        </span>
-      </button>
-
-      <button
-        type="button"
-        class="sim-reset-btn"
-        [disabled]="isSimulating()"
-        (click)="resetSimulation()"
-        [attr.aria-label]="i18n.t().simBtnReset"
-      >
-        <span>↺ {{ i18n.t().simBtnReset }}</span>
-      </button>
-    </div>
-
-    <!-- Consola de Telemetría SecOps en Tiempo Real -->
-    <div class="secops-console-frame">
-      <header class="console-titlebar">
-        <div class="console-dots">
-          <span class="dot red"></span>
-          <span class="dot yellow"></span>
-          <span class="dot green"></span>
-        </div>
-        <span class="console-title">{{ i18n.t().simConsoleTitle }}</span>
-        <span class="console-pill">JSON LOGSTREAM</span>
-      </header>
-
-      <div class="console-body" role="log" aria-live="polite">
-        @for (log of logs(); track $index) {
-          <div class="log-row" [class.warn]="log.level === 'WARN'" [class.action]="log.level === 'ACTION'" [class.success]="log.level === 'SUCCESS'">
-            <span class="log-time">[{{ log.timestamp }}]</span>
-            <span class="log-tag">[{{ log.tag }}]</span>
-            <span class="log-msg">{{ log.message }}</span>
+    <!-- VISTA 1: MODO STORY / EXPLICADO PARA TODO PÚBLICO -->
+    @if (viewMode() === 'story') {
+      <div class="story-grid-flow" aria-live="polite">
+        <!-- PASO 1 -->
+        <div class="story-step-card" [class.active]="stage() === 'breach'" [class.completed]="stage() !== 'idle' && stage() !== 'breach'">
+          <div class="step-badge">01 // ATAQUE</div>
+          <div class="step-icon-wrap danger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M12 2L3 7v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z"/>
+              <path d="M12 8v4m0 4h.01" stroke-linecap="round"/>
+            </svg>
           </div>
-        }
-        <div class="console-cursor-row">
-          <span class="console-prompt">secops@aws-perimeter:~$</span>
-          <span class="cursor-block"></span>
+          <h3 class="step-title">{{ i18n.t().simStep1Title }}</h3>
+          <p class="step-desc">{{ i18n.t().simStep1Desc }}</p>
+          <div class="step-meta">IP: {{ threatIp() }}</div>
+        </div>
+
+        <div class="story-arrow" [class.active]="stage() !== 'idle'">→</div>
+
+        <!-- PASO 2 -->
+        <div class="story-step-card" [class.active]="stage() === 'detection'" [class.completed]="stage() === 'remediation' || stage() === 'notification' || isContained()">
+          <div class="step-badge">02 // DETECCIÓN</div>
+          <div class="step-icon-wrap warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </div>
+          <h3 class="step-title">{{ i18n.t().simStep2Title }}</h3>
+          <p class="step-desc">{{ i18n.t().simStep2Desc }}</p>
+          <div class="step-meta">&lt; 50ms // Monitoreo Activo</div>
+        </div>
+
+        <div class="story-arrow" [class.active]="stage() === 'detection' || stage() === 'remediation' || stage() === 'notification' || isContained()">→</div>
+
+        <!-- PASO 3 -->
+        <div class="story-step-card" [class.active]="stage() === 'remediation'" [class.completed]="stage() === 'notification' || isContained()">
+          <div class="step-badge">03 // BLOQUEO</div>
+          <div class="step-icon-wrap action">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <h3 class="step-title">{{ i18n.t().simStep3Title }}</h3>
+          <p class="step-desc">{{ i18n.t().simStep3Desc }}</p>
+          <div class="step-meta">Revocación Inmediata STS</div>
+        </div>
+
+        <div class="story-arrow" [class.active]="stage() === 'remediation' || stage() === 'notification' || isContained()">→</div>
+
+        <!-- PASO 4 -->
+        <div class="story-step-card" [class.active]="stage() === 'notification'" [class.completed]="isContained()">
+          <div class="step-badge">04 // INFORME</div>
+          <div class="step-icon-wrap success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+          </div>
+          <h3 class="step-title">{{ i18n.t().simStep4Title }}</h3>
+          <p class="step-desc">{{ i18n.t().simStep4Desc }}</p>
+          <div class="step-meta">{{ targetRecipient() }}</div>
         </div>
       </div>
-    </div>
+    }
+
+    <!-- VISTA 2: MODO TÉCNICO SECOPS / AWS ARQUITECTURA -->
+    @if (viewMode() === 'tech') {
+      <div class="diagram-canvas">
+        <!-- NODO 1: Vector de Amenaza -->
+        <div class="arch-node threat-node" [class.active]="stage() === 'breach'" [class.past]="stage() !== 'idle' && stage() !== 'breach'">
+          <div class="node-badge-tag threat">VECTOR // 01</div>
+          <div class="node-icon-frame">
+            <svg class="node-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M12 2L3 7v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z"/>
+              <path d="M12 8v4m0 4h.01" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="node-info">
+            <h3 class="node-title">{{ i18n.t().simThreatNodeTitle }}</h3>
+            <span class="node-detail">{{ i18n.t().simThreatNodeSub }}</span>
+            <span class="node-meta-ip">IP: {{ threatIp() }}</span>
+          </div>
+          <div class="node-status-indicator" [class.ping]="stage() === 'breach'"></div>
+        </div>
+
+        <!-- CONECTOR 1 -> 2 -->
+        <div class="flow-connector" [class.flowing]="stage() !== 'idle'">
+          <div class="beam-line"></div>
+          <span class="flow-arrow">►</span>
+        </div>
+
+        <!-- NODO 2: AWS CloudTrail & EventBridge -->
+        <div class="arch-node detection-node" [class.active]="stage() === 'detection'" [class.past]="stage() === 'remediation' || stage() === 'notification' || isContained()">
+          <div class="node-badge-tag detection">AWS // 02</div>
+          <div class="node-icon-frame">
+            <svg class="node-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+          </div>
+          <div class="node-info">
+            <h3 class="node-title">{{ i18n.t().simCloudTrailNodeTitle }}</h3>
+            <span class="node-detail">{{ i18n.t().simCloudTrailNodeSub }}</span>
+            <span class="node-meta-svc">us-east-1 // EventBridge Rule</span>
+          </div>
+          <div class="node-status-indicator" [class.ping]="stage() === 'detection'"></div>
+        </div>
+
+        <!-- CONECTOR 2 -> 3 -->
+        <div class="flow-connector" [class.flowing]="stage() === 'detection' || stage() === 'remediation' || stage() === 'notification' || isContained()">
+          <div class="beam-line"></div>
+          <span class="flow-arrow">►</span>
+        </div>
+
+        <!-- NODO 3: AWS Lambda -->
+        <div class="arch-node remediation-node" [class.active]="stage() === 'remediation'" [class.past]="stage() === 'notification' || isContained()">
+          <div class="node-badge-tag remediation">SERVERLESS // 03</div>
+          <div class="node-icon-frame">
+            <svg class="node-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+          </div>
+          <div class="node-info">
+            <h3 class="node-title">{{ i18n.t().simLambdaNodeTitle }}</h3>
+            <span class="node-detail">{{ i18n.t().simLambdaNodeSub }}</span>
+            <span class="node-meta-svc">STS Invalidation & DenyPolicy</span>
+          </div>
+          <div class="node-status-indicator" [class.ping]="stage() === 'remediation'"></div>
+        </div>
+
+        <!-- CONECTOR 3 -> 4 -->
+        <div class="flow-connector" [class.flowing]="stage() === 'remediation' || stage() === 'notification' || isContained()">
+          <div class="beam-line"></div>
+          <span class="flow-arrow">►</span>
+        </div>
+
+        <!-- NODO 4: Amazon SES -->
+        <div class="arch-node notification-node" [class.active]="stage() === 'notification'" [class.past]="isContained()">
+          <div class="node-badge-tag notification">SECOPS // 04</div>
+          <div class="node-icon-frame">
+            <svg class="node-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+          <div class="node-info">
+            <h3 class="node-title">{{ i18n.t().simSesNodeTitle }}</h3>
+            <span class="node-detail">{{ i18n.t().simSesNodeSub }}</span>
+            <span class="node-meta-svc">{{ targetRecipient() }}</span>
+          </div>
+          <div class="node-status-indicator" [class.ping]="stage() === 'notification'"></div>
+        </div>
+      </div>
+
+      <!-- Consola de Telemetría SecOps -->
+      <div class="secops-console-frame">
+        <header class="console-titlebar">
+          <div class="console-dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <span class="console-title">{{ i18n.t().simConsoleTitle }}</span>
+          <span class="console-pill">JSON LOGSTREAM</span>
+        </header>
+
+        <div class="console-body" role="log" aria-live="polite">
+          @for (log of logs(); track $index) {
+            <div class="log-row" [class.warn]="log.level === 'WARN'" [class.action]="log.level === 'ACTION'" [class.success]="log.level === 'SUCCESS'">
+              <span class="log-time">[{{ log.timestamp }}]</span>
+              <span class="log-tag">[{{ log.tag }}]</span>
+              <span class="log-msg">{{ log.message }}</span>
+            </div>
+          }
+          <div class="console-cursor-row">
+            <span class="console-prompt">secops@aws-perimeter:~$</span>
+            <span class="cursor-block"></span>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- CERTIFICADO DE AUDITORÍA FORENSE (Visible al contener la amenaza) -->
+    @if (showReport() || isContained()) {
+      <div class="forensic-report-card">
+        <header class="report-header">
+          <div class="report-header-left">
+            <span class="report-badge">{{ i18n.t().simReportDemoBadge }}</span>
+            <h3 class="report-title">{{ i18n.t().simReportTitle }}</h3>
+          </div>
+          <span class="report-status-pill">{{ i18n.t().simReportStatusSecure }}</span>
+        </header>
+
+        <div class="report-grid">
+          <div class="report-metric-box">
+            <span class="box-label">{{ i18n.t().simReportTargetEmail }}</span>
+            <span class="box-val highlight-mail">{{ targetRecipient() }}</span>
+          </div>
+
+          <div class="report-metric-box">
+            <span class="box-label">{{ i18n.t().simMetricLatency }}</span>
+            <span class="box-val highlight-time">{{ i18n.t().simReportTimeVsAvg }}</span>
+          </div>
+
+          <div class="report-metric-box">
+            <span class="box-label">Integridad de Credenciales</span>
+            <span class="box-val">{{ i18n.t().simReportCredentialsCompromised }}</span>
+          </div>
+
+          <div class="report-metric-box">
+            <span class="box-label">Impacto Financiero Evitado</span>
+            <span class="box-val success">{{ i18n.t().simReportFinancialLoss }}</span>
+          </div>
+        </div>
+
+        <footer class="report-footer">
+          <button type="button" class="download-report-btn" (click)="simulateDownload()">
+            <svg class="dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            @if (downloadFeedback()) {
+              <span>✓ Reporte Forense Simulado con Éxito</span>
+            } @else {
+              <span>{{ i18n.t().simReportDownloadBtn }}</span>
+            }
+          </button>
+        </footer>
+      </div>
+    }
 
     <!-- Métricas de Arquitectura Serverless -->
     <footer class="arch-metrics-bar">

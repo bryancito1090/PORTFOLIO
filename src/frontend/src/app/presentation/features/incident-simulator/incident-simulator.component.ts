@@ -3,6 +3,7 @@ import { I18nService } from '../../../application/services/i18n.service';
 import { RetroAudioService } from '../../../application/services/retro-audio.service';
 
 export type SimulationStage = 'idle' | 'breach' | 'detection' | 'remediation' | 'notification' | 'contained';
+export type SimulatorViewMode = 'story' | 'tech';
 
 export interface SecOpsLog {
   readonly timestamp: string;
@@ -23,9 +24,13 @@ export class IncidentSimulatorComponent implements OnInit, OnDestroy {
   private readonly audio = inject(RetroAudioService);
 
   protected readonly stage = signal<SimulationStage>('idle');
+  protected readonly viewMode = signal<SimulatorViewMode>('story');
+  protected readonly userEmail = signal<string>('');
   protected readonly logs = signal<SecOpsLog[]>([]);
   protected readonly threatIp = signal<string>('198.51.100.42');
   protected readonly executionTimeMs = signal<number>(184);
+  protected readonly showReport = signal<boolean>(false);
+  protected readonly downloadFeedback = signal<boolean>(false);
 
   protected readonly isSimulating = computed<boolean>(() => {
     const s = this.stage();
@@ -34,10 +39,110 @@ export class IncidentSimulatorComponent implements OnInit, OnDestroy {
 
   protected readonly isContained = computed<boolean>(() => this.stage() === 'contained');
 
+  protected readonly targetRecipient = computed<string>(() => {
+    const email = this.userEmail().trim();
+    return email.length > 3 && email.includes('@') ? email : 'secops-team@bryan.dev';
+  });
+
   private timeoutIds: ReturnType<typeof setTimeout>[] = [];
 
   ngOnInit(): void {
     this.initDefaultLogs();
+  }
+
+  setViewMode(mode: SimulatorViewMode): void {
+    if (this.viewMode() === mode) return;
+    this.audio.playClick();
+    this.viewMode.set(mode);
+  }
+
+  onEmailInput(event: Event): void {
+    const val = (event.target as HTMLInputElement).value;
+    this.userEmail.set(val);
+  }
+
+  startSimulation(): void {
+    if (this.isSimulating()) return;
+
+    this.clearTimeouts();
+    this.audio.playClick();
+    this.logs.set([]);
+    this.showReport.set(false);
+    this.downloadFeedback.set(false);
+
+    // Paso 1: Intento de Intrusión (Vector de Amenaza)
+    this.stage.set('breach');
+    this.appendLog({
+      level: 'WARN',
+      tag: 'IAM-ALERT',
+      message: `Anomalous API request: iam:CreateAccessKey from untrusted IP ${this.threatIp()} for principal "svc-deployer".`
+    });
+
+    // Paso 2: Detección Inmediata en EventBridge & CloudTrail (después de 700ms)
+    const t1 = setTimeout(() => {
+      this.stage.set('detection');
+      this.audio.playCellReveal();
+      this.appendLog({
+        level: 'INFO',
+        tag: 'CLOUDTRAIL',
+        message: 'Management event ingested in us-east-1. EventBridge rule "SecOps-AutoRemediate" triggered synchronously.'
+      });
+    }, 700);
+    this.timeoutIds.push(t1);
+
+    // Paso 3: Remediación Automatizada Serverless (después de 1500ms)
+    const t2 = setTimeout(() => {
+      this.stage.set('remediation');
+      this.audio.playFlagToggle();
+      this.appendLog({
+        level: 'ACTION',
+        tag: 'LAMBDA',
+        message: 'Executing fn-iam-incident-response: Revoking active STS sessions & attaching inline DenyAllSecurityPolicy.'
+      });
+    }, 1500);
+    this.timeoutIds.push(t2);
+
+    // Paso 4: Despacho de Reporte Forense (después de 2300ms)
+    const t3 = setTimeout(() => {
+      this.stage.set('notification');
+      this.audio.playCellReveal();
+      this.appendLog({
+        level: 'INFO',
+        tag: 'SES-ALERT',
+        message: `Dispatching cryptographic audit report to ${this.targetRecipient()} via Amazon SES.`
+      });
+    }, 2300);
+    this.timeoutIds.push(t3);
+
+    // Paso 5: Amenaza Contenida & Generación de Reporte (después de 3100ms)
+    const t4 = setTimeout(() => {
+      this.stage.set('contained');
+      this.audio.playVictory();
+      this.showReport.set(true);
+      this.appendLog({
+        level: 'SUCCESS',
+        tag: 'CONTAINED',
+        message: `Threat neutralized successfully in ${this.executionTimeMs()}ms. Zero credentials compromised. State: SECURE.`
+      });
+    }, 3100);
+    this.timeoutIds.push(t4);
+  }
+
+  resetSimulation(): void {
+    this.clearTimeouts();
+    this.audio.playClick();
+    this.stage.set('idle');
+    this.showReport.set(false);
+    this.downloadFeedback.set(false);
+    this.initDefaultLogs();
+  }
+
+  simulateDownload(): void {
+    this.audio.playClick();
+    this.downloadFeedback.set(true);
+    setTimeout(() => {
+      this.downloadFeedback.set(false);
+    }, 3000);
   }
 
   private initDefaultLogs(): void {
@@ -56,77 +161,6 @@ export class IncidentSimulatorComponent implements OnInit, OnDestroy {
         message: 'Active rule pattern matched: Rule-SecOps-IAM-AutoRemediation [ENABLED].'
       }
     ]);
-  }
-
-  startSimulation(): void {
-    if (this.isSimulating()) return;
-
-    this.clearTimeouts();
-    this.audio.playClick();
-    this.logs.set([]);
-
-    // Fase 1: Intento de Acceso No Autorizado (Vector de Amenaza)
-    this.stage.set('breach');
-    this.appendLog({
-      level: 'WARN',
-      tag: 'IAM-ALERT',
-      message: `Anomalous API request: iam:CreateAccessKey from untrusted IP ${this.threatIp()} for principal "svc-deployer".`
-    });
-
-    // Fase 2: Captura en CloudTrail & Enrutamiento en EventBridge (después de 700ms)
-    const t1 = setTimeout(() => {
-      this.stage.set('detection');
-      this.audio.playCellReveal();
-      this.appendLog({
-        level: 'INFO',
-        tag: 'CLOUDTRAIL',
-        message: 'Management event ingested in us-east-1. EventBridge rule "SecOps-AutoRemediate" triggered synchronously.'
-      });
-    }, 700);
-    this.timeoutIds.push(t1);
-
-    // Fase 3: Remediación Automatizada en AWS Lambda (después de 1500ms)
-    const t2 = setTimeout(() => {
-      this.stage.set('remediation');
-      this.audio.playFlagToggle();
-      this.appendLog({
-        level: 'ACTION',
-        tag: 'LAMBDA',
-        message: 'Executing fn-iam-incident-response: Revoking active STS sessions & attaching inline DenyAllSecurityPolicy.'
-      });
-    }, 1500);
-    this.timeoutIds.push(t2);
-
-    // Fase 4: Despacho de Notificación Amazon SES (después de 2300ms)
-    const t3 = setTimeout(() => {
-      this.stage.set('notification');
-      this.audio.playCellReveal();
-      this.appendLog({
-        level: 'INFO',
-        tag: 'SES-ALERT',
-        message: 'Dispatching cryptographic audit report to secops-team@bryan.dev via Amazon SES.'
-      });
-    }, 2300);
-    this.timeoutIds.push(t3);
-
-    // Fase 5: Amenaza Contenida con Éxito (después de 3100ms)
-    const t4 = setTimeout(() => {
-      this.stage.set('contained');
-      this.audio.playVictory();
-      this.appendLog({
-        level: 'SUCCESS',
-        tag: 'CONTAINED',
-        message: `Threat neutralized successfully in ${this.executionTimeMs()}ms. Zero credentials compromised. State: SECURE.`
-      });
-    }, 3100);
-    this.timeoutIds.push(t4);
-  }
-
-  resetSimulation(): void {
-    this.clearTimeouts();
-    this.audio.playClick();
-    this.stage.set('idle');
-    this.initDefaultLogs();
   }
 
   private appendLog(entry: Omit<SecOpsLog, 'timestamp'>): void {

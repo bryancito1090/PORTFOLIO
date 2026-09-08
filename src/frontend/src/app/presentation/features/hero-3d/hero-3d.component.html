@@ -1,4 +1,5 @@
-<section #scrollContainer class="hero-scroll-wrapper" [attr.aria-label]="i18n.t().heroAriaExperience">
+<!-- Vista Desktop: Animación 3D Laptop Lenovo ThinkPad (min-width: 901px) -->
+<section #scrollContainer class="hero-scroll-wrapper desktop-only" [attr.aria-label]="i18n.t().heroAriaExperience">
   <div class="hero-sticky-stage">
     <!-- Lienzo Canvas en alta resolución que ocupa toda la pantalla de fondo -->
     <canvas #canvas class="thinkpad-canvas" aria-hidden="true"></canvas>
@@ -129,5 +130,124 @@
         </div>
       </div>
     </aside>
+  </div>
+</section>
+
+<!-- Vista Móvil: Información estructurada y limpia sin animación pesada (max-width: 900px) -->
+<section class="hero-mobile-container mobile-only" [attr.aria-label]="i18n.t().heroAriaExperience">
+  <!-- Tarjeta Principal de Perfil / Lead -->
+  <div class="mobile-lead-card">
+    <div class="mobile-lead-header">
+      <span class="lead-status">{{ i18n.t().p1LeadStatus }}</span>
+      <span class="lead-tag">{{ i18n.t().p1LeadTag }}</span>
+    </div>
+
+    <h1 class="mobile-lead-name">{{ i18n.t().p1LeadName }}</h1>
+    <span class="mobile-lead-role">{{ i18n.t().p1LeadRole }}</span>
+    <p class="mobile-lead-desc">{{ i18n.t().p1LeadDesc }}</p>
+
+    <div class="mobile-lead-badges">
+      <span class="zen-chip chip-gold">{{ i18n.t().p1LeadBadge1 }}</span>
+      <span class="zen-chip chip-matcha">{{ i18n.t().p1LeadBadge2 }}</span>
+      <span class="zen-chip">{{ i18n.t().p1LeadBadge3 }}</span>
+    </div>
+
+    <div class="mobile-lead-footer">
+      <span class="mobile-lead-metric">{{ i18n.t().p1LeadMetric }}</span>
+      <nav class="mobile-social-links" aria-label="Redes sociales">
+        <a
+          class="social-link"
+          href="https://github.com/bryancito1090"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="GitHub"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.61-3.37-1.18-3.37-1.18-.45-1.15-1.11-1.46-1.11-1.46-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.64-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02A9.58 9.58 0 0 1 12 7.99c.85 0 1.7.11 2.49.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.6c0 .26.18.57.69.47A10 10 0 0 0 12 2Z"/>
+          </svg>
+        </a>
+        <a
+          class="social-link"
+          href="https://www.linkedin.com/in/bryan-bano"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="LinkedIn"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5.2 3.5a2.2 2.2 0 1 1 0 4.4 2.2 2.2 0 0 1 0-4.4ZM3.4 9.2h3.6V21H3.4V9.2Zm5.8 0h3.4v1.61h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.26 2.37 4.26 5.45V21h-3.6v-5.84c0-1.39-.03-3.18-1.94-3.18-1.94 0-2.24 1.52-2.24 3.08V21H9.2V9.2Z"/>
+          </svg>
+        </a>
+        <a
+          class="social-link"
+          href="https://www.instagram.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Instagram"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3.5" y="3.5" width="17" height="17" rx="4"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r="1"/>
+          </svg>
+        </a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Cuadrícula de Pilares Técnicos y Filosofía -->
+  <div class="mobile-pillars-grid">
+    <!-- Pilar 1: Backend Enterprise -->
+    <div class="mobile-pillar-card">
+      <span class="panel-eyebrow">{{ i18n.t().p2LeftTag }}</span>
+      <h3 class="panel-title">{{ i18n.t().p2LeftTitle }}</h3>
+      <p class="panel-desc">{{ i18n.t().p2LeftDesc }}</p>
+      <div class="panel-tags">
+        <span class="zen-chip chip-gold">{{ i18n.t().p2LeftBadge1 }}</span>
+        <span class="zen-chip">{{ i18n.t().p2LeftBadge2 }}</span>
+      </div>
+    </div>
+
+    <!-- Pilar 2: Frontend Reactivo -->
+    <div class="mobile-pillar-card">
+      <span class="panel-eyebrow">{{ i18n.t().p2RightTag }}</span>
+      <h3 class="panel-title">{{ i18n.t().p2RightTitle }}</h3>
+      <p class="panel-desc">{{ i18n.t().p2RightDesc }}</p>
+      <div class="panel-tags">
+        <span class="zen-chip chip-matcha">{{ i18n.t().p2RightBadge1 }}</span>
+        <span class="zen-chip">{{ i18n.t().p2RightBadge2 }}</span>
+      </div>
+    </div>
+
+    <!-- Pilar 3: Arquitectura & Filosofía -->
+    <div class="mobile-pillar-card">
+      <span class="panel-eyebrow">{{ i18n.t().p1RightTag }}</span>
+      <h3 class="panel-title">{{ i18n.t().p1RightTitle }}</h3>
+      <p class="panel-desc">{{ i18n.t().p1RightDesc }}</p>
+      <div class="panel-tags">
+        <span class="zen-chip">{{ i18n.t().p1RightBadge }}</span>
+      </div>
+    </div>
+
+    <!-- Pilar 4: Estándares de Código -->
+    <div class="mobile-pillar-card">
+      <span class="panel-eyebrow">{{ i18n.t().p3LeftTag }}</span>
+      <h3 class="panel-title">{{ i18n.t().p3LeftTitle }}</h3>
+      <p class="panel-desc">{{ i18n.t().p3LeftDesc }}</p>
+      <div class="panel-tags">
+        <span class="zen-chip">{{ i18n.t().p3LeftBadge1 }}</span>
+        <span class="zen-chip">{{ i18n.t().p3LeftBadge2 }}</span>
+      </div>
+    </div>
+
+    <!-- Pilar 5: Laboratorio Interactivo -->
+    <div class="mobile-pillar-card">
+      <span class="panel-eyebrow">{{ i18n.t().p3RightTag }}</span>
+      <h3 class="panel-title">{{ i18n.t().p3RightTitle }}</h3>
+      <p class="panel-desc">{{ i18n.t().p3RightDesc }}</p>
+      <div class="panel-tags">
+        <span class="zen-chip chip-gold">{{ i18n.t().p3RightBadge1 }}</span>
+        <span class="zen-chip chip-matcha">{{ i18n.t().p3RightBadge2 }}</span>
+      </div>
+    </div>
   </div>
 </section>

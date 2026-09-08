@@ -14,6 +14,8 @@ export interface TranslationDictionary {
   readonly navTerminal: string;
   readonly navContact: string;
   readonly navAll: string;
+  readonly navPrevSection: string;
+  readonly navNextSection: string;
 
   // Hero 3D
   readonly preloading: string;
@@ -63,6 +65,9 @@ export interface TranslationDictionary {
   readonly tpAboutName: string;
   readonly tpAboutDescription: string;
   readonly tpAboutAria: string;
+  readonly tpAboutLink: string;
+  readonly tpAsciiError: string;
+  readonly tpAsciiLoading: string;
   readonly tpEyebrow: string;
   readonly tpTitle: string;
   readonly tpLeadStudent: string;
@@ -255,9 +260,22 @@ export interface TranslationDictionary {
   readonly simTag: string;
   readonly simHeading: string;
   readonly simSubheading: string;
+  readonly simModeStory: string;
+  readonly simModeTech: string;
+  readonly simEmailLabel: string;
+  readonly simEmailPlaceholder: string;
+  readonly simEmailHint: string;
   readonly simBtnSimulate: string;
   readonly simBtnSimulating: string;
   readonly simBtnReset: string;
+  readonly simStep1Title: string;
+  readonly simStep1Desc: string;
+  readonly simStep2Title: string;
+  readonly simStep2Desc: string;
+  readonly simStep3Title: string;
+  readonly simStep3Desc: string;
+  readonly simStep4Title: string;
+  readonly simStep4Desc: string;
   readonly simThreatNodeTitle: string;
   readonly simThreatNodeSub: string;
   readonly simCloudTrailNodeTitle: string;
@@ -273,4 +291,12 @@ export interface TranslationDictionary {
   readonly simStatusIdle: string;
   readonly simStatusActive: string;
   readonly simStatusContained: string;
+  readonly simReportTitle: string;
+  readonly simReportTargetEmail: string;
+  readonly simReportStatusSecure: string;
+  readonly simReportTimeVsAvg: string;
+  readonly simReportCredentialsCompromised: string;
+  readonly simReportFinancialLoss: string;
+  readonly simReportDownloadBtn: string;
+  readonly simReportDemoBadge: string;
 }

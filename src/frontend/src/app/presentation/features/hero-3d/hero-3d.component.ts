@@ -8,7 +8,8 @@ import {
   ChangeDetectionStrategy,
   signal,
   inject,
-  NgZone
+  NgZone,
+  input
 } from '@angular/core';
 import { I18nService } from '../../../application/services/i18n.service';
 
@@ -23,6 +24,8 @@ const LERP_FACTOR = 0.09;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
+  readonly initialPosition = input<'top' | 'bottom'>('top');
+
   @ViewChild('scrollContainer') private containerRef!: ElementRef<HTMLDivElement>;
   @ViewChild('canvas') private canvasRef!: ElementRef<HTMLCanvasElement>;
 
@@ -47,17 +50,33 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
   private mediaQueryList?: MediaQueryList;
 
   ngOnInit(): void {
+    if (this.initialPosition() === 'bottom') {
+      this.targetFrame = TOTAL_FRAMES;
+      this.currentInterpolatedFrame = TOTAL_FRAMES;
+      this.lastRenderedFrame = TOTAL_FRAMES;
+      this.activePhase.set(3);
+    }
+
     this.checkReducedMotion();
-    this.preloadImages();
+    if (typeof window !== 'undefined' && window.innerWidth <= 900) {
+      this.isLoaded.set(true);
+    } else {
+      this.preloadImages();
+    }
   }
 
   ngAfterViewInit(): void {
+    if (!this.canvasRef || !this.containerRef) {
+      this.isLoaded.set(true);
+      return;
+    }
+
     const canvas = this.canvasRef.nativeElement;
     this.ctx = canvas.getContext('2d', { alpha: false });
 
     this.intersectionObserver = new IntersectionObserver(([entry]) => {
       this.isVisible = entry.isIntersecting;
-      if (this.isVisible && !this.isReducedMotion) {
+      if (this.isVisible && !this.isReducedMotion && typeof window !== 'undefined' && window.innerWidth > 900) {
         this.startAnimationLoop();
       } else if (this.animationFrameId !== null) {
         cancelAnimationFrame(this.animationFrameId);
@@ -72,8 +91,27 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
       window.addEventListener('resize', this.onResize, { passive: true });
     });
 
-    this.onResize();
-    this.onScroll();
+    if (typeof window !== 'undefined' && window.innerWidth > 900) {
+      const container = this.containerRef.nativeElement;
+      const scrollableDistance = container.offsetHeight - window.innerHeight;
+
+      if (this.initialPosition() === 'bottom' && scrollableDistance > 0) {
+        window.scrollTo({ top: scrollableDistance, behavior: 'instant' });
+        this.targetFrame = TOTAL_FRAMES;
+        this.currentInterpolatedFrame = TOTAL_FRAMES;
+        this.lastRenderedFrame = TOTAL_FRAMES;
+        this.activePhase.set(3);
+      } else if (this.initialPosition() === 'top') {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        this.targetFrame = 1;
+        this.currentInterpolatedFrame = 1;
+        this.lastRenderedFrame = 1;
+        this.activePhase.set(1);
+      }
+
+      this.onResize();
+      this.renderFrame(Math.round(this.currentInterpolatedFrame));
+    }
   }
 
   private checkReducedMotion(): void {
@@ -88,7 +126,7 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
           this.isLoopRunning = false;
         }
         this.renderFrame(1);
-      } else {
+      } else if (typeof window !== 'undefined' && window.innerWidth > 900) {
         this.startAnimationLoop();
       }
     });
@@ -96,15 +134,17 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private preloadImages(): void {
     let loaded = 0;
+    const startFrame = this.initialPosition() === 'bottom' ? TOTAL_FRAMES : 1;
 
     const firstImg = new Image();
-    firstImg.src = this.getFramePath(1);
+    firstImg.src = this.getFramePath(startFrame);
     firstImg.onload = () => {
-      this.images[1] = firstImg;
+      this.images[startFrame] = firstImg;
       loaded++;
-      this.renderFrame(1);
+      this.renderFrame(startFrame);
 
-      for (let i = 2; i <= TOTAL_FRAMES; i++) {
+      for (let i = 1; i <= TOTAL_FRAMES; i++) {
+        if (i === startFrame) continue;
         const img = new Image();
         img.src = this.getFramePath(i);
         img.onload = () => {
@@ -131,6 +171,7 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private onScroll = (): void => {
+    if (typeof window !== 'undefined' && window.innerWidth <= 900) return;
     if (!this.isVisible || !this.containerRef || this.isReducedMotion) return;
 
     const container = this.containerRef.nativeElement;
@@ -143,10 +184,26 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
     const progress = Math.min(Math.max(rawProgress, 0), 1);
     this.targetFrame = Math.min(Math.max(1, 1 + progress * (TOTAL_FRAMES - 1)), TOTAL_FRAMES);
 
+    // Si ocurre un salto grande de posición inicial, sincronizar frame directamente sin animación forzada
+    const jumpDiff = Math.abs(this.targetFrame - this.currentInterpolatedFrame);
+    if (jumpDiff > 40 && !this.isLoopRunning) {
+      this.currentInterpolatedFrame = this.targetFrame;
+      this.renderFrame(Math.round(this.targetFrame));
+      this.updateActivePhase(this.targetFrame);
+      return;
+    }
+
     this.startAnimationLoop();
   };
 
   private onResize = (): void => {
+    if (typeof window !== 'undefined' && window.innerWidth <= 900) {
+      if (this.animationFrameId !== null) {
+        cancelAnimationFrame(this.animationFrameId);
+        this.isLoopRunning = false;
+      }
+      return;
+    }
     this.resizeCanvas();
     this.renderFrame(Math.round(this.currentInterpolatedFrame));
   };

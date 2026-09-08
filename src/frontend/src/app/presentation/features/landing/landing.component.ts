@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, signal, inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
 import { Hero3dComponent } from '../hero-3d/hero-3d.component';
 import { RetroOsComponent } from '../retro-os/retro-os.component';
 import { TerminalComponent } from '../terminal/terminal.component';
@@ -40,6 +40,31 @@ export class LandingComponent implements OnInit, OnDestroy {
   protected readonly currentYear = signal(new Date().getFullYear());
   protected readonly currentTime = signal<string>('');
   protected readonly activeSection = signal<LandingSection>('hero');
+  protected readonly heroEntryPosition = signal<'top' | 'bottom'>('top');
+  protected readonly isCurtainVisible = signal<boolean>(false);
+  protected readonly transitionTargetSection = signal<LandingSection>('hero');
+
+  protected readonly hasPrevSection = computed(() => {
+    return LANDING_SECTIONS.indexOf(this.activeSection()) > 0;
+  });
+
+  protected readonly hasNextSection = computed(() => {
+    return LANDING_SECTIONS.indexOf(this.activeSection()) < LANDING_SECTIONS.length - 1;
+  });
+
+  protected readonly prevSectionName = computed(() => {
+    const idx = LANDING_SECTIONS.indexOf(this.activeSection());
+    return idx > 0 ? this.getSectionTitle(LANDING_SECTIONS[idx - 1]) : '';
+  });
+
+  protected readonly nextSectionName = computed(() => {
+    const idx = LANDING_SECTIONS.indexOf(this.activeSection());
+    return idx < LANDING_SECTIONS.length - 1 ? this.getSectionTitle(LANDING_SECTIONS[idx + 1]) : '';
+  });
+
+  protected readonly transitionTargetTitle = computed(() => {
+    return this.getSectionTitle(this.transitionTargetSection());
+  });
 
   private clockInterval: ReturnType<typeof setInterval> | null = null;
   private readonly timeFormatter = new Intl.DateTimeFormat('en-GB', {
@@ -57,6 +82,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   private touchStartX = 0;
   private wheelDeltaAccum = 0;
   private wheelResetTimer: ReturnType<typeof setTimeout> | null = null;
+  private transitionTimer: ReturnType<typeof setTimeout> | null = null;
 
   ngOnInit(): void {
     this.updateClock();
@@ -65,29 +91,58 @@ export class LandingComponent implements OnInit, OnDestroy {
     this.setupScrollTransitions();
   }
 
-  setSection(section: LandingSection, entryPosition: 'top' | 'bottom' = 'top'): void {
-    if (this.activeSection() === section && this.isTransitioning) return;
-    this.isTransitioning = true;
-    setTimeout(() => {
-      this.isTransitioning = false;
-    }, 750);
-
-    this.activeSection.set(section);
-    if (typeof window !== 'undefined') {
-      const hash = section === 'hero' ? '' : `#${section}`;
-      const url = window.location.pathname + window.location.search + hash;
-      window.history.replaceState(null, '', url);
-      this.scrollActiveNavIntoView(section);
-
-      setTimeout(() => {
-        if (entryPosition === 'bottom') {
-          const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-          window.scrollTo({ top: maxScroll, behavior: 'instant' });
-        } else {
-          window.scrollTo({ top: 0, behavior: 'instant' });
-        }
-      }, 30);
+  getSectionTitle(section: LandingSection): string {
+    const dict = this.i18n.t();
+    switch (section) {
+      case 'hero': return dict.navHome;
+      case 'retro': return dict.navRetro;
+      case 'projects': return dict.navProjects;
+      case 'simulator': return dict.navSimulator;
+      case 'terminal': return dict.navTerminal;
+      case 'contact': return dict.navContact;
     }
+  }
+
+  setSection(section: LandingSection, entryPosition: 'top' | 'bottom' = 'top'): void {
+    if (this.activeSection() === section || this.isTransitioning) return;
+    this.isTransitioning = true;
+    this.transitionTargetSection.set(section);
+    this.isCurtainVisible.set(true);
+
+    if (this.transitionTimer) clearTimeout(this.transitionTimer);
+
+    // Brief fade-curtain duration before switching section component
+    this.transitionTimer = setTimeout(() => {
+      if (section === 'hero') {
+        this.heroEntryPosition.set(entryPosition);
+      }
+
+      this.activeSection.set(section);
+
+      if (typeof window !== 'undefined') {
+        const hash = section === 'hero' ? '' : `#${section}`;
+        const url = window.location.pathname + window.location.search + hash;
+        window.history.replaceState(null, '', url);
+        this.scrollActiveNavIntoView(section);
+
+        if (section !== 'hero') {
+          if (entryPosition === 'bottom') {
+            const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+            window.scrollTo({ top: maxScroll, behavior: 'instant' });
+          } else {
+            window.scrollTo({ top: 0, behavior: 'instant' });
+          }
+        }
+      }
+
+      // Smoothly hide curtain after DOM mount and scroll placement
+      setTimeout(() => {
+        this.isCurtainVisible.set(false);
+        setTimeout(() => {
+          this.isTransitioning = false;
+        }, 220);
+      }, 120);
+    }, 150);
   }
 
   private setupScrollTransitions(): void {
@@ -167,7 +222,7 @@ export class LandingComponent implements OnInit, OnDestroy {
     }
   };
 
-  private goToNextSection(): void {
+  protected goToNextSection(): void {
     const currentIndex = LANDING_SECTIONS.indexOf(this.activeSection());
     if (currentIndex >= 0 && currentIndex < LANDING_SECTIONS.length - 1) {
       const next = LANDING_SECTIONS[currentIndex + 1];
@@ -175,7 +230,7 @@ export class LandingComponent implements OnInit, OnDestroy {
     }
   }
 
-  private goToPrevSection(): void {
+  protected goToPrevSection(): void {
     const currentIndex = LANDING_SECTIONS.indexOf(this.activeSection());
     if (currentIndex > 0) {
       const prev = LANDING_SECTIONS[currentIndex - 1];
@@ -223,6 +278,9 @@ export class LandingComponent implements OnInit, OnDestroy {
     }
     if (this.wheelResetTimer !== null) {
       clearTimeout(this.wheelResetTimer);
+    }
+    if (this.transitionTimer !== null) {
+      clearTimeout(this.transitionTimer);
     }
     if (typeof window !== 'undefined') {
       window.removeEventListener('wheel', this.onWheel);

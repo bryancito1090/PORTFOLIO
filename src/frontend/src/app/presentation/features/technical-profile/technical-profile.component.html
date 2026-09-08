@@ -6,11 +6,11 @@
 
       <figure class="ascii-portrait">
         @if (asciiArt()) {
-          <pre aria-label="Retrato ASCII de Bryan">{{ asciiArt() }}</pre>
+          <pre [attr.aria-label]="i18n.t().tpAboutAria">{{ asciiArt() }}</pre>
         } @else if (asciiLoadError()) {
-          <figcaption class="ascii-status" role="status">No se pudo cargar el retrato.</figcaption>
+          <figcaption class="ascii-status" role="status">{{ i18n.t().tpAsciiError }}</figcaption>
         } @else {
-          <figcaption class="ascii-status" role="status">Cargando retrato...</figcaption>
+          <figcaption class="ascii-status" role="status">{{ i18n.t().tpAsciiLoading }}</figcaption>
         }
       </figure>
 
@@ -18,7 +18,7 @@
       @for (paragraph of aboutParagraphs(); track $index) {
         <p class="about-description">{{ paragraph }}</p>
       }
-      <span class="about-link">About me <span aria-hidden="true">→</span></span>
+      <span class="about-link">{{ i18n.t().tpAboutLink }} <span aria-hidden="true">→</span></span>
     </div>
   </section>
 </div>

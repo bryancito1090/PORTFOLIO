@@ -81,10 +81,59 @@
     </div>
   </header>
 
-  <!-- Hero con Laptop 3D desarmable al scroll (300 frames) -->
+  <!-- Flechas Sutiles de Navegación Flotantes (Izquierda y Derecha debajo del Navbar) -->
+  <aside class="zen-floating-nav-controls" aria-label="Navegación entre secciones">
+    <button
+      type="button"
+      class="zen-nav-arrow-btn nav-arrow-left"
+      [class.disabled]="!hasPrevSection()"
+      [disabled]="!hasPrevSection()"
+      (click)="goToPrevSection()"
+      [attr.aria-label]="i18n.t().navPrevSection + ': ' + prevSectionName()"
+      [title]="hasPrevSection() ? i18n.t().navPrevSection + ' (' + prevSectionName() + ')' : ''"
+    >
+      <svg class="nav-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      <span class="nav-arrow-label">{{ prevSectionName() }}</span>
+    </button>
+
+    <button
+      type="button"
+      class="zen-nav-arrow-btn nav-arrow-right"
+      [class.disabled]="!hasNextSection()"
+      [disabled]="!hasNextSection()"
+      (click)="goToNextSection()"
+      [attr.aria-label]="i18n.t().navNextSection + ': ' + nextSectionName()"
+      [title]="hasNextSection() ? i18n.t().navNextSection + ' (' + nextSectionName() + ')' : ''"
+    >
+      <span class="nav-arrow-label">{{ nextSectionName() }}</span>
+      <svg class="nav-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+  </aside>
+
+  <!-- Telón de Transición Suave con Animación de Logo Zen -->
+  <div
+    class="zen-transition-curtain"
+    [class.visible]="isCurtainVisible()"
+    aria-hidden="true"
+  >
+    <div class="curtain-scanline"></div>
+    <div class="curtain-logo-wrapper">
+      <div class="logo-glow-ring"></div>
+      <div class="logo-image-container">
+        <img src="assets/images/logo.jpg" alt="Bryan Baño Logo" class="curtain-logo-img" />
+        <div class="logo-shimmer-sweep"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero con Laptop 3D desarmable al scroll (240 frames) -->
   @if (activeSection() === 'hero') {
     <main class="hero-container isolated-view">
-      <app-hero-3d></app-hero-3d>
+      <app-hero-3d [initialPosition]="heroEntryPosition()"></app-hero-3d>
     </main>
   }
 
