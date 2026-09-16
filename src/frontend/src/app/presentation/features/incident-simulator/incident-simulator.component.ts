@@ -1,188 +1,83 @@
-import { Component, ChangeDetectionStrategy, signal, computed, inject, OnDestroy, OnInit } from '@angular/core';
-import { I18nService } from '../../../application/services/i18n.service';
+import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { SecurityAgentService } from '../../../services/security-agent.service';
 import { RetroAudioService } from '../../../application/services/retro-audio.service';
-
-export type SimulationStage = 'idle' | 'breach' | 'detection' | 'remediation' | 'notification' | 'contained';
-export type SimulatorViewMode = 'story' | 'tech';
-
-export interface SecOpsLog {
-  readonly timestamp: string;
-  readonly level: 'WARN' | 'INFO' | 'ACTION' | 'SUCCESS';
-  readonly tag: string;
-  readonly message: string;
-}
+import {
+  SimulationMode,
+  SecurityAgentRequest,
+  SecurityAgentResponse
+} from '../../../domain/models/security.model';
 
 @Component({
-  selector: 'app-incident-simulator',
+  selector: 'app-incident-simulator, app-cyber-defense',
   standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './incident-simulator.component.html',
   styleUrl: './incident-simulator.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class IncidentSimulatorComponent implements OnInit, OnDestroy {
-  protected readonly i18n = inject(I18nService);
+export class IncidentSimulatorComponent {
+  private readonly securityService = inject(SecurityAgentService);
   private readonly audio = inject(RetroAudioService);
 
-  protected readonly stage = signal<SimulationStage>('idle');
-  protected readonly viewMode = signal<SimulatorViewMode>('story');
-  protected readonly userEmail = signal<string>('');
-  protected readonly logs = signal<SecOpsLog[]>([]);
-  protected readonly threatIp = signal<string>('198.51.100.42');
-  protected readonly executionTimeMs = signal<number>(184);
-  protected readonly showReport = signal<boolean>(false);
-  protected readonly downloadFeedback = signal<boolean>(false);
+  // Parámetros reactivos de configuración
+  readonly mode = signal<SimulationMode>('PURPLE_TEAM');
+  readonly target = signal<string>('local_sandbox');
+  readonly requestedBy = signal<string>('auditor@bryan-bano.com');
+  readonly autoIsolate = signal<boolean>(true);
 
-  protected readonly isSimulating = computed<boolean>(() => {
-    const s = this.stage();
-    return s === 'breach' || s === 'detection' || s === 'remediation' || s === 'notification';
-  });
+  // Estados de ejecución y telemetría
+  readonly isLoading = signal<boolean>(false);
+  readonly errorMessage = signal<string | null>(null);
+  readonly result = signal<SecurityAgentResponse | null>(null);
 
-  protected readonly isContained = computed<boolean>(() => this.stage() === 'contained');
-
-  protected readonly targetRecipient = computed<string>(() => {
-    const email = this.userEmail().trim();
-    return email.length > 3 && email.includes('@') ? email : 'secops-team@bryan.dev';
-  });
-
-  private timeoutIds: ReturnType<typeof setTimeout>[] = [];
-
-  ngOnInit(): void {
-    this.initDefaultLogs();
-  }
-
-  setViewMode(mode: SimulatorViewMode): void {
-    if (this.viewMode() === mode) return;
+  setTargetPreset(value: string): void {
     this.audio.playClick();
-    this.viewMode.set(mode);
+    this.target.set(value);
   }
 
-  onEmailInput(event: Event): void {
-    const val = (event.target as HTMLInputElement).value;
-    this.userEmail.set(val);
-  }
+  executeSimulation(): void {
+    if (this.isLoading()) return;
 
-  startSimulation(): void {
-    if (this.isSimulating()) return;
-
-    this.clearTimeouts();
     this.audio.playClick();
-    this.logs.set([]);
-    this.showReport.set(false);
-    this.downloadFeedback.set(false);
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+    this.result.set(null);
 
-    // Paso 1: Intento de Intrusión (Vector de Amenaza)
-    this.stage.set('breach');
-    this.appendLog({
-      level: 'WARN',
-      tag: 'IAM-ALERT',
-      message: `Anomalous API request: iam:CreateAccessKey from untrusted IP ${this.threatIp()} for principal "svc-deployer".`
+    const payload: SecurityAgentRequest = {
+      mode: this.mode(),
+      target: this.target().trim() || 'local_sandbox',
+      requested_by: this.requestedBy().trim() || 'auditor@bryan-bano.com',
+      parameters: {
+        auto_isolate: this.autoIsolate(),
+        scan_depth: 'full'
+      }
+    };
+
+    this.securityService.triggerSimulation(payload).subscribe({
+      next: (response) => {
+        this.result.set(response);
+        this.isLoading.set(false);
+        this.audio.playVictory();
+      },
+      error: (err: Error) => {
+        this.errorMessage.set(err.message || 'Error al conectar con el orquestador n8n.');
+        this.isLoading.set(false);
+        this.audio.playGameOver();
+      }
     });
-
-    // Paso 2: Detección Inmediata en EventBridge & CloudTrail (después de 700ms)
-    const t1 = setTimeout(() => {
-      this.stage.set('detection');
-      this.audio.playCellReveal();
-      this.appendLog({
-        level: 'INFO',
-        tag: 'CLOUDTRAIL',
-        message: 'Management event ingested in us-east-1. EventBridge rule "SecOps-AutoRemediate" triggered synchronously.'
-      });
-    }, 700);
-    this.timeoutIds.push(t1);
-
-    // Paso 3: Remediación Automatizada Serverless (después de 1500ms)
-    const t2 = setTimeout(() => {
-      this.stage.set('remediation');
-      this.audio.playFlagToggle();
-      this.appendLog({
-        level: 'ACTION',
-        tag: 'LAMBDA',
-        message: 'Executing fn-iam-incident-response: Revoking active STS sessions & attaching inline DenyAllSecurityPolicy.'
-      });
-    }, 1500);
-    this.timeoutIds.push(t2);
-
-    // Paso 4: Despacho de Reporte Forense (después de 2300ms)
-    const t3 = setTimeout(() => {
-      this.stage.set('notification');
-      this.audio.playCellReveal();
-      this.appendLog({
-        level: 'INFO',
-        tag: 'SES-ALERT',
-        message: `Dispatching cryptographic audit report to ${this.targetRecipient()} via Amazon SES.`
-      });
-    }, 2300);
-    this.timeoutIds.push(t3);
-
-    // Paso 5: Amenaza Contenida & Generación de Reporte (después de 3100ms)
-    const t4 = setTimeout(() => {
-      this.stage.set('contained');
-      this.audio.playVictory();
-      this.showReport.set(true);
-      this.appendLog({
-        level: 'SUCCESS',
-        tag: 'CONTAINED',
-        message: `Threat neutralized successfully in ${this.executionTimeMs()}ms. Zero credentials compromised. State: SECURE.`
-      });
-    }, 3100);
-    this.timeoutIds.push(t4);
   }
 
   resetSimulation(): void {
-    this.clearTimeouts();
     this.audio.playClick();
-    this.stage.set('idle');
-    this.showReport.set(false);
-    this.downloadFeedback.set(false);
-    this.initDefaultLogs();
-  }
-
-  simulateDownload(): void {
-    this.audio.playClick();
-    this.downloadFeedback.set(true);
-    setTimeout(() => {
-      this.downloadFeedback.set(false);
-    }, 3000);
-  }
-
-  private initDefaultLogs(): void {
-    const time = this.getCurrentTimestamp();
-    this.logs.set([
-      {
-        timestamp: time,
-        level: 'INFO',
-        tag: 'GUARDDUTY',
-        message: 'Cloud perimeter telemetry nominal. 0 active security findings in us-east-1.'
-      },
-      {
-        timestamp: time,
-        level: 'INFO',
-        tag: 'EVENTBRIDGE',
-        message: 'Active rule pattern matched: Rule-SecOps-IAM-AutoRemediation [ENABLED].'
-      }
-    ]);
-  }
-
-  private appendLog(entry: Omit<SecOpsLog, 'timestamp'>): void {
-    const timestamp = this.getCurrentTimestamp();
-    this.logs.update(prev => [...prev, { ...entry, timestamp }]);
-  }
-
-  private getCurrentTimestamp(): string {
-    const now = new Date();
-    const h = String(now.getHours()).padStart(2, '0');
-    const m = String(now.getMinutes()).padStart(2, '0');
-    const s = String(now.getSeconds()).padStart(2, '0');
-    const ms = String(now.getMilliseconds()).padStart(3, '0');
-    return `${h}:${m}:${s}.${ms}`;
-  }
-
-  private clearTimeouts(): void {
-    this.timeoutIds.forEach(id => clearTimeout(id));
-    this.timeoutIds = [];
-  }
-
-  ngOnDestroy(): void {
-    this.clearTimeouts();
+    this.errorMessage.set(null);
+    this.result.set(null);
+    this.isLoading.set(false);
   }
 }
+
+export {
+  IncidentSimulatorComponent as CyberDefenseComponent,
+  IncidentSimulatorComponent as CyberDefenseDashboardComponent
+};

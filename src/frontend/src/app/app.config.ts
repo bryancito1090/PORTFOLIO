@@ -6,6 +6,8 @@ import { RetroScorePort } from './domain/ports/retro-score.port';
 import { LocalStorageRetroScoreAdapter } from './infrastructure/adapters/local-storage-retro-score.adapter';
 import { ChatPort } from './domain/ports/chat.port';
 import { N8nChatAdapter } from './infrastructure/adapters/n8n-chat.adapter';
+import { SecurityAgentPort } from './domain/ports/security-agent.port';
+import { SecurityAgentService } from './services/security-agent.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +15,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(),
     { provide: RetroScorePort, useClass: LocalStorageRetroScoreAdapter },
-    { provide: ChatPort, useClass: N8nChatAdapter }
+    { provide: ChatPort, useClass: N8nChatAdapter },
+    { provide: SecurityAgentPort, useClass: SecurityAgentService }
   ]
 };
