@@ -1,0 +1,36 @@
+name: CI Pipeline - Quality & Build
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+      - master
+  pull_request:
+    branches:
+      - develop
+      - main
+      - master
+
+jobs:
+  validate-frontend:
+    name: Build & Validate Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Frontend Dependencies
+        run: |
+          cd src/frontend
+          npm ci
+
+      - name: Build Angular 20 Production Bundle
+        run: |
+          cd src/frontend
+          npm run build -- --configuration production

@@ -49,7 +49,7 @@ export const EN_TRANSLATIONS: TranslationDictionary = {
   p2RightDesc: 'Native Signals, OnPush rendering, and hardware-accelerated 2D animation.',
   p2RightBadge1: 'Reactive Signals',
   p2RightBadge2: 'OnPush 60FPS',
-  p3LeftTag: '04 // STANDARDS',
+  p3LeftTag: 'STANDARDS',
   p3LeftTitle: 'Patterns & Resilience',
   p3LeftDesc: 'DIP, typed DTOs, and consistent ProblemDetails handling.',
   p3LeftBadge1: 'Dependency Inversion',

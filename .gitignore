@@ -33,5 +33,11 @@ Thumbs.db
 desktop.ini
 
 # Variables de entorno y secretos locales
+.env
+.env.*
 *.env
+*.env.*
 *.env.local
+*.pem
+*.key
+*.pfx

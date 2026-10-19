@@ -1,222 +1,423 @@
-<div class="soc-dashboard" aria-label="Autonomous Cyber-Defense SOC Dashboard">
-  <!-- Encabezado Táctico del SOC -->
-  <header class="soc-header">
-    <div class="logo-area">
-      <div class="shield-badge">
-        <svg class="shield-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 2L3 7v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z"/>
-          <path d="M12 8v4m0 4h.01" stroke-linecap="round"/>
-        </svg>
+<div class="zen-soc-container" role="region" aria-label="Simulador de Ciberdefensa y Respuesta a Incidentes">
+  <!-- Cabecera de Sección (Widescreen Cyber-Zen) -->
+  <header class="soc-section-header">
+    <div class="header-left">
+      <div class="title-with-badge">
+        <span class="pulse-indicator" aria-hidden="true"></span>
+        <h2 class="section-title">Autonomous Cyber-Defense</h2>
       </div>
-      <div>
-        <h1 class="soc-title">Autonomous Cyber-Defense &amp; Purple Teaming</h1>
-        <p class="soc-subtitle">Triage Cognitivo DeepSeek // Orquestador n8n // Evidencia Criptográfica Gotenberg</p>
-      </div>
+      <span class="section-tag">SECOPS ORCHESTRATOR &bull; N8N + DEEPSEEK + GOTENBERG</span>
     </div>
-    <span class="engine-badge">Engine: n8n + DeepSeek + Gotenberg</span>
+
+    <!-- Stepper de Navegación Visual en 3 Pasos -->
+    <nav class="zen-stepper-nav" aria-label="Progreso de la simulación">
+      <button
+        type="button"
+        class="step-nav-btn"
+        [class.active]="currentStep() === 1"
+        [class.done]="currentStep() > 1"
+        (click)="goToStep(1)"
+        [disabled]="isLoading()"
+      >
+        <span class="step-num">01</span>
+        <span class="step-lbl">Amenaza</span>
+      </button>
+
+      <span class="step-nav-arrow" aria-hidden="true">❯</span>
+
+      <button
+        type="button"
+        class="step-nav-btn"
+        [class.active]="currentStep() === 2"
+        [class.done]="currentStep() > 2"
+        (click)="goToStep(2)"
+        [disabled]="isLoading()"
+      >
+        <span class="step-num">02</span>
+        <span class="step-lbl">Ataque en Vivo</span>
+      </button>
+
+      <span class="step-nav-arrow" aria-hidden="true">❯</span>
+
+      <button
+        type="button"
+        class="step-nav-btn"
+        [class.active]="currentStep() === 3"
+        (click)="goToStep(3)"
+        [disabled]="!result() || isLoading()"
+      >
+        <span class="step-num">03</span>
+        <span class="step-lbl">Evidencia Forense</span>
+      </button>
+    </nav>
   </header>
 
-  <!-- Panel de Configuración de la Simulación -->
-  <section class="control-panel">
-    <div class="panel-header">
-      <span class="panel-tag">SECOPS // OPERATIONS DISPATCHER</span>
-      <h2 class="panel-title">Lanzador de Operaciones de Ciberdefensa</h2>
-    </div>
-
-    <div class="form-grid">
-      <!-- Modo de Operación -->
-      <div class="form-group">
-        <label for="operation-mode">Modo de Operación:</label>
-        <select
-          id="operation-mode"
-          [ngModel]="mode()"
-          (ngModelChange)="mode.set($event)"
-          [disabled]="isLoading()"
-        >
-          <option value="PURPLE_TEAM">PURPLE TEAM (Adversary Emulation + Defense)</option>
-          <option value="EASM">EASM (Superficie de Ataque Externa)</option>
-          <option value="SOAR">SOAR (Enriquecimiento e Inteligencia)</option>
-        </select>
-      </div>
-
-      <!-- Objetivo -->
-      <div class="form-group">
-        <label for="operation-target">Objetivo (Target / FQDN / IP):</label>
-        <input
-          id="operation-target"
-          type="text"
-          [ngModel]="target()"
-          (ngModelChange)="target.set($event)"
-          placeholder="local_sandbox o IP/Dominio"
-          [disabled]="isLoading()"
-        />
-        <div class="target-presets">
-          <span class="preset-label">Presets:</span>
-          <button type="button" class="preset-btn" (click)="setTargetPreset('local_sandbox')">local_sandbox</button>
-          <button type="button" class="preset-btn" (click)="setTargetPreset('gateway.perimeter.internal')">gateway.perimeter</button>
-          <button type="button" class="preset-btn" (click)="setTargetPreset('api.bryan-bano.com')">api.bryan-bano.com</button>
-        </div>
-      </div>
-
-      <!-- Auditor / Solicitante -->
-      <div class="form-group">
-        <label for="operation-auditor">Auditor / Solicitante:</label>
-        <input
-          id="operation-auditor"
-          type="email"
-          [ngModel]="requestedBy()"
-          (ngModelChange)="requestedBy.set($event)"
-          placeholder="auditor@empresa.com"
-          [disabled]="isLoading()"
-        />
-      </div>
-
-      <!-- Aislamiento Zero-Trust -->
-      <div class="form-group checkbox-group">
-        <label class="checkbox-label" for="operation-isolate">
-          <input
-            id="operation-isolate"
-            type="checkbox"
-            [ngModel]="autoIsolate()"
-            (ngModelChange)="autoIsolate.set($event)"
-            [disabled]="isLoading()"
-          />
-          <span class="checkbox-text">Aislamiento y Contención Automática (Zero-Trust)</span>
-        </label>
-      </div>
-    </div>
-
-    <!-- Botón de Lanzamiento -->
-    <button
-      type="button"
-      class="launch-btn"
-      (click)="executeSimulation()"
-      [disabled]="isLoading()"
-    >
-      @if (!isLoading()) {
-        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-        </svg>
-        <span>Iniciar Simulación de Ciberdefensa</span>
-      } @else {
-        <span class="spinner-dot"></span>
-        <span>Ejecutando Ciclo Cerrado (Triage Cognitivo DeepSeek)...</span>
-      }
-    </button>
-  </section>
-
-  <!-- Estado de Alerta de Error -->
-  @if (errorMessage(); as error) {
-    <div class="alert-box error" role="alert">
-      <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="10"/>
-        <line x1="12" y1="8" x2="12" y2="12"/>
-        <line x1="12" y1="16" x2="12.01" y2="16"/>
-      </svg>
-      <div class="alert-content">
-        <strong>Error en Operación:</strong> {{ error }}
-      </div>
-    </div>
-  }
-
-  <!-- Dashboard de Resultados en Tiempo Real -->
-  @if (result(); as res) {
-    <section class="results-dashboard" aria-live="polite">
-      <div class="results-header">
-        <div class="results-title-group">
-          <span class="live-dot"></span>
-          <h2>Telemetría Forense Consolidada</h2>
-        </div>
-        <div class="header-badges">
-          <span class="status-pill status-completed">COMPLETADO (200 OK)</span>
-          <button type="button" class="reset-btn" (click)="resetSimulation()" title="Nueva Simulación">
-            Nueva Consulta
-          </button>
-        </div>
-      </div>
-
-      <div class="metrics-grid">
-        <!-- Veredicto Cognitivo -->
-        <div class="metric-card">
-          <span class="metric-title">Veredicto DeepSeek</span>
-          <div class="verdict-tag" [ngClass]="res.summary.verdict.toLowerCase()">
-            {{ res.summary.verdict }}
-          </div>
+  <!-- Control de Flujo Secuencial: 1 Pantalla Enfocada por Paso -->
+  @switch (currentStep()) {
+    <!-- ========================================================================
+         PASO 1: SELECCIÓN PANORÁMICA DE LA AMENAZA (Limpieza Zen Absoluta)
+         ======================================================================== -->
+    @case (1) {
+      <section class="step-pane step-pane-scenarios" aria-label="Paso 1: Selección de Amenaza">
+        <div class="pane-headline">
+          <span class="pane-kicker">PASO 01 // CATÁLOGO DE INCIDENTES</span>
+          <h3 class="pane-title">Selecciona el Escenario de Amenaza a Evaluar</h3>
+          <p class="pane-desc">
+            Cada opción simula un vector de intrusión real contra un servidor de la infraestructura. Haz 1 clic para cargar la simulación:
+          </p>
         </div>
 
-        <!-- Risk Score -->
-        <div class="metric-card">
-          <span class="metric-title">Risk Score</span>
-          <div
-            class="risk-gauge"
-            [ngClass]="res.summary.risk_score > 70 ? 'high-risk' : (res.summary.risk_score > 30 ? 'med-risk' : 'safe-risk')"
-          >
-            {{ res.summary.risk_score }} <span class="gauge-max">/ 100</span>
-          </div>
-        </div>
+        <div class="scenario-widescreen-grid">
+          @for (sc of scenarios; track sc.id) {
+            <button
+              type="button"
+              class="scenario-wide-card"
+              [class.active]="activeScenarioId() === sc.id"
+              (click)="selectScenario(sc)"
+            >
+              <div class="card-top-bar">
+                <span class="card-badge">{{ sc.badge }}</span>
+                <span class="card-mode-pill">{{ sc.mode }}</span>
+              </div>
 
-        <!-- Latencia de Mitigación -->
-        <div class="metric-card">
-          <span class="metric-title">Latencia de Mitigación (&Delta;t)</span>
-          <div class="metric-value highlight">{{ res.summary.mitigation_time_ms }} ms</div>
-        </div>
+              <h4 class="card-main-title">{{ sc.title }}</h4>
+              <span class="card-subtitle-tag">{{ sc.subtitle }}</span>
+              <p class="card-summary">{{ sc.description }}</p>
 
-        <!-- Contención Docker / Red -->
-        <div class="metric-card">
-          <span class="metric-title">Contención de Red</span>
-          <div class="metric-value containment-value" [class.contained]="res.summary.containment_executed">
-            {{ res.summary.containment_executed ? 'Aislado (Host Bridge Detached)' : 'Monitoreo Activo' }}
-          </div>
-        </div>
-      </div>
+              <!-- Caja del Servidor Objetivo (Target Explicado) -->
+              <div class="card-target-preview">
+                <div class="target-badge-line">
+                  <svg class="target-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+                    <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+                    <line x1="6" y1="6" x2="6.01" y2="6"/>
+                    <line x1="6" y1="18" x2="6.01" y2="18"/>
+                  </svg>
+                  <span class="target-meta-kicker">ACTIVO EVALUADO:</span>
+                  <strong class="target-name-strong">{{ sc.targetName }}</strong>
+                </div>
+                <code class="target-host-code">{{ sc.target }}</code>
+                <p class="target-prot-note">{{ sc.targetProtection }}</p>
+              </div>
 
-      <!-- Técnicas MITRE ATT&CK -->
-      <div class="mitre-section">
-        <div class="mitre-header">
-          <span class="mitre-label">Técnicas MITRE ATT&CK v14 Correlacionadas</span>
-          <span class="mitre-count">{{ res.summary.mitre_techniques.length }} detectadas</span>
-        </div>
-        <div class="mitre-chips">
-          @for (tech of res.summary.mitre_techniques; track tech) {
-            <span class="chip">
-              <span class="chip-dot"></span>
-              {{ tech }}
-            </span>
+              <div class="card-action-cue">
+                <span class="cue-text">SELECCIONAR Y VISUALIZAR ATAQUE</span>
+                <span class="cue-arrow">❯</span>
+              </div>
+            </button>
           }
         </div>
-      </div>
+      </section>
+    }
 
-      <!-- Evidencia Forense & Hash Criptográfico -->
-      <div class="forensic-box">
-        <div class="forensic-header">
-          <span class="forensic-title">Evidencia Forense Criptográfica (Principio de No Repudio)</span>
-          <span class="timestamp-tag">{{ res.timestamp }}</span>
-        </div>
-        <div class="forensic-body">
-          <p><strong>Simulation UUID:</strong> <code>{{ res.simulation_id }}</code></p>
-          <p><strong>Execution ID:</strong> <code>{{ res.execution_id }}</code></p>
-          <p><strong>Firma SHA-256:</strong> <code class="hash-code">{{ res.evidence.sha256_hash }}</code></p>
+    <!-- ========================================================================
+         PASO 2: VISUALIZADOR DEL ATAQUE EN TIEMPO REAL (Live Network Topology)
+         ======================================================================== -->
+    @case (2) {
+      <section class="step-pane step-pane-live-attack" aria-label="Paso 2: Visualizador del Ataque en Vivo">
+        <!-- Barra de Control Superior del Escenario -->
+        <div class="live-stage-toolbar">
+          <button type="button" class="btn-change-scenario" (click)="goToStep(1)" [disabled]="isLoading()">
+            <span class="btn-arrow">❮</span>
+            <span>Cambiar Amenaza</span>
+          </button>
+
+          <div class="scenario-live-info">
+            <span class="live-target-kicker">OBJETIVO ACTIVO:</span>
+            <strong class="live-target-title">{{ currentScenario().targetName }}</strong>
+            <code class="live-target-host">[{{ currentScenario().target }}]</code>
+          </div>
+
+          <div class="live-status-pill" [class.active-attack]="isLoading()">
+            <span class="status-pulse-dot"></span>
+            <span>{{ isLoading() ? 'SIMULACIÓN Y TRIAGE EN CURSO' : 'LISTO PARA EJECUTAR' }}</span>
+          </div>
         </div>
 
-        <div class="action-buttons">
-          <a
-            [href]="res.evidence.report_url"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="report-btn"
-          >
-            <svg class="report-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
-              <polyline points="10 9 9 9 8 9"/>
-            </svg>
-            <span>Ver Reporte Forense en Navegador</span>
-            <span class="external-arrow">↗</span>
-          </a>
+        <!-- Visualizador Gráfico de Red en Tiempo Real -->
+        <div class="zen-attack-stage" [class.firing]="isLoading()">
+          <div class="attack-topology-map">
+            <!-- NODO 1: Origen de la Amenaza (Atacante) -->
+            <div class="topo-node attacker-node" [class.attacking]="isLoading()">
+              <div class="node-icon-box">
+                <svg class="node-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2a10 10 0 0 0-10 10c0 4.4 2.9 8.2 6.9 9.5.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.4 1.1 3 .8.1-.7.4-1.1.7-1.4-2.2-.2-4.6-1.1-4.6-5 0-1.1.4-2 1-2.8-.1-.3-.4-1.3.1-2.7 0 0 .9-.3 2.8 1.1a9.8 9.8 0 0 1 5.2 0c2-1.4 2.8-1.1 2.8-1.1.5 1.4.2 2.4.1 2.7.6.8 1 1.7 1 2.8 0 3.9-2.4 4.8-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4-1.3 6.9-5.1 6.9-9.5A10 10 0 0 0 12 2z"/>
+                </svg>
+              </div>
+              <div class="node-body">
+                <span class="node-pill sakura">ACTOR DE AMENAZA</span>
+                <h4 class="node-heading">Atacante Externo</h4>
+                <code class="node-code-ip">IP: {{ currentScenario().attackerIp }}</code>
+                <span class="node-vector-desc">{{ currentScenario().attackVector }}</span>
+                <span class="node-mitre-hint">{{ currentScenario().mitreTechnique }}</span>
+              </div>
+            </div>
+
+            <!-- CONDUCTO 1: Flujo de Ataque / Paquetes Maliciosos -->
+            <div class="topo-conduit conduit-attack" [class.active]="isLoading()">
+              <div class="conduit-wire attack-wire"></div>
+              <div class="packet-stream attack-packets" aria-hidden="true">
+                <span class="packet p1"></span>
+                <span class="packet p2"></span>
+                <span class="packet p3"></span>
+              </div>
+              <span class="conduit-label">
+                {{ isLoading() ? 'INYECCIÓN DE PAYLOAD' : 'CANAL EXPUESTO' }}
+              </span>
+            </div>
+
+            <!-- NODO 2: Servidor Objetivo (Target a Proteger) -->
+            <div
+              class="topo-node target-node"
+              [class.under-attack]="isLoading()"
+              [class.isolated]="autoIsolate() && isLoading()"
+            >
+              <!-- Anillo Zero-Trust Protector -->
+              <div class="zero-trust-barrier" [class.shielded]="autoIsolate() && isLoading()" title="Aislamiento Zero-Trust"></div>
+              <div class="node-icon-box target-box">
+                <svg class="node-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+                  <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+                  <line x1="6" y1="6" x2="6.01" y2="6"/>
+                  <line x1="6" y1="18" x2="6.01" y2="18"/>
+                </svg>
+              </div>
+              <div class="node-body">
+                <span class="node-pill kintsugi">ACTIVO PROTEGIDO</span>
+                <h4 class="node-heading">{{ currentScenario().targetName }}</h4>
+                <code class="node-code-ip">Host: {{ currentScenario().target }}</code>
+                <span class="node-state-badge" [class.isolated-badge]="autoIsolate() && isLoading()">
+                  {{ isLoading() ? (autoIsolate() ? 'AISLANDO DE LA RED' : 'INSPECCIONANDO TRÁFICO') : 'ESTADO NOMINAL (ONLINE)' }}
+                </span>
+                <p class="node-role-text">{{ currentScenario().targetRole }}</p>
+              </div>
+            </div>
+
+            <!-- CONDUCTO 2: Flujo de Contención y Triage IA -->
+            <div class="topo-conduit conduit-defense" [class.active]="isLoading()">
+              <div class="conduit-wire defense-wire"></div>
+              <div class="packet-stream defense-packets" aria-hidden="true">
+                <span class="packet d1"></span>
+                <span class="packet d2"></span>
+              </div>
+              <span class="conduit-label defense-label">
+                {{ isLoading() ? 'TRIAGE MITRE ATT&CK' : 'VIGILANCIA 24/7' }}
+              </span>
+            </div>
+
+            <!-- NODO 3: Orquestador Autónomo de Ciberdefensa -->
+            <div class="topo-node orchestrator-node" [class.analyzing]="isLoading()">
+              <div class="node-icon-box orchestrator-box">
+                <svg class="node-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                  <polyline points="2 17 12 22 22 17"/>
+                  <polyline points="2 12 12 17 22 12"/>
+                </svg>
+              </div>
+              <div class="node-body">
+                <span class="node-pill matcha">ORQUESTADOR AUTÓNOMO</span>
+                <h4 class="node-heading">n8n + DeepSeek</h4>
+                <code class="node-code-ip">SecOps AI Reasoning</code>
+                <span class="node-vector-desc">Correlación y Triage Inmediato</span>
+                <span class="node-mitre-hint">Sellado Forense Gotenberg</span>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
+
+        <!-- Barra de Parámetros y Disparo (Compacta, Horizontal y Espaciosa) -->
+        <div class="live-action-deck">
+          <!-- Firma de Auditoría con Presets de 1 Clic -->
+          <div class="deck-field-group">
+            <label for="deck-auditor-input" class="deck-label">
+              <span>Firma del Solicitante (Trazabilidad PDF):</span>
+              <small class="deck-sub-hint">No enviamos correos ni spam. Solo se estampa en el informe pericial descargable.</small>
+            </label>
+            <div class="auditor-controls-row">
+              <input
+                id="deck-auditor-input"
+                type="email"
+                class="deck-input"
+                [ngModel]="requestedBy()"
+                (ngModelChange)="requestedBy.set($event)"
+                [disabled]="isLoading()"
+              />
+              <div class="auditor-quick-chips">
+                @for (preset of auditorPresets; track preset.id) {
+                  <button
+                    type="button"
+                    class="quick-preset-btn"
+                    [class.active]="activeAuditorPresetId() === preset.id"
+                    (click)="setAuditorPreset(preset)"
+                    [disabled]="isLoading()"
+                  >
+                    {{ preset.label }}
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Toggle Zero-Trust & Botón de Disparo Principal -->
+          <div class="deck-action-group">
+            <label class="zero-trust-toggle" for="deck-auto-isolate">
+              <input
+                id="deck-auto-isolate"
+                type="checkbox"
+                [ngModel]="autoIsolate()"
+                (ngModelChange)="autoIsolate.set($event)"
+                [disabled]="isLoading()"
+              />
+              <span class="toggle-track"></span>
+              <span class="toggle-info">
+                <strong>Aislamiento Zero-Trust:</strong>
+                <small>Desconecta el host si el riesgo es crítico.</small>
+              </span>
+            </label>
+
+            <button
+              type="button"
+              class="zen-launch-btn"
+              (click)="executeSimulation()"
+              [disabled]="isLoading()"
+            >
+              @if (!isLoading()) {
+                <svg class="launch-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+                <span>DISPARAR DEFENSA AUTÓNOMA</span>
+              } @else {
+                <span class="launch-spinner"></span>
+                <span>TRIAGE COGNITIVO EN CURSO...</span>
+              }
+            </button>
+          </div>
+        </div>
+
+        <!-- Alerta de Error en caso de falla -->
+        @if (errorMessage(); as err) {
+          <div class="live-error-banner" role="alert">
+            <span class="error-pill-tag">ERROR DE CONEXIÓN</span>
+            <p class="error-msg-text">{{ err }}</p>
+          </div>
+        }
+      </section>
+    }
+
+    <!-- ========================================================================
+         PASO 3: BÓVEDA FORENSE Y VEREDICTO FINAL (Dashboard Widescreen Limpio)
+         ======================================================================== -->
+    @case (3) {
+      @if (result(); as res) {
+        <section class="step-pane step-pane-forensics" aria-label="Paso 3: Evidencia Forense">
+          <!-- Barra Superior de Resultados -->
+          <div class="forensics-toolbar">
+            <button type="button" class="btn-change-scenario" (click)="restartSimulator()">
+              <span class="btn-arrow">❮</span>
+              <span>Simular Otra Amenaza</span>
+            </button>
+            <span class="forensic-status-pill">INCIDENTE NEUTRALIZADO // EVIDENCIA SELLADA</span>
+          </div>
+
+          <!-- Banner de Veredicto Principal -->
+          @let vInfo = getVerdictInfo(res.summary.verdict);
+          <div class="verdict-widescreen-banner" [ngClass]="vInfo.cssClass">
+            <div class="verdict-top-line">
+              <span class="verdict-kicker">VEREDICTO OFICIAL DEEPSEEK</span>
+              <span class="verdict-tag">{{ res.summary.verdict }}</span>
+            </div>
+            <h3 class="verdict-big-headline">{{ vInfo.title }}</h3>
+            <p class="verdict-desc">{{ vInfo.subtitle }}</p>
+          </div>
+
+          <!-- 4 Tarjetas HUD Widescreen -->
+          <div class="hud-panoramic-grid">
+            @let rLevel = getRiskLevel(res.summary.risk_score);
+            <div class="hud-panel">
+              <span class="hud-panel-title">NIVEL DE RIESGO</span>
+              <div class="hud-big-num" [ngClass]="rLevel.cssClass">
+                {{ res.summary.risk_score }}<span class="hud-max">/100</span>
+              </div>
+              <span class="hud-sub-label" [ngClass]="rLevel.cssClass">{{ rLevel.label }}</span>
+            </div>
+
+            <div class="hud-panel">
+              <span class="hud-panel-title">TIEMPO DE REACCIÓN (Δt)</span>
+              <div class="hud-big-num cyan">{{ res.summary.mitigation_time_ms }} ms</div>
+              <span class="hud-sub-label">Vs. 4.2 horas promedio humano</span>
+            </div>
+
+            <div class="hud-panel">
+              <span class="hud-panel-title">CONTENCIÓN ZERO-TRUST</span>
+              <div class="hud-big-num" [class.matcha]="res.summary.containment_executed">
+                {{ res.summary.containment_executed ? 'Aislado' : 'Nominal' }}
+              </div>
+              <span class="hud-sub-label">
+                {{ res.summary.containment_executed ? 'Host Bridge Detached' : 'Sin desconexión' }}
+              </span>
+            </div>
+
+            <div class="hud-panel">
+              <span class="hud-panel-title">ACTIVO EVALUADO</span>
+              <div class="hud-big-num kintsugi">{{ res.mode }}</div>
+              <span class="hud-sub-label">{{ res.target }}</span>
+            </div>
+          </div>
+
+          <!-- Técnicas MITRE ATT&CK & Bóveda Criptográfica en 2 Columnas Panorámicas -->
+          <div class="forensics-split-grid">
+            <!-- Técnicas MITRE -->
+            <div class="forensic-subcard">
+              <div class="subcard-header">
+                <h4 class="subcard-title">Técnicas MITRE ATT&amp;CK Identificadas</h4>
+                <span class="subcard-badge">{{ res.summary.mitre_techniques.length }} detectadas</span>
+              </div>
+              <div class="mitre-chips-wrap">
+                @for (tech of res.summary.mitre_techniques; track tech) {
+                  <span class="mitre-chip">
+                    <span class="chip-crosshair">⌖</span> {{ tech }}
+                  </span>
+                }
+              </div>
+            </div>
+
+            <!-- Bóveda Criptográfica SHA-256 -->
+            <div class="forensic-subcard">
+              <div class="subcard-header">
+                <h4 class="subcard-title">Principio de No Repudio (Firma Forense)</h4>
+                <span class="subcard-time">{{ res.timestamp }}</span>
+              </div>
+              <div class="vault-hash-lines">
+                <div class="hash-row">
+                  <span class="hash-label">UUID:</span>
+                  <code class="hash-val">{{ res.simulation_id }}</code>
+                </div>
+                <div class="hash-row">
+                  <span class="hash-label">SHA-256:</span>
+                  <code class="hash-val highlight">{{ res.evidence.sha256_hash }}</code>
+                </div>
+              </div>
+              <div class="vault-btn-row">
+                <a
+                  [href]="res.evidence.report_url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-download-forensic-pdf"
+                >
+                  <svg class="download-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                  </svg>
+                  <span>Abrir Reporte Forense Completo (PDF en Gotenberg)</span>
+                  <span class="btn-pdf-arrow">↗</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      }
+    }
   }
 </div>

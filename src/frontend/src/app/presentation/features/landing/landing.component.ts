@@ -82,8 +82,11 @@ export class LandingComponent implements OnInit, OnDestroy {
   private isTransitioning = false;
   private touchStartY = 0;
   private touchStartX = 0;
+  private touchStartAtTop = false;
+  private touchStartAtBottom = false;
   private wheelDeltaAccum = 0;
-  private wheelResetTimer: ReturnType<typeof setTimeout> | null = null;
+  private wheelGestureArmed = false;
+  private lastWheelAt = 0;
   private transitionTimer: ReturnType<typeof setTimeout> | null = null;
 
   ngOnInit(): void {
@@ -177,44 +180,72 @@ export class LandingComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Ignorar si el usuario está interactuando con un modal o scroll interno
+    // Ignorar si el usuario está interactuando con un modal
     const target = e.target as HTMLElement | null;
-    if (target?.closest('.project-detail-overlay, .modal-scroll-area')) {
+    if (target?.closest('.project-detail-overlay')) {
       return;
     }
 
+    const now = performance.now();
+    const isNewGesture = now - this.lastWheelAt > 160;
+    this.lastWheelAt = now;
+
     const scrollY = window.scrollY || window.pageYOffset;
     const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-    const isAtTop = scrollY <= 6;
-    const isAtBottom = scrollY >= maxScroll - 6;
+    const goingDown = e.deltaY > 0;
+    const atBoundary = goingDown ? scrollY >= maxScroll - 6 : scrollY <= 6;
+    const innerCanScroll = atBoundary && this.canInnerScroll(target, goingDown);
 
-    if (e.deltaY > 0 && isAtBottom) {
-      this.wheelDeltaAccum += e.deltaY;
-      if (this.wheelDeltaAccum > 50) {
-        this.wheelDeltaAccum = 0;
-        this.goToNextSection();
-      }
-    } else if (e.deltaY < 0 && isAtTop) {
-      this.wheelDeltaAccum += e.deltaY;
-      if (this.wheelDeltaAccum < -50) {
-        this.wheelDeltaAccum = 0;
-        this.goToPrevSection();
-      }
-    } else {
+    if (innerCanScroll) {
       this.wheelDeltaAccum = 0;
+      this.wheelGestureArmed = false;
+      return;
     }
 
-    if (this.wheelResetTimer) clearTimeout(this.wheelResetTimer);
-    this.wheelResetTimer = setTimeout(() => {
+    if (isNewGesture) {
       this.wheelDeltaAccum = 0;
-    }, 250);
+      this.wheelGestureArmed = atBoundary;
+    }
+
+    if (!this.wheelGestureArmed || !atBoundary) {
+      this.wheelDeltaAccum = 0;
+      return;
+    }
+
+    this.wheelDeltaAccum += e.deltaY;
+    if (Math.abs(this.wheelDeltaAccum) > 160) {
+      this.wheelDeltaAccum = 0;
+      this.wheelGestureArmed = false;
+      if (goingDown) {
+        this.goToNextSection();
+      } else {
+        this.goToPrevSection();
+      }
+    }
   };
+
+  private canInnerScroll(target: HTMLElement | null, goingDown: boolean): boolean {
+    for (let el = target; el && el !== document.documentElement; el = el.parentElement) {
+      const overflowY = getComputedStyle(el).overflowY;
+      if (overflowY !== 'auto' && overflowY !== 'scroll') continue;
+      if (goingDown ? el.scrollTop + el.clientHeight < el.scrollHeight - 1 : el.scrollTop > 0) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   private onTouchStart = (e: TouchEvent): void => {
     if (this.isTransitioning || this.isCurtainVisible()) return;
     if (e.touches.length > 0) {
       this.touchStartY = e.touches[0].clientY;
       this.touchStartX = e.touches[0].clientX;
+
+      const scrollY = window.scrollY || window.pageYOffset;
+      const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      const target = e.target as HTMLElement | null;
+      this.touchStartAtTop = scrollY <= 10 && !this.canInnerScroll(target, false);
+      this.touchStartAtBottom = scrollY >= maxScroll - 10 && !this.canInnerScroll(target, true);
     }
   };
 
@@ -222,7 +253,7 @@ export class LandingComponent implements OnInit, OnDestroy {
     if (this.isTransitioning || this.isCurtainVisible() || e.changedTouches.length === 0) return;
 
     const target = e.target as HTMLElement | null;
-    if (target?.closest('.project-detail-overlay, .modal-scroll-area')) {
+    if (target?.closest('.project-detail-overlay')) {
       return;
     }
 
@@ -232,14 +263,9 @@ export class LandingComponent implements OnInit, OnDestroy {
     const diffX = this.touchStartX - touchEndX;
 
     if (Math.abs(diffY) > 50 && Math.abs(diffY) > Math.abs(diffX) * 1.3) {
-      const scrollY = window.scrollY || window.pageYOffset;
-      const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-      const isAtTop = scrollY <= 10;
-      const isAtBottom = scrollY >= maxScroll - 10;
-
-      if (diffY > 0 && isAtBottom) {
+      if (diffY > 0 && this.touchStartAtBottom) {
         this.goToNextSection();
-      } else if (diffY < 0 && isAtTop) {
+      } else if (diffY < 0 && this.touchStartAtTop) {
         this.goToPrevSection();
       }
     }
@@ -298,9 +324,6 @@ export class LandingComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.clockInterval !== null) {
       clearInterval(this.clockInterval);
-    }
-    if (this.wheelResetTimer !== null) {
-      clearTimeout(this.wheelResetTimer);
     }
     if (this.transitionTimer !== null) {
       clearTimeout(this.transitionTimer);
