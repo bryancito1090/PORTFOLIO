@@ -1,6 +1,7 @@
 using Microsoft.OpenApi.Models;
 using Portfolio.Application;
 using Portfolio.Infrastructure;
+using Portfolio.Infrastructure.Persistence.Context;
 using Portfolio.WebApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -115,5 +116,20 @@ app.MapGet("/", () => Results.Ok(new
     version = "1.0.0",
     docs = "/swagger"
 }));
+
+// 8. Auto-provisionamiento de esquema de base de datos en arranque
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<PortfolioDbContext>();
+    try
+    {
+        db.Database.EnsureCreated();
+        app.Logger.LogInformation("Esquema de base de datos asegurado correctamente.");
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogWarning(ex, "No se pudo sincronizar la base de datos al inicio. Verifica la conexión a MySQL.");
+    }
+}
 
 app.Run();

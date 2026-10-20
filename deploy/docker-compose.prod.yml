@@ -1,0 +1,75 @@
+services:
+  portfolio-api:
+    build:
+      context: ../src/backend
+      dockerfile: Dockerfile
+    image: portfolio-backend:latest
+    container_name: portfolio_api
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=portfolio-mysql;Port=3306;Database=portfolio_db;User=portfolio_user;Password=${DB_PASSWORD};CharSet=utf8mb4;
+      - JwtSettings__SecretKey=${JWT_SECRET_KEY}
+      - JwtSettings__Issuer=https://api.bryan-bano.com
+      - JwtSettings__Audience=https://bryan-bano.com
+      - CorsSettings__AllowedOrigins__0=https://bryan-bano.com
+      - CorsSettings__AllowedOrigins__1=https://portfolio.bryan-bano.com
+      - CorsSettings__AllowedOrigins__2=https://git.bryan-bano.com
+      - CorsSettings__AllowedOrigins__3=http://localhost:4200
+      - EnableSwaggerInProd=${ENABLE_SWAGGER:-true}
+    depends_on:
+      portfolio-mysql:
+        condition: service_healthy
+    networks:
+      - portfolio-network
+
+  portfolio-mysql:
+    image: mysql:8.0
+    container_name: portfolio_mysql
+    restart: unless-stopped
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --innodb-buffer-pool-size=256M
+      - --max-connections=100
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=portfolio_db
+      - MYSQL_USER=portfolio_user
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init-db.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD} || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - portfolio-network
+
+  portfolio-tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: portfolio_tunnel
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      - portfolio-api
+    networks:
+      - portfolio-network
+
+networks:
+  portfolio-network:
+    driver: bridge
+    name: portfolio_network
+
+volumes:
+  mysql_data:
+    name: portfolio_mysql_data
