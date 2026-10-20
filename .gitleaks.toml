@@ -1,0 +1,11 @@
+title = "Portfolio Gitleaks Configuration"
+
+[allowlist]
+description = "Exclusiones globales de documentación, dependencias compiladas y falsos positivos"
+paths = [
+  '''(?i)package-lock\.json$''',
+  '''(?i)\.angular/.*''',
+  '''(?i)node_modules/.*''',
+  '''(?i)dist/.*''',
+  '''(?i)\.git/.*'''
+]
