@@ -1,0 +1,6 @@
+# Gitleaks Ignore List
+# Añade aquí fingerprints (huellas) de secretos detectados que sean falsos positivos confirmados.
+# Formato: una huella o regla por línea.
+#
+# Para ignorar un falso positivo directamente en el código fuente, añade el comentario:
+#   const fakeToken = "example_dummy_token"; // gitleaks:allow
