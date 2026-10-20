@@ -1,0 +1,135 @@
+<div class="guestbook-container">
+  <!-- Cabecera de Sección -->
+  <header class="guestbook-header">
+    <div class="header-left">
+      <span class="zen-badge-pill">COMMUNITY & NETWORK</span>
+      <h3 class="section-title">Muro de Visitas en Vivo</h3>
+      <p class="section-subtitle">
+        Deja constancia de tu visita. Las firmas se persisten en MySQL con Clean Architecture y disparan alertas automáticas vía n8n.
+      </p>
+    </div>
+
+    <button type="button" class="refresh-wall-btn" (click)="refreshWall()" [disabled]="store.isLoading()" aria-label="Recargar Muro">
+      <svg class="refresh-svg" [class.spinning]="store.isLoading()" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M1 4v4h4M15 12v-4h-4"/>
+        <path d="M2.5 10a6 6 0 1 0 1-6L1 8"/>
+      </svg>
+      <span>{{ store.isLoading() ? 'ACTUALIZANDO...' : 'ACTUALIZAR' }}</span>
+    </button>
+  </header>
+
+  <div class="guestbook-body">
+    <!-- Formulario de Firma (Columna Izquierda) -->
+    <div class="guestbook-form-pane">
+      <div class="pane-card">
+        <h4 class="form-title">
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 1l4 4L5 15H1v-4L11 1z"/>
+          </svg>
+          Nueva Firma
+        </h4>
+
+        @if (showSuccessNotice()) {
+          <div class="notice-box success-notice">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 8l4 4 8-8" stroke-linecap="round"/>
+            </svg>
+            <span>Firma persistida con éxito en la base de datos.</span>
+          </div>
+        }
+
+        @if (formError()) {
+          <div class="notice-box error-notice">
+            <span>{{ formError() }}</span>
+          </div>
+        }
+
+        <form (submit)="onSubmit($event)" class="zen-form">
+          <div class="form-field">
+            <label for="gb-name" class="field-label">Nombre / Empresa <span class="required">*</span></label>
+            <input
+              id="gb-name"
+              type="text"
+              class="zen-input"
+              placeholder="Ej. Sofia Ramos // Tech Lead"
+              [value]="senderName()"
+              (input)="senderName.set($any($event.target).value)"
+              maxlength="80"
+              required
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="gb-contact" class="field-label">Contacto / LinkedIn (Opcional)</label>
+            <input
+              id="gb-contact"
+              type="text"
+              class="zen-input"
+              placeholder="linkedin.com/in/... o email"
+              [value]="senderContact()"
+              (input)="senderContact.set($any($event.target).value)"
+              maxlength="100"
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="gb-msg" class="field-label">Mensaje <span class="required">*</span></label>
+            <textarea
+              id="gb-msg"
+              class="zen-textarea"
+              rows="3"
+              placeholder="Deja un saludo o retroalimentación técnica..."
+              [value]="message()"
+              (input)="message.set($any($event.target).value)"
+              maxlength="280"
+              required
+            ></textarea>
+            <span class="char-counter font-mono">{{ message().length }}/280</span>
+          </div>
+
+          <button
+            type="submit"
+            class="submit-firm-btn"
+            [disabled]="store.isSubmitting()"
+          >
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 8h12M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>{{ store.isSubmitting() ? 'REGISTRANDO...' : 'ENVIAR FIRMA' }}</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Lista Reactiva de Firmas (Columna Derecha) -->
+    <div class="guestbook-feed-pane">
+      <div class="feed-header-line">
+        <span class="feed-count font-mono">{{ store.entries().length }} FIRMAS REGISTRADAS</span>
+      </div>
+
+      <div class="entries-scroll-area">
+        @if (store.entries().length === 0 && !store.isLoading()) {
+          <div class="empty-state">
+            <p>Sé el primero en firmar el libro de visitas.</p>
+          </div>
+        }
+
+        @for (entry of store.entries(); track entry.id) {
+          <article class="entry-card">
+            <header class="entry-header">
+              <div class="entry-author-block">
+                <span class="author-name">{{ entry.senderName }}</span>
+                <span class="origin-tag font-mono" [class]="'origin-' + entry.origin.toLowerCase()">
+                  {{ entry.origin }}
+                </span>
+              </div>
+              <time class="entry-time font-mono">{{ formatDate(entry.createdAtUtc) }}</time>
+            </header>
+
+            <p class="entry-message">{{ entry.message }}</p>
+          </article>
+        }
+      </div>
+    </div>
+  </div>
+</div>

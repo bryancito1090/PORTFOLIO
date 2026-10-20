@@ -19,6 +19,7 @@ import { RetroScoresComponent } from './components/retro-scores/retro-scores.com
 import { RetroSettingsComponent } from './components/retro-settings/retro-settings.component';
 import { RetroStartMenuComponent } from './components/retro-start-menu/retro-start-menu.component';
 import { RetroPowerScreenComponent } from './components/retro-power-screen/retro-power-screen.component';
+import { ApiExplorerComponent } from '../api-explorer/api-explorer.component';
 
 @Component({
   selector: 'app-retro-os',
@@ -31,7 +32,8 @@ import { RetroPowerScreenComponent } from './components/retro-power-screen/retro
     RetroScoresComponent,
     RetroSettingsComponent,
     RetroStartMenuComponent,
-    RetroPowerScreenComponent
+    RetroPowerScreenComponent,
+    ApiExplorerComponent
   ],
   templateUrl: './retro-os.component.html',
   styleUrl: './retro-os.component.css',
