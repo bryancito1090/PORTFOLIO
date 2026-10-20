@@ -41,3 +41,9 @@ desktop.ini
 *.pem
 *.key
 *.pfx
+
+# .NET Configuration & Sensitive AppSettings
+**/appsettings.json
+**/appsettings.Production.json
+!**/appsettingsdevelop.json
+

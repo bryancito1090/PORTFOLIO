@@ -96,3 +96,20 @@ jobs:
         run: |
           cd src/frontend
           npm run build -- --configuration production
+
+  validate-backend:
+    name: Build & Test Backend (.NET)
+    runs-on: dotnet-runner
+    steps:
+      - name: Checkout Code
+        run: |
+          command -v git >/dev/null || (apt-get update && apt-get install -y --no-install-recommends git)
+          git config --global --add safe.directory "*"
+          git init
+          git remote add origin https://git.bryan-bano.com/Bryan.bano/PORTFOLIO.git 2>/dev/null || git remote set-url origin https://git.bryan-bano.com/Bryan.bano/PORTFOLIO.git
+          git fetch --depth 1 origin ${{ github.sha }}
+          git checkout --force FETCH_HEAD
+
+      - name: Build & Run Backend Unit Tests
+        run: |
+          dotnet test src/backend/Portfolio.sln -c Release --verbosity normal
