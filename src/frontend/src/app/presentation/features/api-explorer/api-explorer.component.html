@@ -26,8 +26,12 @@
         {{ currentEndpoint().method }}
       </div>
       <div class="url-text font-mono">
-        <span class="url-host">api.bryan-bano.com</span>
-        <span class="url-path">{{ currentEndpoint().path }}</span>
+        @if (currentEndpoint().path.startsWith('http')) {
+          <span class="url-path">{{ currentEndpoint().path }}</span>
+        } @else {
+          <span class="url-host">api.bryan-bano.com</span>
+          <span class="url-path">{{ currentEndpoint().path }}</span>
+        }
       </div>
       <button
         type="button"

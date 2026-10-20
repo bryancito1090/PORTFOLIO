@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { API_BASE_URL } from '../../../core/tokens/api-config.token';
 
-export type ApiEndpointKey = 'telemetry' | 'projects' | 'guestbook' | 'sign' | 'ping';
+export type ApiEndpointKey = 'telemetry' | 'projects' | 'guestbook' | 'sign' | 'n8n_notify' | 'ping';
 
 export interface ApiEndpointDef {
   readonly key: ApiEndpointKey;
@@ -48,6 +48,20 @@ export const API_ENDPOINTS: readonly ApiEndpointDef[] = [
       company: 'Enterprise Inc',
       message: 'Impresionante arquitectura en .NET 8 y Angular Signals.',
       badgeTag: 'DEV_ZEN'
+    }
+  },
+  {
+    key: 'n8n_notify',
+    method: 'POST',
+    path: 'https://n8n.bryan-bano.com/webhook/portfolio-notify',
+    title: 'n8n AI Push Dispatcher',
+    description: 'Dispara triage cognitivo con IA y notificación instantánea a Telegram de Bryan',
+    sampleBody: {
+      eventType: 'LEAD_PROSPECT_ALERT',
+      senderName: 'Director de Ingeniería (Headhunting)',
+      senderContact: 'hiring@tech-scale.io',
+      serviceType: 'Contratación Senior .NET / Angular',
+      message: 'Revisamos tu portafolio y queremos agendar una entrevista técnica inmediata para un rol remoto.'
     }
   },
   {
@@ -111,7 +125,7 @@ export class ApiExplorerComponent {
 
     const startTime = performance.now();
     const endpoint = this.currentEndpoint();
-    const targetUrl = `${this.baseUrl}${endpoint.path}`;
+    const targetUrl = endpoint.path.startsWith('http') ? endpoint.path : `${this.baseUrl}${endpoint.path}`;
 
     // Animación visual secuencial de paquetes
     setTimeout(() => {

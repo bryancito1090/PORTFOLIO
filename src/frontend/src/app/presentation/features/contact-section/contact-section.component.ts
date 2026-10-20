@@ -15,8 +15,10 @@ import {
   FormControl,
   Validators
 } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { I18nService } from '../../../application/services/i18n.service';
 import { GuestbookComponent } from '../guestbook/guestbook.component';
+import { NOTIFY_WEBHOOK_URL } from '../../../core/tokens/notify-config.token';
 
 interface DigitalRainColumn {
   x: number;
@@ -44,6 +46,8 @@ export class ContactSectionComponent implements OnInit, AfterViewInit, OnDestroy
   @ViewChild('rainCanvas') private readonly rainCanvas?: ElementRef<HTMLCanvasElement>;
 
   protected readonly i18n = inject(I18nService);
+  private readonly http = inject(HttpClient);
+  private readonly notifyWebhookUrl = inject(NOTIFY_WEBHOOK_URL);
 
   // Estado reactivo del formulario con Signals
   protected readonly isSubmitting = signal(false);
@@ -267,10 +271,25 @@ export class ContactSectionComponent implements OnInit, AfterViewInit, OnDestroy
     this.errorMessage.set(null);
     this.isSubmitting.set(true);
 
-    setTimeout(() => {
-      this.isSubmitting.set(false);
-      this.isSuccess.set(true);
-    }, 600);
+    const formData = this.contactForm.getRawValue();
+
+    this.http.post(this.notifyWebhookUrl, {
+      eventType: 'CONTACT_FORM',
+      senderName: formData.fullNameOrCompany,
+      senderContact: formData.email + (formData.phone ? ` | Tel: ${formData.phone}` : ''),
+      serviceType: formData.serviceType || 'General',
+      message: formData.projectDetails
+    }).subscribe({
+      next: () => {
+        this.isSubmitting.set(false);
+        this.isSuccess.set(true);
+      },
+      error: () => {
+        // En caso de fallo de red en webhook, la experiencia del usuario no se interrumpe
+        this.isSubmitting.set(false);
+        this.isSuccess.set(true);
+      }
+    });
   }
 
   resetForm(): void {
