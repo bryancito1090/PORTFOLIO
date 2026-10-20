@@ -18,12 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
+        run: |
+          git config --global --add safe.directory "*"
+          git init
+          git remote add origin https://git.bryan-bano.com/Bryan.bano/PORTFOLIO.git 2>/dev/null || git remote set-url origin https://git.bryan-bano.com/Bryan.bano/PORTFOLIO.git
+          git fetch --depth 1 origin ${{ github.sha }}
+          git checkout --force FETCH_HEAD
 
       - name: Install Frontend Dependencies
         run: |
