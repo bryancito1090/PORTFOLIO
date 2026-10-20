@@ -16,9 +16,13 @@ jobs:
   validate-frontend:
     name: Build & Validate Frontend
     runs-on: ubuntu-latest
+    env:
+      GITHUB_SERVER_URL: https://git.bryan-bano.com
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        env:
+          GITHUB_SERVER_URL: https://git.bryan-bano.com
 
       - name: Install Frontend Dependencies
         run: |
