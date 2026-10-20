@@ -113,3 +113,7 @@ jobs:
       - name: Build & Run Backend Unit Tests
         run: |
           dotnet test src/backend/Portfolio.sln -c Release --verbosity normal
+
+      - name: Validate Backend Production Publish
+        run: |
+          dotnet publish src/backend/src/Portfolio.WebApi/Portfolio.WebApi.csproj -c Release -o /tmp/publish
