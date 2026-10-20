@@ -4,6 +4,7 @@ import { Observable, catchError, of, tap } from 'rxjs';
 import { GuestbookPort } from '../../domain/ports/guestbook.port';
 import { CreateGuestbookRequest, GuestbookEntry } from '../../domain/models/guestbook.model';
 import { API_BASE_URL } from '../../core/tokens/api-config.token';
+import { NOTIFY_WEBHOOK_URL } from '../../core/tokens/notify-config.token';
 
 const STORAGE_KEY = 'zen_guestbook_entries_cache';
 
@@ -37,6 +38,7 @@ const INITIAL_MOCK_ENTRIES: GuestbookEntry[] = [
 export class HttpGuestbookAdapter implements GuestbookPort {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = inject(API_BASE_URL);
+  private readonly notifyWebhookUrl = inject(NOTIFY_WEBHOOK_URL);
 
   getEntries(limit: number = 50): Observable<GuestbookEntry[]> {
     return this.http.get<GuestbookEntry[]>(`${this.baseUrl}/guestbook?limit=${limit}`).pipe(
@@ -46,6 +48,8 @@ export class HttpGuestbookAdapter implements GuestbookPort {
   }
 
   createEntry(request: CreateGuestbookRequest): Observable<GuestbookEntry> {
+    this.dispatchN8nNotification(request);
+
     return this.http.post<GuestbookEntry>(`${this.baseUrl}/guestbook`, request).pipe(
       tap(created => {
         const cached = this.loadFromCache();
@@ -65,6 +69,23 @@ export class HttpGuestbookAdapter implements GuestbookPort {
         return of(localEntry);
       })
     );
+  }
+
+  private dispatchN8nNotification(request: CreateGuestbookRequest): void {
+    try {
+      this.http.post(this.notifyWebhookUrl, {
+        eventType: 'GUESTBOOK_SIGNATURE',
+        senderName: request.senderName,
+        senderContact: request.senderContact || 'Firma de Visitante Web',
+        message: request.message,
+        serviceType: request.origin ?? 'WebForm'
+      }).subscribe({
+        next: () => {},
+        error: () => {}
+      });
+    } catch {
+      // Ignorar fallos de red en notificación
+    }
   }
 
   private loadFromCache(): GuestbookEntry[] {
