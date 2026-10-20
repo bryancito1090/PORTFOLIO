@@ -48,6 +48,17 @@ const INITIAL_WINDOWS: Record<WindowId, RetroWindow> = {
     size: { width: 320, height: 320 },
     zIndex: 13,
     minSize: { width: 280, height: 260 }
+  },
+  'api-explorer': {
+    id: 'api-explorer',
+    title: 'API Packet Tracer & Explorer',
+    icon: 'terminal',
+    isOpen: false,
+    isMinimized: false,
+    position: { x: 45, y: 25 },
+    size: { width: 440, height: 400 },
+    zIndex: 14,
+    minSize: { width: 300, height: 280 }
   }
 };
 
@@ -73,6 +84,7 @@ export class RetroOsStore {
       { id: 'icon-games', label: t.retroIconGames, windowId: 'games', iconType: 'minesweeper' },
       { id: 'icon-cv', label: t.retroIconCv, windowId: 'cv', iconType: 'document' },
       { id: 'icon-scores', label: t.retroIconScores, windowId: 'scores', iconType: 'trophy' },
+      { id: 'icon-api', label: 'API Tracer', windowId: 'api-explorer', iconType: 'terminal' },
       { id: 'icon-settings', label: t.retroIconSettings, windowId: 'settings', iconType: 'gear' }
     ];
   });
@@ -102,7 +114,8 @@ export class RetroOsStore {
         games: { ...prev.games, title: t.retroWinGames },
         cv: { ...prev.cv, title: t.retroWinCv },
         scores: { ...prev.scores, title: t.retroWinScores },
-        settings: { ...prev.settings, title: t.retroWinSettings }
+        settings: { ...prev.settings, title: t.retroWinSettings },
+        'api-explorer': { ...prev['api-explorer'], title: 'API Packet Tracer & Explorer' }
       }));
     });
   }

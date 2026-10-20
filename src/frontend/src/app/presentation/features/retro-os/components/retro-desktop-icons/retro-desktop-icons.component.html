@@ -121,6 +121,25 @@
               <circle cx="18" cy="15.5" r="2" fill="#0055ea" />
             </svg>
           }
+          @case ('terminal') {
+            <!-- Icono clásico Consola / Packet Tracer Windows XP -->
+            <svg class="xp-icon-svg" viewBox="0 0 36 36" fill="none">
+              <defs>
+                <linearGradient id="xpTermGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#263238" />
+                  <stop offset="100%" stop-color="#000000" />
+                </linearGradient>
+              </defs>
+              <ellipse cx="18" cy="31" rx="11" ry="3.5" fill="#1b2a32" opacity="0.5" />
+              <rect x="4" y="6" width="28" height="22" rx="2" fill="url(#xpTermGrad)" stroke="#78909c" stroke-width="1.2" />
+              <rect x="4" y="6" width="28" height="5" fill="#37474f" />
+              <circle cx="7" cy="8.5" r="1" fill="#e53935" />
+              <circle cx="10" cy="8.5" r="1" fill="#fdd835" />
+              <circle cx="13" cy="8.5" r="1" fill="#43a047" />
+              <path d="M8 16l4 3-4 3" stroke="#4e9b6f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="14" y1="22" x2="20" y2="22" stroke="#c59b27" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          }
         }
       </div>
       <span class="xp-icon-title">{{ icon.label }}</span>

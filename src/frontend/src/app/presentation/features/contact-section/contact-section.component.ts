@@ -16,6 +16,7 @@ import {
   Validators
 } from '@angular/forms';
 import { I18nService } from '../../../application/services/i18n.service';
+import { GuestbookComponent } from '../guestbook/guestbook.component';
 
 interface DigitalRainColumn {
   x: number;
@@ -34,7 +35,7 @@ const TERM_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 @Component({
   selector: 'app-contact-section',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, GuestbookComponent],
   templateUrl: './contact-section.component.html',
   styleUrl: './contact-section.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush

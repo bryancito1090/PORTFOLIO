@@ -7,6 +7,7 @@ import { ContactSectionComponent } from '../contact-section/contact-section.comp
 import { TechnicalProfileComponent } from '../technical-profile/technical-profile.component';
 import { IncidentSimulatorComponent } from '../incident-simulator/incident-simulator.component';
 import { ChatBotComponent } from '../chat-bot/chat-bot.component';
+import { TelemetryHudComponent } from '../telemetry-hud/telemetry-hud.component';
 import { I18nService } from '../../../application/services/i18n.service';
 
 export type LandingSection = 'hero' | 'retro' | 'projects' | 'simulator' | 'terminal' | 'contact';
@@ -31,7 +32,8 @@ export const LANDING_SECTIONS: readonly LandingSection[] = [
     ContactSectionComponent,
     TechnicalProfileComponent,
     IncidentSimulatorComponent,
-    ChatBotComponent
+    ChatBotComponent,
+    TelemetryHudComponent
   ],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css',

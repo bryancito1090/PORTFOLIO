@@ -1,4 +1,4 @@
-export type WindowId = 'games' | 'cv' | 'settings' | 'scores';
+export type WindowId = 'games' | 'cv' | 'settings' | 'scores' | 'api-explorer';
 
 export type OsPowerState = 'off' | 'booting' | 'desktop';
 

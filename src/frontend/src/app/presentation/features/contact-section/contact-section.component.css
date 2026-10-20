@@ -390,3 +390,8 @@
   border-color: var(--zen-border-focus);
   color: var(--zen-text-primary);
 }
+
+.guestbook-section-wrapper {
+  margin-top: var(--space-8);
+  width: 100%;
+}

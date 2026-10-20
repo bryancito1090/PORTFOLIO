@@ -1,0 +1,107 @@
+<div class="hud-container">
+  <!-- Pill Compacto en Barra Superior -->
+  <button
+    type="button"
+    class="hud-pill"
+    [class.active]="isExpanded()"
+    (click)="toggleDrawer()"
+    aria-label="Estado del Servidor en Tiempo Real"
+  >
+    <span class="status-indicator" [class.online]="store.isOnline()">
+      <span class="pulse-ring"></span>
+      <span class="status-dot"></span>
+    </span>
+
+    <span class="hud-label">OCI // ASHBURN</span>
+
+    <div class="hud-ping-badge">
+      <svg class="sparkline-svg" viewBox="0 0 40 14" aria-hidden="true">
+        <path
+          d="M 2,7 L 8,9 L 14,4 L 20,8 L 26,5 L 32,7 L 38,4"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      <span class="ping-text">{{ store.latency() }}ms</span>
+    </div>
+
+    <svg class="chevron-svg" [class.rotated]="isExpanded()" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <!-- Flyout Drawer con Métricas Detalladas del VPS -->
+  @if (isExpanded()) {
+    <div class="hud-dropdown-backdrop" (click)="toggleDrawer()" aria-hidden="true"></div>
+    <aside class="hud-drawer" role="dialog" aria-label="Telemetría del Servidor Cloud">
+      <header class="drawer-header">
+        <div class="header-title-block">
+          <span class="zen-badge-pill">CLOUD TELEMETRY</span>
+          <h3 class="drawer-title">Oracle Cloud Infrastructure</h3>
+        </div>
+        <button type="button" class="close-btn" (click)="toggleDrawer()" aria-label="Cerrar">
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 3l10 10M13 3L3 13" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="drawer-body">
+        <!-- Tarjeta de Nodo Principal -->
+        <div class="metric-card node-card">
+          <div class="metric-row">
+            <span class="metric-key">Host Virtual</span>
+            <span class="metric-value font-mono">srv-personal-core</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-key">Arquitectura</span>
+            <span class="metric-value font-mono">ARM64 Ampere Altra</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-key">Región OCI</span>
+            <span class="metric-value text-accent font-mono">us-ashburn-1</span>
+          </div>
+        </div>
+
+        <!-- Cuadrícula de Métricas Rápidas -->
+        <div class="metrics-grid">
+          <div class="metric-tile">
+            <span class="tile-label">Uptime Servidor</span>
+            <span class="tile-val font-mono">{{ store.uptime() }}</span>
+          </div>
+          <div class="metric-tile">
+            <span class="tile-label">Memoria .NET</span>
+            <span class="tile-val font-mono text-gold">{{ store.memoryMb() }} MB</span>
+          </div>
+          <div class="metric-tile">
+            <span class="tile-label">Latencia API</span>
+            <span class="tile-val font-mono text-matcha">{{ store.latency() }} ms</span>
+          </div>
+          <div class="metric-tile">
+            <span class="tile-label">Estado Runtime</span>
+            <span class="tile-val font-mono text-cyan">.NET 8 LTS</span>
+          </div>
+        </div>
+
+        <div class="drawer-footer-actions">
+          <button type="button" class="zen-action-btn" (click)="openTracer()">
+            <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 8h12M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            API Tracer
+          </button>
+          <button type="button" class="zen-action-btn" (click)="refresh()">
+            <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 4v4h4M15 12v-4h-4"/>
+              <path d="M2.5 10a6 6 0 1 0 1-6L1 8"/>
+            </svg>
+            Actualizar Ping
+          </button>
+        </div>
+      </div>
+    </aside>
+  }
+</div>
