@@ -117,3 +117,47 @@ jobs:
       - name: Validate Backend Production Publish
         run: |
           dotnet publish src/backend/src/Portfolio.WebApi/Portfolio.WebApi.csproj -c Release -o /tmp/publish
+
+  deploy-backend:
+    name: Continuous Deployment to Production VPS
+    needs: [validate-frontend, validate-backend]
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Docker Stack on VPS via SSH
+        env:
+          SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+          VPS_DEPLOY_PATH: ${{ secrets.VPS_DEPLOY_PATH }}
+        run: |
+          if [ -z "$SSH_KEY" ] || [ -z "$VPS_HOST" ]; then
+            echo "ℹ️ Modo Standby de Despliegue Automático:"
+            echo "   Los secretos VPS_SSH_KEY o VPS_HOST aún no están configurados en Forgejo (Settings -> Actions -> Secrets)."
+            echo "   Para habilitar despliegue desatendido en cada push, añade estos secretos."
+            echo "   Alternativamente, puedes ejecutar en tu VPS: cd /opt/portfolio/deploy && ./deploy.sh"
+            exit 0
+          fi
+
+          echo "==> Iniciando conexión SSH segura con el VPS ($VPS_HOST)..."
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          ssh -o StrictHostKeyChecking=no -p "${VPS_PORT:-22}" "${VPS_USER:-root}@${VPS_HOST}" "bash -s" << 'EOF'
+            set -e
+            echo "==> Conectado al VPS. Actualizando repositorio..."
+            TARGET_DIR="${VPS_DEPLOY_PATH:-/opt/portfolio}"
+            if [ ! -d "$TARGET_DIR" ]; then
+              TARGET_DIR="$HOME/portfolio"
+            fi
+            cd "$TARGET_DIR"
+            git fetch origin develop
+            git checkout develop
+            git pull origin develop
+            echo "==> Reconstruyendo contenedor de la API en producción..."
+            cd deploy
+            docker compose -f docker-compose.prod.yml up -d --build portfolio-api
+            echo "✅ Despliegue continuo completado con éxito."
+          EOF
