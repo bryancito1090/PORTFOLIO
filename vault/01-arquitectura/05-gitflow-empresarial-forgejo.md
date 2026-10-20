@@ -132,3 +132,18 @@ Para blindar el repositorio empresarialmente en Forgejo:
    - [x] **Require approval** (Exigir aprobación antes de merge).
    - [x] **Require status checks to pass** (Exigir que las acciones de CI/CD pasen en verde).
    - [x] **Block merge on rejected reviews** (Bloquear merge si hay cambios solicitados).
+
+---
+
+## 6. Skill Global: `forgejo-devops`
+
+La configuración y los estándares de automatización de este repositorio están formalizados a nivel de sistema como una **Skill Global** en:
+`~/.gemini/config/skills/forgejo-devops/SKILL.md`
+
+Esta habilidad abarca:
+- **Clonación nativa con Git:** Resolución del aislamiento DNS en Docker de `act_runner` omitiendo `actions/checkout` y `actions/setup-node`.
+- **Detección de Secretos:** Escaneo con Gitleaks en ARM64/x64 y manejo de falsos positivos con `// gitleaks:allow`, `.gitleaksignore` y `.gitleaks.toml`.
+- **Validación de PR Gates:** Cumplimiento forzado de Conventional Commits y reglas de ramas en CI.
+- **Auto-eliminación de ramas:** Limpieza automática post-merge vía API de Forgejo (`default_delete_branch_after_merge: true`).
+- **Issue-Driven Development:** 11 etiquetas canónicas y plantillas de Issues en `.forgejo/ISSUE_TEMPLATE/`.
+
