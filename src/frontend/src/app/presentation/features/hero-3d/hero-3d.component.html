@@ -130,6 +130,14 @@
         </div>
       </div>
     </aside>
+
+    <!-- Indicador Zen de Scroll Interactivo (se oculta al avanzar fases) -->
+    <div class="zen-scroll-hint" [class.faded]="activePhase() > 1" aria-hidden="true">
+      <span class="scroll-mouse-icon">
+        <span class="scroll-wheel-dot"></span>
+      </span>
+      <span class="scroll-hint-text">SCROLL // DESARMAR ARQUITECTURA</span>
+    </div>
   </div>
 </section>
 

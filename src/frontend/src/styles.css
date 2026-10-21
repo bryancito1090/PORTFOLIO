@@ -120,6 +120,11 @@
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 64px;
+}
+
 html, body {
   width: 100%;
   min-height: 100vh;

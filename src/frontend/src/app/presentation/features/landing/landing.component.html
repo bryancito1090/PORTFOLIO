@@ -1,7 +1,12 @@
-<div class="landing-container" [class.transitioning-lock]="isCurtainVisible()">
+<div class="landing-container">
   <!-- Header Minimalista Flotante (Glassmorphism & Zen High-Contrast) -->
   <header class="zen-header">
-    <button type="button" class="brand-block-btn" (click)="setSection('hero')" [attr.aria-label]="i18n.t().navHome">
+    <button
+      type="button"
+      class="brand-block-btn"
+      (click)="scrollToSection('hero')"
+      [attr.aria-label]="i18n.t().navHome"
+    >
       <img src="assets/images/logo.jpg" alt="Bryan Baño" class="brand-logo" />
     </button>
 
@@ -12,7 +17,7 @@
         class="nav-item"
         data-nav="hero"
         [class.active]="activeSection() === 'hero'"
-        (click)="setSection('hero')"
+        (click)="scrollToSection('hero')"
       >
         {{ i18n.t().navHome }}
       </button>
@@ -22,7 +27,7 @@
         class="nav-item"
         data-nav="retro"
         [class.active]="activeSection() === 'retro'"
-        (click)="setSection('retro')"
+        (click)="scrollToSection('retro')"
       >
         {{ i18n.t().navRetro }}
       </button>
@@ -32,7 +37,7 @@
         class="nav-item"
         data-nav="projects"
         [class.active]="activeSection() === 'projects'"
-        (click)="setSection('projects')"
+        (click)="scrollToSection('projects')"
       >
         {{ i18n.t().navProjects }}
       </button>
@@ -42,7 +47,7 @@
         class="nav-item"
         data-nav="simulator"
         [class.active]="activeSection() === 'simulator'"
-        (click)="setSection('simulator')"
+        (click)="scrollToSection('simulator')"
       >
         {{ i18n.t().navSimulator }}
       </button>
@@ -52,7 +57,7 @@
         class="nav-item"
         data-nav="terminal"
         [class.active]="activeSection() === 'terminal'"
-        (click)="setSection('terminal')"
+        (click)="scrollToSection('terminal')"
       >
         {{ i18n.t().navTerminal }}
       </button>
@@ -62,7 +67,7 @@
         class="nav-item"
         data-nav="contact"
         [class.active]="activeSection() === 'contact'"
-        (click)="setSection('contact')"
+        (click)="scrollToSection('contact')"
       >
         {{ i18n.t().navContact }}
       </button>
@@ -76,125 +81,110 @@
         <span class="location-label"> {{ i18n.t().location }}</span>
       </div>
 
-      <button type="button" class="lang-toggle-btn" (click)="i18n.toggleLanguage()"
-        [attr.aria-label]="i18n.t().switchLangAria">
+      <button
+        type="button"
+        class="lang-toggle-btn"
+        (click)="i18n.toggleLanguage()"
+        [attr.aria-label]="i18n.t().switchLangAria"
+      >
         {{ i18n.currentLang() === 'es' ? 'EN' : 'ES' }}
       </button>
     </div>
   </header>
 
-  <!-- Flechas Sutiles de Navegación Flotantes (Izquierda y Derecha debajo del Navbar) -->
-  <aside class="zen-floating-nav-controls" aria-label="Navegación entre secciones">
-    <button
-      type="button"
-      class="zen-nav-arrow-btn nav-arrow-left"
-      [class.disabled]="!hasPrevSection()"
-      [disabled]="!hasPrevSection()"
-      (click)="goToPrevSection()"
-      [attr.aria-label]="i18n.t().navPrevSection + ': ' + prevSectionName()"
-      [title]="hasPrevSection() ? i18n.t().navPrevSection + ' (' + prevSectionName() + ')' : ''"
-    >
-      <svg class="nav-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <polyline points="15 18 9 12 15 6"></polyline>
-      </svg>
-      <span class="nav-arrow-label">{{ prevSectionName() }}</span>
-    </button>
+  <!-- SECCIÓN 01: Hero con Laptop 3D desarmable al scroll (240 frames) -->
+  <section id="hero" class="landing-section hero-section">
+    <app-hero-3d></app-hero-3d>
+  </section>
 
-    <button
-      type="button"
-      class="zen-nav-arrow-btn nav-arrow-right"
-      [class.disabled]="!hasNextSection()"
-      [disabled]="!hasNextSection()"
-      (click)="goToNextSection()"
-      [attr.aria-label]="i18n.t().navNextSection + ': ' + nextSectionName()"
-      [title]="hasNextSection() ? i18n.t().navNextSection + ' (' + nextSectionName() + ')' : ''"
-    >
-      <span class="nav-arrow-label">{{ nextSectionName() }}</span>
-      <svg class="nav-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <polyline points="9 18 15 12 9 6"></polyline>
-      </svg>
-    </button>
-  </aside>
+  <!-- SECCIÓN 02: Módulos Interactivos (Perfil Técnico & Retro Monitor CRT) -->
+  <section id="retro" class="landing-section interactive-stage">
+    <div class="section-container">
+      <header class="section-lead-header">
+        <div class="section-badge">
+          <span class="badge-dot"></span>
+          <span class="badge-text">// 01 ARCHITECTURE & RETRO COMPUTING</span>
+        </div>
+        <h2 class="section-main-title">{{ i18n.t().navRetro }}</h2>
+      </header>
 
-  <!-- Telón de Transición Suave con Animación de Logo Zen -->
-  <div
-    class="zen-transition-curtain"
-    [class.visible]="isCurtainVisible()"
-    aria-hidden="true"
-  >
-    <div class="curtain-logo-wrapper">
-      <div class="logo-glow-ring"></div>
-      <div class="logo-image-container">
-        <img src="assets/images/logo.jpg" alt="Bryan Baño Logo" class="curtain-logo-img" />
-        <div class="logo-shimmer-sweep"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Hero con Laptop 3D desarmable al scroll (240 frames) -->
-  @if (activeSection() === 'hero') {
-    <main class="hero-container isolated-view">
-      <app-hero-3d [initialPosition]="heroEntryPosition()"></app-hero-3d>
-    </main>
-  }
-
-  <!-- Contenedor Base para Módulos Interactivos (50/50 Perfil Técnico y Retro Monitor) -->
-  @if (activeSection() === 'retro') {
-    <section class="interactive-stage isolated-view">
       <div class="stage-grid">
         <!-- Slot 1: Perfil Técnico & Filosofía de Ingeniería -->
         <article class="module-card profile-module-card">
           <app-technical-profile></app-technical-profile>
         </article>
 
-        <!-- Slot 2: Retro OS en Monitor CRT Antiguo (50% Horizontal) -->
+        <!-- Slot 2: Retro OS en Monitor CRT Antiguo -->
         <article class="module-card retro-module-card">
           <app-retro-os></app-retro-os>
         </article>
       </div>
-    </section>
-  }
+    </div>
+  </section>
 
-  <!-- Sección de Proyectos Destacados (Casos Reales del CV a Ancho Completo) -->
-  @if (activeSection() === 'projects') {
-    <section class="projects-stage isolated-view">
+  <!-- SECCIÓN 03: Proyectos Destacados (Casos Reales del CV) -->
+  <section id="projects" class="landing-section projects-stage">
+    <div class="section-container">
+      <header class="section-lead-header">
+        <div class="section-badge">
+          <span class="badge-dot"></span>
+          <span class="badge-text">// 02 ENTERPRISE SYSTEMS</span>
+        </div>
+        <h2 class="section-main-title">{{ i18n.t().navProjects }}</h2>
+      </header>
+
       <div class="projects-stage-inner">
         <app-featured-projects></app-featured-projects>
       </div>
-    </section>
-  }
+    </div>
+  </section>
 
-  <!-- Sección Simulador de Respuesta a Incidentes (Visualización de Arquitectura Cloud Security Serverless) -->
-  @if (activeSection() === 'simulator') {
-    <section class="simulator-stage isolated-view">
+  <!-- SECCIÓN 04: Simulador de Incidentes Cloud (Packet Tracer) -->
+  <section id="simulator" class="landing-section simulator-stage">
+    <div class="section-container">
+      <header class="section-lead-header">
+        <div class="section-badge">
+          <span class="badge-dot"></span>
+          <span class="badge-text">// 03 CLOUD TELEMETRY & SECURITY</span>
+        </div>
+        <h2 class="section-main-title">{{ i18n.t().navSimulator }}</h2>
+      </header>
+
       <app-incident-simulator></app-incident-simulator>
-    </section>
-  }
+    </div>
+  </section>
 
-  <!-- Sección Dedicada para la Terminal Interactiva Arch Linux / Fish Shell (Espaciosa y a Escala Completa) -->
-  @if (activeSection() === 'terminal') {
-    <section class="terminal-stage isolated-view">
+  <!-- SECCIÓN 05: Terminal Interactiva Arch Linux / Fish Shell -->
+  <section id="terminal" class="landing-section terminal-stage">
+    <div class="section-container">
       <div class="terminal-stage-inner">
-        <!-- Cabecera Normalizada de Sección -->
-        <header class="terminal-section-header">
-          <div class="header-left">
-            <div class="title-with-badge">
-              <span class="pulse-indicator" aria-hidden="true"></span>
-              <h2 class="section-title">{{ i18n.t().navTerminal }}</h2>
-            </div>
+        <header class="section-lead-header">
+          <div class="section-badge">
+            <span class="badge-dot"></span>
+            <span class="badge-text">// 04 INTERACTIVE CLI ENGINE</span>
           </div>
+          <h2 class="section-main-title">{{ i18n.t().navTerminal }}</h2>
         </header>
+
         <app-terminal></app-terminal>
       </div>
-    </section>
-  }
+    </div>
+  </section>
 
-  <!-- Sección de Contacto Corporativa Premium (Full Width debajo de la Terminal) -->
-  @if (activeSection() === 'contact') {
-    <section class="contact-stage isolated-view">
+  <!-- SECCIÓN 06: Contacto & Muro de Firmas Guestbook -->
+  <section id="contact" class="landing-section contact-stage">
+    <div class="section-container">
+      <header class="section-lead-header">
+        <div class="section-badge">
+          <span class="badge-dot"></span>
+          <span class="badge-text">// 05 CONNECT & GUESTBOOK</span>
+        </div>
+        <h2 class="section-main-title">{{ i18n.t().navContact }}</h2>
+      </header>
+
       <app-contact-section></app-contact-section>
-    </section>
-  }
+    </div>
+  </section>
 
   <!-- Asistente Virtual Flotante Cyber-Zen (n8n + Gemini) -->
   <app-chat-bot></app-chat-bot>

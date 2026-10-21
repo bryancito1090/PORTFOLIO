@@ -50,11 +50,10 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
   private mediaQueryList?: MediaQueryList;
 
   ngOnInit(): void {
-    const isBottom = this.initialPosition() === 'bottom';
-    this.targetFrame = isBottom ? TOTAL_FRAMES : 1;
-    this.currentInterpolatedFrame = isBottom ? TOTAL_FRAMES : 1;
-    this.lastRenderedFrame = isBottom ? TOTAL_FRAMES : 1;
-    this.activePhase.set(isBottom ? 3 : 1);
+    this.targetFrame = 1;
+    this.currentInterpolatedFrame = 1;
+    this.lastRenderedFrame = 1;
+    this.activePhase.set(1);
 
     this.checkReducedMotion();
     if (typeof window !== 'undefined' && window.innerWidth <= 900) {
@@ -91,41 +90,9 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     if (typeof window !== 'undefined' && window.innerWidth > 900) {
-      const container = this.containerRef.nativeElement;
-      const isBottom = this.initialPosition() === 'bottom';
-
-      if (isBottom) {
-        const scrollableDistance = container.offsetHeight - window.innerHeight;
-        window.scrollTo({ top: scrollableDistance > 0 ? scrollableDistance : 3000, behavior: 'instant' });
-        this.targetFrame = TOTAL_FRAMES;
-        this.currentInterpolatedFrame = TOTAL_FRAMES;
-        this.lastRenderedFrame = TOTAL_FRAMES;
-        this.activePhase.set(3);
-      } else {
-        window.scrollTo({ top: 0, behavior: 'instant' });
-        this.targetFrame = 1;
-        this.currentInterpolatedFrame = 1;
-        this.lastRenderedFrame = 1;
-        this.activePhase.set(1);
-      }
-
       this.onResize();
+      this.onScroll();
       this.renderFrame(Math.round(this.currentInterpolatedFrame));
-
-      // Reasegurar la posición al desbloquear el scroll
-      if (isBottom) {
-        setTimeout(() => {
-          const maxDist = container.offsetHeight - window.innerHeight;
-          if (maxDist > 0) {
-            window.scrollTo({ top: maxDist, behavior: 'instant' });
-          }
-          this.targetFrame = TOTAL_FRAMES;
-          this.currentInterpolatedFrame = TOTAL_FRAMES;
-          this.lastRenderedFrame = TOTAL_FRAMES;
-          this.activePhase.set(3);
-          this.renderFrame(TOTAL_FRAMES);
-        }, 780);
-      }
     }
   }
 
