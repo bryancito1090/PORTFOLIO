@@ -97,94 +97,56 @@
     <app-hero-3d></app-hero-3d>
   </section>
 
-  <!-- SECCIÓN 02: Módulos Interactivos (Perfil Técnico & Retro Monitor CRT) -->
-  <section id="retro" class="landing-section interactive-stage">
-    <div class="section-container">
-      <header class="section-lead-header">
-        <div class="section-badge">
-          <span class="badge-dot"></span>
-          <span class="badge-text">// 01 ARCHITECTURE & RETRO COMPUTING</span>
+  <!-- CONTENEDOR DE SECCIONES CON LLUVIA MATRIX AMBIENTAL (PANTALLA COMPLETA) -->
+  <div class="cyber-matrix-stage-wrapper">
+    <!-- Lienzo Matrix Global que abarca toda la pantalla en segundo plano para estas secciones -->
+    <app-matrix-rain class="global-matrix-bg"></app-matrix-rain>
+
+    <!-- SECCIÓN 02: Módulos Interactivos (Perfil Técnico & Retro Monitor CRT) -->
+    <section id="retro" class="landing-section fullscreen-stage">
+      <div class="fullscreen-stage-content">
+        <div class="stage-grid">
+          <!-- Slot 1: Perfil Técnico & Filosofía de Ingeniería -->
+          <article class="module-card profile-module-card">
+            <app-technical-profile></app-technical-profile>
+          </article>
+
+          <!-- Slot 2: Retro OS en Monitor CRT Antiguo -->
+          <article class="module-card retro-module-card">
+            <app-retro-os></app-retro-os>
+          </article>
         </div>
-        <h2 class="section-main-title">{{ i18n.t().navRetro }}</h2>
-      </header>
-
-      <div class="stage-grid">
-        <!-- Slot 1: Perfil Técnico & Filosofía de Ingeniería -->
-        <article class="module-card profile-module-card">
-          <app-technical-profile></app-technical-profile>
-        </article>
-
-        <!-- Slot 2: Retro OS en Monitor CRT Antiguo -->
-        <article class="module-card retro-module-card">
-          <app-retro-os></app-retro-os>
-        </article>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- SECCIÓN 03: Proyectos Destacados (Casos Reales del CV) -->
-  <section id="projects" class="landing-section projects-stage">
-    <div class="section-container">
-      <header class="section-lead-header">
-        <div class="section-badge">
-          <span class="badge-dot"></span>
-          <span class="badge-text">// 02 ENTERPRISE SYSTEMS</span>
-        </div>
-        <h2 class="section-main-title">{{ i18n.t().navProjects }}</h2>
-      </header>
-
-      <div class="projects-stage-inner">
+    <!-- SECCIÓN 03: Proyectos Destacados (Casos Reales del CV) -->
+    <section id="projects" class="landing-section fullscreen-stage">
+      <div class="fullscreen-stage-content">
         <app-featured-projects></app-featured-projects>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- SECCIÓN 04: Simulador de Incidentes Cloud (Packet Tracer) -->
-  <section id="simulator" class="landing-section simulator-stage">
-    <div class="section-container">
-      <header class="section-lead-header">
-        <div class="section-badge">
-          <span class="badge-dot"></span>
-          <span class="badge-text">// 03 CLOUD TELEMETRY & SECURITY</span>
-        </div>
-        <h2 class="section-main-title">{{ i18n.t().navSimulator }}</h2>
-      </header>
+    <!-- SECCIÓN 04: Simulador de Incidentes Cloud (Packet Tracer) -->
+    <section id="simulator" class="landing-section fullscreen-stage">
+      <div class="fullscreen-stage-content">
+        <app-incident-simulator></app-incident-simulator>
+      </div>
+    </section>
 
-      <app-incident-simulator></app-incident-simulator>
-    </div>
-  </section>
-
-  <!-- SECCIÓN 05: Terminal Interactiva Arch Linux / Fish Shell -->
-  <section id="terminal" class="landing-section terminal-stage">
-    <div class="section-container">
-      <div class="terminal-stage-inner">
-        <header class="section-lead-header">
-          <div class="section-badge">
-            <span class="badge-dot"></span>
-            <span class="badge-text">// 04 INTERACTIVE CLI ENGINE</span>
-          </div>
-          <h2 class="section-main-title">{{ i18n.t().navTerminal }}</h2>
-        </header>
-
+    <!-- SECCIÓN 05: Terminal Interactiva Arch Linux / Fish Shell -->
+    <section id="terminal" class="landing-section fullscreen-stage">
+      <div class="fullscreen-stage-content terminal-content-box">
         <app-terminal></app-terminal>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- SECCIÓN 06: Contacto & Muro de Firmas Guestbook -->
-  <section id="contact" class="landing-section contact-stage">
-    <div class="section-container">
-      <header class="section-lead-header">
-        <div class="section-badge">
-          <span class="badge-dot"></span>
-          <span class="badge-text">// 05 CONNECT & GUESTBOOK</span>
-        </div>
-        <h2 class="section-main-title">{{ i18n.t().navContact }}</h2>
-      </header>
-
-      <app-contact-section></app-contact-section>
-    </div>
-  </section>
+    <!-- SECCIÓN 06: Contacto & Muro de Firmas Guestbook -->
+    <section id="contact" class="landing-section fullscreen-stage">
+      <div class="fullscreen-stage-content">
+        <app-contact-section></app-contact-section>
+      </div>
+    </section>
+  </div>
 
   <!-- Asistente Virtual Flotante Cyber-Zen (n8n + Gemini) -->
   <app-chat-bot></app-chat-bot>

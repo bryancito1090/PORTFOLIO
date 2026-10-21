@@ -7,34 +7,8 @@
 .contact-section {
   position: relative;
   width: 100%;
-  background-color: #121517;
-  padding: clamp(5rem, 8vw, 7rem) 0;
-  overflow: hidden;
-}
-
-.contact-matrix-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-  display: block;
   background: transparent;
-  opacity: 0;
-  animation: fadeInMatrix 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes fadeInMatrix {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 0.65;
-    transform: translateY(0);
-  }
+  padding: 0;
 }
 
 .contact-container {

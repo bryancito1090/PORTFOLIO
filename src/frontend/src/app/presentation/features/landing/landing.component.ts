@@ -18,6 +18,7 @@ import { TechnicalProfileComponent } from '../technical-profile/technical-profil
 import { IncidentSimulatorComponent } from '../incident-simulator/incident-simulator.component';
 import { ChatBotComponent } from '../chat-bot/chat-bot.component';
 import { TelemetryHudComponent } from '../telemetry-hud/telemetry-hud.component';
+import { MatrixRainComponent } from '../../shared/components/matrix-rain/matrix-rain.component';
 import { I18nService } from '../../../application/services/i18n.service';
 
 export type LandingSection = 'hero' | 'retro' | 'projects' | 'simulator' | 'terminal' | 'contact';
@@ -43,7 +44,8 @@ export const LANDING_SECTIONS: readonly LandingSection[] = [
     TechnicalProfileComponent,
     IncidentSimulatorComponent,
     ChatBotComponent,
-    TelemetryHudComponent
+    TelemetryHudComponent,
+    MatrixRainComponent
   ],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css',
