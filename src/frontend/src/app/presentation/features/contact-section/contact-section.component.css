@@ -286,6 +286,18 @@
   box-shadow: 0 0 16px rgba(197, 155, 39, 0.35);
 }
 
+:host-context([data-theme='zen-light']) .submit-btn,
+:host-context(body.theme-light) .submit-btn {
+  background-color: #0f172a;
+  color: #ffffff;
+}
+
+:host-context([data-theme='zen-light']) .submit-btn:hover:not(:disabled),
+:host-context(body.theme-light) .submit-btn:hover:not(:disabled) {
+  background-color: #1e293b;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.25);
+}
+
 .submit-btn:active:not(:disabled) {
   transform: scale(0.98);
 }

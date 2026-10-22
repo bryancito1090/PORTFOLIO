@@ -2,7 +2,7 @@
   display: block;
   width: 100%;
   min-height: 100vh;
-  background-color: #121517;
+  background-color: var(--zen-bg-base, #121517);
   color: var(--zen-text-primary);
 }
 
@@ -12,7 +12,7 @@
   width: 100%;
   min-height: 100vh;
   position: relative;
-  background-color: #121517;
+  background-color: var(--zen-bg-base, #121517);
 }
 
 /* ==============================================================================
@@ -170,38 +170,38 @@
 /* Modo Claro Adaptativo para el Header y Navegación */
 :host-context([data-theme='zen-light']) .zen-header,
 :host-context(body.theme-light) .zen-header {
-  background: rgba(255, 255, 255, 0.85);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(248, 249, 251, 0.88);
+  border-bottom: 1px solid var(--zen-border-subtle, rgba(15, 23, 42, 0.08));
 }
 
 :host-context([data-theme='zen-light']) .nav-item,
 :host-context(body.theme-light) .nav-item {
-  color: #52525b;
+  color: var(--zen-text-secondary, #475569);
 }
 
 :host-context([data-theme='zen-light']) .nav-item:hover,
 :host-context(body.theme-light) .nav-item:hover {
-  color: #000000;
-  background: rgba(0, 0, 0, 0.05);
+  color: var(--zen-text-primary, #0f172a);
+  background: rgba(15, 23, 42, 0.05);
 }
 
 :host-context([data-theme='zen-light']) .nav-item.active,
 :host-context(body.theme-light) .nav-item.active {
-  color: #000000;
-  background: rgba(0, 0, 0, 0.08);
-  border-color: rgba(0, 0, 0, 0.25);
+  color: var(--zen-text-primary, #0f172a);
+  background: rgba(15, 23, 42, 0.08);
+  border-color: rgba(15, 23, 42, 0.25);
 }
 
 :host-context([data-theme='zen-light']) .cyber-matrix-stage-wrapper,
 :host-context(body.theme-light) .cyber-matrix-stage-wrapper {
-  background-color: #fafafa;
-  background-image: radial-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+  background-color: var(--zen-bg-base, #f8f9fb);
+  background-image: radial-gradient(rgba(15, 23, 42, 0.06) 1px, transparent 1px);
   background-size: 26px 26px;
 }
 
 :host-context([data-theme='zen-light']) .fullscreen-stage,
 :host-context(body.theme-light) .fullscreen-stage {
-  border-bottom-color: rgba(0, 0, 0, 0.06);
+  border-bottom-color: rgba(15, 23, 42, 0.06);
 }
 
 /* ==============================================================================

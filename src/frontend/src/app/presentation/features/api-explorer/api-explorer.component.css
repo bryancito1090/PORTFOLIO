@@ -150,6 +150,18 @@
   box-shadow: 0 0 12px rgba(226, 185, 74, 0.3);
 }
 
+:host-context([data-theme='zen-light']) .send-request-btn,
+:host-context(body.theme-light) .send-request-btn {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+:host-context([data-theme='zen-light']) .send-request-btn:hover:not(:disabled),
+:host-context(body.theme-light) .send-request-btn:hover:not(:disabled) {
+  background: #1e293b;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+}
+
 .send-request-btn.loading {
   opacity: 0.7;
   cursor: not-allowed;

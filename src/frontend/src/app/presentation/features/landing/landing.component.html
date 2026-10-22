@@ -7,7 +7,11 @@
       (click)="scrollToSection('hero')"
       [attr.aria-label]="i18n.t().navHome"
     >
-      <img src="assets/images/logo.jpg" alt="Bryan Baño" class="brand-logo" />
+      <img
+        [src]="themeService.isLightMode() ? 'assets/images/logo-light.png' : 'assets/images/logo.jpg'"
+        alt="Bryan Baño"
+        class="brand-logo"
+      />
     </button>
 
     <!-- Barra de Navegación Rápida Zen -->

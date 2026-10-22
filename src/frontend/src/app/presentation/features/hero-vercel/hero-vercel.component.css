@@ -11,8 +11,8 @@
   flex-direction: column;
   justify-content: space-between;
   padding-top: clamp(4.5rem, 8vh, 6.5rem);
-  background: #ffffff;
-  color: #000000;
+  background: var(--zen-bg-base, #f8f9fb);
+  color: var(--zen-text-primary, #0f172a);
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -82,14 +82,14 @@
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1.05;
-  color: #000000;
+  color: var(--zen-text-primary, #0f172a);
 }
 
 .hero-subtext {
   margin: 0;
   font-family: var(--font-sans);
   font-size: clamp(1rem, 1.4vw, 1.15rem);
-  color: #52525b;
+  color: var(--zen-text-secondary, #475569);
   line-height: 1.5;
   max-width: 520px;
 }

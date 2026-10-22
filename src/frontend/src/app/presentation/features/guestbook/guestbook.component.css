@@ -209,6 +209,18 @@
   box-shadow: 0 0 10px rgba(226, 185, 74, 0.3);
 }
 
+:host-context([data-theme='zen-light']) .submit-firm-btn,
+:host-context(body.theme-light) .submit-firm-btn {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+:host-context([data-theme='zen-light']) .submit-firm-btn:hover:not(:disabled),
+:host-context(body.theme-light) .submit-firm-btn:hover:not(:disabled) {
+  background: #1e293b;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);
+}
+
 .submit-firm-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
