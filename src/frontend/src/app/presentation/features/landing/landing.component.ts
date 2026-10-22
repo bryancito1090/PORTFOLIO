@@ -19,7 +19,10 @@ import { IncidentSimulatorComponent } from '../incident-simulator/incident-simul
 import { ChatBotComponent } from '../chat-bot/chat-bot.component';
 import { TelemetryHudComponent } from '../telemetry-hud/telemetry-hud.component';
 import { MatrixRainComponent } from '../../shared/components/matrix-rain/matrix-rain.component';
+import { HeroVercelComponent } from '../hero-vercel/hero-vercel.component';
+import { TechStackStripComponent } from '../../shared/components/tech-stack-strip/tech-stack-strip.component';
 import { I18nService } from '../../../application/services/i18n.service';
+import { ThemeService } from '../../../application/services/theme.service';
 
 export type LandingSection = 'hero' | 'retro' | 'projects' | 'simulator' | 'terminal' | 'contact';
 
@@ -45,7 +48,9 @@ export const LANDING_SECTIONS: readonly LandingSection[] = [
     IncidentSimulatorComponent,
     ChatBotComponent,
     TelemetryHudComponent,
-    MatrixRainComponent
+    MatrixRainComponent,
+    HeroVercelComponent,
+    TechStackStripComponent
   ],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css',
@@ -53,6 +58,7 @@ export const LANDING_SECTIONS: readonly LandingSection[] = [
 })
 export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
   protected readonly i18n = inject(I18nService);
+  protected readonly themeService = inject(ThemeService);
   protected readonly currentYear = signal(new Date().getFullYear());
   protected readonly currentTime = signal<string>('');
   protected readonly activeSection = signal<LandingSection>('hero');

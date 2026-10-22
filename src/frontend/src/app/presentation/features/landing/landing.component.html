@@ -89,18 +89,58 @@
       >
         {{ i18n.currentLang() === 'es' ? 'EN' : 'ES' }}
       </button>
+
+      <!-- Botón de Conmutación de Modo Claro / Modo Oscuro -->
+      <button
+        type="button"
+        class="theme-toggle-btn"
+        (click)="themeService.toggleTheme()"
+        [attr.aria-label]="themeService.isLightMode() ? 'Activar modo oscuro' : 'Activar modo claro'"
+        [title]="themeService.isLightMode() ? 'Modo Oscuro' : 'Modo Claro'"
+      >
+        @if (themeService.isLightMode()) {
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        } @else {
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        }
+      </button>
     </div>
   </header>
 
-  <!-- SECCIÓN 01: Hero con Laptop 3D desarmable al scroll (240 frames) -->
-  <section id="hero" class="landing-section hero-section">
-    <app-hero-3d></app-hero-3d>
-  </section>
+  <!-- SECCIÓN 01: Hero Adaptativo (Modo Claro Vercel / Modo Oscuro Laptop 3D) -->
+  @if (themeService.isLightMode()) {
+    <section id="hero" class="landing-section hero-vercel-section">
+      <app-hero-vercel
+        (explore)="scrollToSection('projects')"
+        (terminal)="scrollToSection('terminal')"
+        (contact)="scrollToSection('contact')"
+      ></app-hero-vercel>
+    </section>
+  } @else {
+    <section id="hero" class="landing-section hero-section">
+      <app-hero-3d></app-hero-3d>
+      <app-tech-stack-strip></app-tech-stack-strip>
+    </section>
+  }
 
   <!-- CONTENEDOR DE SECCIONES CON LLUVIA MATRIX AMBIENTAL (PANTALLA COMPLETA) -->
-  <div class="cyber-matrix-stage-wrapper">
-    <!-- Lienzo Matrix Global que abarca toda la pantalla en segundo plano para estas secciones -->
-    <app-matrix-rain class="global-matrix-bg"></app-matrix-rain>
+  <div class="cyber-matrix-stage-wrapper" [class.is-light]="themeService.isLightMode()">
+    <!-- Lienzo Matrix Global activo en Dark Mode para estas secciones -->
+    @if (themeService.isDarkMode()) {
+      <app-matrix-rain class="global-matrix-bg"></app-matrix-rain>
+    }
 
     <!-- SECCIÓN 02: Módulos Interactivos (Perfil Técnico & Retro Monitor CRT) -->
     <section id="retro" class="landing-section fullscreen-stage">

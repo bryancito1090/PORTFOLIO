@@ -145,6 +145,65 @@
   background: var(--zen-bg-elevated);
 }
 
+/* Botón Conmutador de Modo Claro / Oscuro (Glassmorphism) */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--zen-bg-surface);
+  border: 1px solid var(--zen-border-subtle);
+  border-radius: var(--zen-radius-xs);
+  color: var(--zen-text-primary);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 0;
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--zen-border-focus);
+  background: var(--zen-bg-elevated);
+  transform: scale(1.05);
+}
+
+/* Modo Claro Adaptativo para el Header y Navegación */
+:host-context([data-theme='zen-light']) .zen-header,
+:host-context(body.theme-light) .zen-header {
+  background: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+:host-context([data-theme='zen-light']) .nav-item,
+:host-context(body.theme-light) .nav-item {
+  color: #52525b;
+}
+
+:host-context([data-theme='zen-light']) .nav-item:hover,
+:host-context(body.theme-light) .nav-item:hover {
+  color: #000000;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+:host-context([data-theme='zen-light']) .nav-item.active,
+:host-context(body.theme-light) .nav-item.active {
+  color: #000000;
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
+:host-context([data-theme='zen-light']) .cyber-matrix-stage-wrapper,
+:host-context(body.theme-light) .cyber-matrix-stage-wrapper {
+  background-color: #fafafa;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+:host-context([data-theme='zen-light']) .fullscreen-stage,
+:host-context(body.theme-light) .fullscreen-stage {
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
 /* ==============================================================================
    ESTRUCTURA DE SECCIONES CONTINUAS (Single Page Scroll Flow)
    ============================================================================== */
@@ -159,11 +218,18 @@
   box-sizing: border-box;
 }
 
-/* 01. HERO SECTION (Pristino, Fondo Negro Profundo, 240 frames al scroll) */
+/* 01. HERO SECTION (Modo Oscuro con Laptop 3D al scroll & Modo Claro estilo Vercel) */
 .hero-section {
   position: relative;
   z-index: 10;
   background-color: #000000;
+  width: 100%;
+}
+
+.hero-vercel-section {
+  position: relative;
+  z-index: 10;
+  background-color: #ffffff;
   width: 100%;
 }
 

@@ -449,3 +449,44 @@
     align-items: flex-start;
   }
 }
+
+/* Light Mode Adaptations (Vercel-inspired Glassmorphism) */
+:host-context([data-theme='zen-light']) .project-card,
+:host-context(body.theme-light) .project-card {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+:host-context([data-theme='zen-light']) .project-card:hover,
+:host-context(body.theme-light) .project-card:hover {
+  background: #ffffff;
+  border-color: #000000;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+
+:host-context([data-theme='zen-light']) .carousel-nav-btn,
+:host-context(body.theme-light) .carousel-nav-btn {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #000000;
+}
+
+:host-context([data-theme='zen-light']) .carousel-nav-btn:hover,
+:host-context(body.theme-light) .carousel-nav-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: #000000;
+  color: #000000;
+}
+
+:host-context([data-theme='zen-light']) .tech-chip,
+:host-context(body.theme-light) .tech-chip {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #374151;
+}
+
+:host-context([data-theme='zen-light']) .carousel-dot .dot-inner,
+:host-context(body.theme-light) .carousel-dot .dot-inner {
+  background: rgba(0, 0, 0, 0.15);
+}

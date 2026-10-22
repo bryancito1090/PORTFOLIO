@@ -1,0 +1,13 @@
+<section class="tech-marquee-wrapper" aria-label="Stack tecnológico de ingeniería">
+  <div class="tech-marquee-container">
+    @for (tech of techList; track tech.name) {
+      <div class="tech-brand-item" [attr.aria-label]="tech.name + ' - ' + tech.category">
+        <span class="tech-icon" [innerHTML]="tech.svg" aria-hidden="true"></span>
+        <div class="tech-meta">
+          <span class="tech-name">{{ tech.name }}</span>
+          <span class="tech-sub">{{ tech.category }}</span>
+        </div>
+      </div>
+    }
+  </div>
+</section>

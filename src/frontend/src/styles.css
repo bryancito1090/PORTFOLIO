@@ -68,6 +68,43 @@
   --term-cursor: #e2b94a;
 }
 
+/* ==============================================================================
+   TEMA: VERCEL-INSPIRED ZEN LIGHT (Modo Claro & Glassmorphism)
+   ============================================================================== */
+
+[data-theme='zen-light'],
+body.theme-light {
+  --zen-bg-abyss: #ffffff;
+  --zen-bg-base: #fbfbfc;
+  --zen-bg-surface: rgba(255, 255, 255, 0.88);
+  --zen-bg-elevated: #f4f4f6;
+  --zen-bg-overlay: rgba(255, 255, 255, 0.9);
+
+  --zen-border-subtle: rgba(0, 0, 0, 0.08);
+  --zen-border-focus: #000000;
+  --zen-border-kintsugi: #c59b27;
+
+  --zen-text-primary: #000000;
+  --zen-text-secondary: #52525b;
+  --zen-text-muted: #71717a;
+  --zen-text-gold: #b45309;
+
+  --zen-accent-kintsugi: #000000;
+  --zen-accent-matcha: #16a34a;
+  --zen-accent-sakura: #e11d48;
+  --zen-accent-amber: #d97706;
+  --zen-accent-cyan: #0284c7;
+
+  --term-bg: #090b0e;
+  --term-prompt: #4e9b6f;
+  --term-text: #d8dee9;
+  --term-cursor: #e2b94a;
+
+  --zen-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --zen-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.07);
+  --zen-shadow-window: 0 20px 48px rgba(0, 0, 0, 0.1), 0 0 1px 1px rgba(0, 0, 0, 0.06);
+}
+
 /* Tema 2: Retro CRT Ámbar (Estación de trabajo vintage) */
 [data-theme='retro-amber'] {
   --zen-bg-abyss: #060401;

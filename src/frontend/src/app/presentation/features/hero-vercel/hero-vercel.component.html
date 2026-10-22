@@ -1,0 +1,69 @@
+<div class="vercel-hero-stage">
+  <!-- Fondo con rejilla ultra-sutil y aura radial estilo Vercel -->
+  <div class="vercel-bg-grid" aria-hidden="true"></div>
+
+  <div class="vercel-hero-content">
+    <!-- Columna Izquierda: Titular & Llamados a la Acción -->
+    <div class="hero-left-col">
+      <div class="hero-status-pill">
+        <span class="status-pulse-dot"></span>
+        <span class="status-label">{{ i18n.t().p1LeadStatus }}</span>
+      </div>
+
+      <h1 class="hero-main-heading">
+        {{ i18n.currentLang() === 'es' ? 'Arquitectura Cloud & Sistemas Empresariales' : 'Cloud Architecture & Enterprise Systems' }}
+      </h1>
+
+      <p class="hero-subtext">
+        {{ i18n.currentLang() === 'es' 
+          ? 'Diseñando software de alta concurrencia con .NET 9 Clean Architecture, Angular Signals y telemetría autónoma.'
+          : 'Engineering high-concurrency systems with .NET 9 Clean Architecture, Angular Signals, and autonomous telemetry.' }}
+      </p>
+
+      <div class="hero-actions-deck">
+        <button type="button" class="btn-primary-pill" (click)="explore.emit()">
+          {{ i18n.currentLang() === 'es' ? 'Explorar Proyectos' : 'Explore Projects' }}
+        </button>
+        <button type="button" class="btn-secondary-pill" (click)="terminal.emit()">
+          {{ i18n.currentLang() === 'es' ? 'Probar Terminal' : 'Launch Terminal' }}
+        </button>
+        <button type="button" class="btn-ghost-pill" (click)="contact.emit()">
+          {{ i18n.currentLang() === 'es' ? 'Contacto' : 'Get in Touch' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Centro: Prisma Zen Vercel con Refracción Espectral Multicolor -->
+    <div class="hero-prism-col" aria-hidden="true">
+      <div class="prism-spectral-halo"></div>
+      <div class="prism-black-triangle"></div>
+    </div>
+
+    <!-- Columna Derecha: Bullets de Especialidad -->
+    <div class="hero-right-col">
+      <ul class="hero-feature-list">
+        <li class="feature-item">
+          <span class="feature-bullet">●</span>
+          <span class="feature-text">{{ i18n.currentLang() === 'es' ? 'Arquitectura Hexagonal & CQRS' : 'Hexagonal Architecture & CQRS' }}</span>
+        </li>
+        <li class="feature-item">
+          <span class="feature-bullet">●</span>
+          <span class="feature-text">{{ i18n.currentLang() === 'es' ? 'Frontend Angular Signals 60 FPS' : 'Angular Signals Frontend 60 FPS' }}</span>
+        </li>
+        <li class="feature-item">
+          <span class="feature-bullet">●</span>
+          <span class="feature-text">{{ i18n.currentLang() === 'es' ? 'Cloud OCI, AWS & SecOps' : 'Cloud OCI, AWS & SecOps' }}</span>
+        </li>
+        <li class="feature-item">
+          <span class="feature-bullet">●</span>
+          <span class="feature-text">{{ i18n.currentLang() === 'es' ? 'Telemetría & Agentes Autónomos' : 'Telemetry & Autonomous Agents' }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Barra Inferior: Marcas & Tecnologías estilo Vercel -->
+  <div class="vercel-marquee-slot">
+    <app-tech-stack-strip></app-tech-stack-strip>
+  </div>
+</div>

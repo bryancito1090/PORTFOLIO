@@ -1,7 +1,7 @@
 :host {
   display: block;
   width: 100%;
-  background-color: #121517;
+  background: transparent;
 }
 
 /* ==============================================================================
@@ -14,10 +14,10 @@
   aspect-ratio: 1398 / 1564;
   margin: 0 auto;
   user-select: none;
-  background-color: #121517;
+  background: transparent;
 }
 
-/* Imagen del Monitor de Fondo (Ocupa el 100% del ancho sin márgenes vacíos) */
+/* Imagen del Monitor de Fondo (Transparente sin corte de bordes) */
 .monitor-background-img {
   position: absolute;
   inset: 0;
@@ -26,6 +26,7 @@
   object-fit: contain;
   z-index: 1;
   pointer-events: none;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.45));
 }
 
 /* Área de Pantalla CRT Calibrada al Milímetro (81.83% del ancho del chasis) */
