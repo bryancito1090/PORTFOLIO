@@ -7,16 +7,17 @@ import {
   ElementRef,
   ChangeDetectionStrategy,
   signal,
+  effect,
   inject,
   NgZone,
   input
 } from '@angular/core';
 import { I18nService } from '../../../application/services/i18n.service';
+import { ThemeMode, ThemeService } from '../../../application/services/theme.service';
 
 const TOTAL_FRAMES = 240;
 const LERP_FACTOR = 0.09;
-const SHARED_IMAGE_CACHE: HTMLImageElement[] = new Array(TOTAL_FRAMES + 1);
-let isPreloadDone = false;
+const SHARED_IMAGE_CACHE: Record<ThemeMode, HTMLImageElement[]> = { dark: [], light: [] };
 
 @Component({
   selector: 'app-hero-3d',
@@ -32,6 +33,7 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('canvas') private canvasRef!: ElementRef<HTMLCanvasElement>;
 
   protected readonly i18n = inject(I18nService);
+  private readonly themeService = inject(ThemeService);
   private readonly ngZone = inject(NgZone);
 
   protected readonly activePhase = signal<number>(1);
@@ -39,6 +41,8 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
   protected readonly isLoaded = signal<boolean>(false);
 
   private ctx: CanvasRenderingContext2D | null = null;
+  private images: HTMLImageElement[] = [];
+  private readonly isDesktop = signal(window.innerWidth > 900);
   private targetFrame = 1;
   private currentInterpolatedFrame = 1;
   private lastRenderedFrame = 0;
@@ -49,19 +53,31 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
   private intersectionObserver?: IntersectionObserver;
   private mediaQueryList?: MediaQueryList;
 
+  constructor() {
+    effect((onCleanup) => {
+      const mode = this.themeService.themeMode();
+      let active = true;
+      onCleanup(() => { active = false; });
+      this.images = SHARED_IMAGE_CACHE[mode];
+      this.loadProgress.set(0);
+      this.isLoaded.set(false);
+      this.lastRenderedFrame = 0;
+      this.renderFrame(Math.round(this.currentInterpolatedFrame));
+      if (!this.isDesktop()) {
+        this.isLoaded.set(true);
+      } else {
+        this.preloadImages(mode, () => active);
+      }
+    });
+  }
+
   ngOnInit(): void {
-    const isBottom = this.initialPosition() === 'bottom';
-    this.targetFrame = isBottom ? TOTAL_FRAMES : 1;
-    this.currentInterpolatedFrame = isBottom ? TOTAL_FRAMES : 1;
-    this.lastRenderedFrame = isBottom ? TOTAL_FRAMES : 1;
-    this.activePhase.set(isBottom ? 3 : 1);
+    this.targetFrame = 1;
+    this.currentInterpolatedFrame = 1;
+    this.lastRenderedFrame = 1;
+    this.activePhase.set(1);
 
     this.checkReducedMotion();
-    if (typeof window !== 'undefined' && window.innerWidth <= 900) {
-      this.isLoaded.set(true);
-    } else {
-      this.preloadImages();
-    }
   }
 
   ngAfterViewInit(): void {
@@ -91,41 +107,9 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     if (typeof window !== 'undefined' && window.innerWidth > 900) {
-      const container = this.containerRef.nativeElement;
-      const isBottom = this.initialPosition() === 'bottom';
-
-      if (isBottom) {
-        const scrollableDistance = container.offsetHeight - window.innerHeight;
-        window.scrollTo({ top: scrollableDistance > 0 ? scrollableDistance : 3000, behavior: 'instant' });
-        this.targetFrame = TOTAL_FRAMES;
-        this.currentInterpolatedFrame = TOTAL_FRAMES;
-        this.lastRenderedFrame = TOTAL_FRAMES;
-        this.activePhase.set(3);
-      } else {
-        window.scrollTo({ top: 0, behavior: 'instant' });
-        this.targetFrame = 1;
-        this.currentInterpolatedFrame = 1;
-        this.lastRenderedFrame = 1;
-        this.activePhase.set(1);
-      }
-
       this.onResize();
+      this.onScroll();
       this.renderFrame(Math.round(this.currentInterpolatedFrame));
-
-      // Reasegurar la posición al desbloquear el scroll
-      if (isBottom) {
-        setTimeout(() => {
-          const maxDist = container.offsetHeight - window.innerHeight;
-          if (maxDist > 0) {
-            window.scrollTo({ top: maxDist, behavior: 'instant' });
-          }
-          this.targetFrame = TOTAL_FRAMES;
-          this.currentInterpolatedFrame = TOTAL_FRAMES;
-          this.lastRenderedFrame = TOTAL_FRAMES;
-          this.activePhase.set(3);
-          this.renderFrame(TOTAL_FRAMES);
-        }, 780);
-      }
     }
   }
 
@@ -147,53 +131,45 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  private preloadImages(): void {
-    if (isPreloadDone) {
-      this.loadProgress.set(100);
-      this.isLoaded.set(true);
-      this.renderFrame(this.targetFrame);
-      return;
-    }
-
+  private preloadImages(mode: ThemeMode, isCurrent: () => boolean): void {
+    const images = this.images;
     let loaded = 0;
-    const startFrame = this.initialPosition() === 'bottom' ? TOTAL_FRAMES : 1;
+    const startFrame = this.isReducedMotion ? 1 : this.initialPosition() === 'bottom'
+      ? TOTAL_FRAMES : Math.round(this.currentInterpolatedFrame);
 
-    const loadSingle = (index: number, cb?: () => void) => {
-      if (SHARED_IMAGE_CACHE[index]?.complete) {
+    const loadSingle = async (index: number) => {
+      const img = images[index] ??= new Image();
+      if (!img.src) img.src = this.getFramePath(mode, index);
+      try {
+        await img.decode();
+      } catch {
+        // Un fotograma fallido no bloquea el resto de la secuencia.
+      } finally {
         loaded++;
-        cb?.();
-        return;
-      }
-      const img = new Image();
-      img.src = this.getFramePath(index);
-      img.onload = () => {
-        SHARED_IMAGE_CACHE[index] = img;
-        loaded++;
-        cb?.();
-        if (loaded % 12 === 0 || loaded === TOTAL_FRAMES) {
-          this.loadProgress.set(Math.round((loaded / TOTAL_FRAMES) * 100));
-          if (loaded === TOTAL_FRAMES) {
-            isPreloadDone = true;
-            this.isLoaded.set(true);
+        if (isCurrent()) {
+          if (loaded % 12 === 0 || loaded === TOTAL_FRAMES) {
+            this.loadProgress.set(Math.round((loaded / TOTAL_FRAMES) * 100));
+            this.isLoaded.set(loaded === TOTAL_FRAMES);
+          }
+          if (loaded === 1 || loaded === TOTAL_FRAMES) {
+            this.renderFrame(this.isReducedMotion ? 1 : Math.round(this.currentInterpolatedFrame));
           }
         }
-      };
-      img.onerror = () => {
-        loaded++;
-      };
+      }
     };
 
-    loadSingle(startFrame, () => {
-      this.renderFrame(startFrame);
+    void loadSingle(startFrame).then(() => {
+      if (!isCurrent()) return;
       for (let i = 1; i <= TOTAL_FRAMES; i++) {
-        if (i !== startFrame) loadSingle(i);
+        if (i !== startFrame) void loadSingle(i);
       }
     });
   }
 
-  private getFramePath(index: number): string {
+  private getFramePath(mode: ThemeMode, index: number): string {
     const padded = String(index).padStart(3, '0');
-    return `/assets/images/thinkpad-sequence/ezgif-frame-${padded}.jpg`;
+    const folder = mode === 'light' ? 'thinkpad-sequence-light' : 'thinkpad-sequence';
+    return `/assets/images/${folder}/ezgif-frame-${padded}.jpg`;
   }
 
   private onScroll = (): void => {
@@ -222,6 +198,7 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
   };
 
   private onResize = (): void => {
+    this.isDesktop.set(window.innerWidth > 900);
     if (typeof window !== 'undefined' && window.innerWidth <= 900) {
       if (this.animationFrameId !== null) {
         cancelAnimationFrame(this.animationFrameId);
@@ -304,29 +281,29 @@ export class Hero3dComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private getBestFrame(targetIndex: number): HTMLImageElement | null {
     const rounded = Math.min(Math.max(1, Math.round(targetIndex)), TOTAL_FRAMES);
-    if (SHARED_IMAGE_CACHE[rounded]?.complete) return SHARED_IMAGE_CACHE[rounded];
+    if (this.images[rounded]?.naturalWidth) return this.images[rounded];
 
     for (let offset = 1; offset < TOTAL_FRAMES; offset++) {
       const prev = rounded - offset;
-      if (prev >= 1 && SHARED_IMAGE_CACHE[prev]?.complete) return SHARED_IMAGE_CACHE[prev];
+      if (prev >= 1 && this.images[prev]?.naturalWidth) return this.images[prev];
       const next = rounded + offset;
-      if (next <= TOTAL_FRAMES && SHARED_IMAGE_CACHE[next]?.complete) return SHARED_IMAGE_CACHE[next];
+      if (next <= TOTAL_FRAMES && this.images[next]?.naturalWidth) return this.images[next];
     }
-    return SHARED_IMAGE_CACHE[1]?.complete ? SHARED_IMAGE_CACHE[1] : null;
+    return null;
   }
 
   private renderFrame(targetIndex: number): void {
     if (!this.ctx || !this.canvasRef) return;
     this.resizeCanvas();
 
-    const img = this.getBestFrame(targetIndex);
-    if (!img || !img.complete) return;
-
     const canvas = this.canvasRef.nativeElement;
     const ctx = this.ctx;
 
-    ctx.fillStyle = '#000000';
+    ctx.fillStyle = this.themeService.isLightMode() ? '#d9d9d9' : '#000000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const img = this.getBestFrame(targetIndex);
+    if (!img) return;
 
     const imgAspect = 16 / 9;
     const drawW = canvas.width;

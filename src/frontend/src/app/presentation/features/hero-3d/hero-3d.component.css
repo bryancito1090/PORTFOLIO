@@ -23,6 +23,58 @@
   50% { opacity: 1; transform: scale(1.15); }
 }
 
+.zen-scroll-hint {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  background: rgba(12, 14, 20, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--zen-border-subtle);
+  border-radius: var(--zen-radius-xs);
+  z-index: 20;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+.zen-scroll-hint.faded {
+  opacity: 0;
+  transform: translate(-50%, 12px);
+}
+.scroll-mouse-icon {
+  width: 14px;
+  height: 22px;
+  border: 1.5px solid var(--zen-accent-kintsugi);
+  border-radius: 8px;
+  position: relative;
+  display: block;
+}
+.scroll-wheel-dot {
+  width: 2.5px;
+  height: 4px;
+  background: var(--zen-accent-kintsugi);
+  border-radius: 1px;
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: scrollWheelPulse 1.6s infinite ease-in-out;
+}
+@keyframes scrollWheelPulse {
+  0% { transform: translate(-50%, 0); opacity: 1; }
+  100% { transform: translate(-50%, 8px); opacity: 0; }
+}
+.scroll-hint-text {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--zen-text-secondary);
+}
+
 .lateral-panel {
   position: absolute; z-index: 10; width: min(100%, 25rem); opacity: 0; visibility: hidden; pointer-events: none;
   transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
@@ -219,6 +271,27 @@
   border-color: rgba(78, 155, 111, 0.45);
   color: var(--zen-accent-matcha);
   background: rgba(78, 155, 111, 0.12);
+}
+
+:host-context(body.theme-light) {
+  .hero-sticky-stage { background: #d9d9d9; }
+  .lateral-panel *, .mobile-only * { text-shadow: none; }
+  .zen-loader-pill, .zen-scroll-hint { background: var(--zen-bg-overlay); }
+  .lead-footer { border-color: var(--zen-border-subtle); }
+  .zen-chip { box-shadow: var(--zen-shadow-sm); }
+  .zen-chip:not(.chip-gold):not(.chip-matcha) {
+    background: var(--zen-bg-surface);
+    border-color: var(--zen-border-subtle);
+  }
+  .mobile-lead-card, .mobile-pillar-card {
+    background: var(--zen-bg-surface);
+    box-shadow: var(--zen-shadow-sm);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lateral-panel, .zen-scroll-hint { transition: none; }
+  .loader-dot, .scroll-wheel-dot { animation: none; }
 }
 
 .mobile-only {

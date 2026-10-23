@@ -1,0 +1,99 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.tech-marquee-wrapper {
+  width: 100%;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--zen-border-subtle);
+  border-bottom: 1px solid var(--zen-border-subtle);
+  background: rgba(10, 12, 16, 0.4);
+  backdrop-filter: blur(12px);
+  position: relative;
+  z-index: 5;
+}
+
+:host-context([data-theme='zen-light']) .tech-marquee-wrapper,
+:host-context(body.theme-light) .tech-marquee-wrapper {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.tech-marquee-container {
+  max-width: 1540px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 3vw, 2.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.tech-brand-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--zen-radius-sm);
+  background: transparent;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--zen-text-secondary);
+  cursor: default;
+  user-select: none;
+}
+
+.tech-brand-item:hover {
+  color: var(--zen-text-primary);
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+:host-context([data-theme='zen-light']) .tech-brand-item:hover,
+:host-context(body.theme-light) .tech-brand-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.tech-icon {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tech-icon ::ng-deep svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.tech-meta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.tech-name {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.tech-sub {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--zen-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 860px) {
+  .tech-marquee-container {
+    justify-content: center;
+    gap: 0.75rem 1.25rem;
+  }
+}

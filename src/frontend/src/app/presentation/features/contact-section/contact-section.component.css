@@ -7,34 +7,8 @@
 .contact-section {
   position: relative;
   width: 100%;
-  background-color: #121517;
-  padding: clamp(5rem, 8vw, 7rem) 0;
-  overflow: hidden;
-}
-
-.contact-matrix-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-  display: block;
   background: transparent;
-  opacity: 0;
-  animation: fadeInMatrix 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes fadeInMatrix {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 0.65;
-    transform: translateY(0);
-  }
+  padding: 0;
 }
 
 .contact-container {
@@ -310,6 +284,18 @@
 .submit-btn:hover:not(:disabled) {
   background-color: #d4a932;
   box-shadow: 0 0 16px rgba(197, 155, 39, 0.35);
+}
+
+:host-context([data-theme='zen-light']) .submit-btn,
+:host-context(body.theme-light) .submit-btn {
+  background-color: #0f172a;
+  color: #ffffff;
+}
+
+:host-context([data-theme='zen-light']) .submit-btn:hover:not(:disabled),
+:host-context(body.theme-light) .submit-btn:hover:not(:disabled) {
+  background-color: #1e293b;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.25);
 }
 
 .submit-btn:active:not(:disabled) {

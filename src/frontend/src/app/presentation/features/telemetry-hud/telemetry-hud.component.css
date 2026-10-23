@@ -327,3 +327,61 @@
     width: 290px;
   }
 }
+
+/* ==============================================================================
+   ADAPTACIÓN PARA MODO CLARO (ZEN LIGHT)
+   ============================================================================== */
+
+:host-context([data-theme='zen-light']) .hud-pill,
+:host-context(body.theme-light) .hud-pill {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(15, 23, 42, 0.12);
+  color: #475569;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+
+:host-context([data-theme='zen-light']) .hud-pill:hover,
+:host-context(body.theme-light) .hud-pill:hover,
+:host-context([data-theme='zen-light']) .hud-pill.active,
+:host-context(body.theme-light) .hud-pill.active {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.25);
+  color: #0f172a;
+}
+
+:host-context([data-theme='zen-light']) .hud-ping-badge,
+:host-context(body.theme-light) .hud-ping-badge {
+  background: rgba(15, 23, 42, 0.05);
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+:host-context([data-theme='zen-light']) .hud-drawer,
+:host-context(body.theme-light) .hud-drawer {
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-color: rgba(15, 23, 42, 0.1);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.12), 0 0 1px 1px rgba(15, 23, 42, 0.05);
+}
+
+:host-context([data-theme='zen-light']) .node-card,
+:host-context(body.theme-light) .node-card,
+:host-context([data-theme='zen-light']) .metric-tile,
+:host-context(body.theme-light) .metric-tile {
+  background: #f1f4f8;
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+:host-context([data-theme='zen-light']) .zen-action-btn,
+:host-context(body.theme-light) .zen-action-btn {
+  border-color: rgba(15, 23, 42, 0.15);
+  color: #475569;
+}
+
+:host-context([data-theme='zen-light']) .zen-action-btn:hover,
+:host-context(body.theme-light) .zen-action-btn:hover {
+  background: rgba(15, 23, 42, 0.05);
+  border-color: #0f172a;
+  color: #0f172a;
+}
+

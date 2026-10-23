@@ -449,3 +449,76 @@
     align-items: flex-start;
   }
 }
+
+/* Light Mode Adaptations (Vercel-inspired Glassmorphism) */
+:host-context([data-theme='zen-light']) .project-card,
+:host-context(body.theme-light) .project-card {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+:host-context([data-theme='zen-light']) .project-card:hover,
+:host-context(body.theme-light) .project-card:hover {
+  background: #ffffff;
+  border-color: var(--zen-accent-kintsugi);
+  box-shadow: 0 12px 28px rgba(217, 119, 6, 0.12);
+}
+
+:host-context([data-theme='zen-light']) .project-card.is-selected,
+:host-context(body.theme-light) .project-card.is-selected {
+  border-color: var(--zen-accent-kintsugi);
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.12), 0 0 20px rgba(217, 119, 6, 0.15);
+}
+
+:host-context([data-theme='zen-light']) .project-image-slot,
+:host-context(body.theme-light) .project-image-slot {
+  background-color: #f1f5f9;
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+:host-context([data-theme='zen-light']) .tech-blueprint-slot,
+:host-context(body.theme-light) .tech-blueprint-slot {
+  background:
+    radial-gradient(circle at center, rgba(3, 105, 161, 0.06) 0%, transparent 70%),
+    #f8fafc;
+}
+
+:host-context([data-theme='zen-light']) .blueprint-grid-overlay,
+:host-context(body.theme-light) .blueprint-grid-overlay {
+  background-image:
+    linear-gradient(rgba(3, 105, 161, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(3, 105, 161, 0.08) 1px, transparent 1px);
+}
+
+:host-context([data-theme='zen-light']) .project-detail-overlay,
+:host-context(body.theme-light) .project-detail-overlay {
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(12px);
+}
+
+:host-context([data-theme='zen-light']) .carousel-nav-btn,
+:host-context(body.theme-light) .carousel-nav-btn {
+  background: rgba(15, 23, 42, 0.04);
+  border-color: rgba(15, 23, 42, 0.08);
+  color: var(--zen-text-primary);
+}
+
+:host-context([data-theme='zen-light']) .carousel-nav-btn:hover,
+:host-context(body.theme-light) .carousel-nav-btn:hover {
+  background: rgba(15, 23, 42, 0.08);
+  border-color: var(--zen-accent-kintsugi);
+  color: var(--zen-accent-kintsugi);
+}
+
+:host-context([data-theme='zen-light']) .tech-chip,
+:host-context(body.theme-light) .tech-chip {
+  background: rgba(15, 23, 42, 0.04);
+  border-color: rgba(15, 23, 42, 0.08);
+  color: var(--zen-text-secondary);
+}
+
+:host-context([data-theme='zen-light']) .carousel-dot .dot-inner,
+:host-context(body.theme-light) .carousel-dot .dot-inner {
+  background: rgba(15, 23, 42, 0.15);
+}

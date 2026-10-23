@@ -381,3 +381,95 @@
     align-items: center;
   }
 }
+
+/* Adaptación a Modo Claro (Vercel-inspired Glassmorphism) */
+:host-context([data-theme='zen-light']) .project-detail-panel,
+:host-context(body.theme-light) .project-detail-panel {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.1);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+}
+
+:host-context([data-theme='zen-light']) .main-image-viewport,
+:host-context(body.theme-light) .main-image-viewport {
+  background: #f8fafc;
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+:host-context([data-theme='zen-light']) .main-image-viewport img,
+:host-context(body.theme-light) .main-image-viewport img {
+  background-color: #f8fafc;
+}
+
+:host-context([data-theme='zen-light']) .thumb-btn,
+:host-context(body.theme-light) .thumb-btn {
+  background: #f1f5f9;
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+:host-context([data-theme='zen-light']) .thumb-btn:hover,
+:host-context(body.theme-light) .thumb-btn:hover {
+  border-color: rgba(15, 23, 42, 0.25);
+}
+
+:host-context([data-theme='zen-light']) .close-button,
+:host-context(body.theme-light) .close-button {
+  background: rgba(15, 23, 42, 0.05);
+  border-color: rgba(15, 23, 42, 0.1);
+  color: var(--zen-text-primary);
+}
+
+:host-context([data-theme='zen-light']) .close-button:hover,
+:host-context(body.theme-light) .close-button:hover {
+  background: rgba(15, 23, 42, 0.1);
+  border-color: var(--zen-accent-kintsugi);
+  color: var(--zen-accent-kintsugi);
+}
+
+:host-context([data-theme='zen-light']) .meta-pill,
+:host-context(body.theme-light) .meta-pill {
+  background: rgba(15, 23, 42, 0.04);
+  border-color: rgba(15, 23, 42, 0.08);
+  color: var(--zen-text-primary);
+}
+
+:host-context([data-theme='zen-light']) .meta-pill.subtle,
+:host-context(body.theme-light) .meta-pill.subtle {
+  color: var(--zen-text-secondary);
+}
+
+:host-context([data-theme='zen-light']) .detail-block,
+:host-context(body.theme-light) .detail-block {
+  background: #f8fafc;
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+:host-context([data-theme='zen-light']) .detail-tags span,
+:host-context(body.theme-light) .detail-tags span {
+  background: rgba(15, 23, 42, 0.04);
+  border-color: rgba(15, 23, 42, 0.08);
+  color: var(--zen-text-secondary);
+}
+
+:host-context([data-theme='zen-light']) .technical-blueprint-panel,
+:host-context(body.theme-light) .technical-blueprint-panel {
+  background:
+    radial-gradient(circle at center, rgba(3, 105, 161, 0.05) 0%, transparent 70%),
+    #f8fafc;
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+:host-context([data-theme='zen-light']) .blueprint-circuit-bg,
+:host-context(body.theme-light) .blueprint-circuit-bg {
+  background-image:
+    linear-gradient(rgba(3, 105, 161, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(3, 105, 161, 0.08) 1px, transparent 1px);
+}
+
+:host-context([data-theme='zen-light']) .blueprint-specs-list .spec-item,
+:host-context(body.theme-light) .blueprint-specs-list .spec-item {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.08);
+  color: var(--zen-text-secondary);
+}
