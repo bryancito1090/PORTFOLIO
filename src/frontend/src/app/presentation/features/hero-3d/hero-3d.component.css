@@ -273,6 +273,27 @@
   background: rgba(78, 155, 111, 0.12);
 }
 
+:host-context(body.theme-light) {
+  .hero-sticky-stage { background: #d9d9d9; }
+  .lateral-panel *, .mobile-only * { text-shadow: none; }
+  .zen-loader-pill, .zen-scroll-hint { background: var(--zen-bg-overlay); }
+  .lead-footer { border-color: var(--zen-border-subtle); }
+  .zen-chip { box-shadow: var(--zen-shadow-sm); }
+  .zen-chip:not(.chip-gold):not(.chip-matcha) {
+    background: var(--zen-bg-surface);
+    border-color: var(--zen-border-subtle);
+  }
+  .mobile-lead-card, .mobile-pillar-card {
+    background: var(--zen-bg-surface);
+    box-shadow: var(--zen-shadow-sm);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lateral-panel, .zen-scroll-hint { transition: none; }
+  .loader-dot, .scroll-wheel-dot { animation: none; }
+}
+
 .mobile-only {
   display: none;
 }

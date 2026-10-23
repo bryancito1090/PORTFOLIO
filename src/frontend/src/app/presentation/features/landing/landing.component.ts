@@ -17,9 +17,7 @@ import { ContactSectionComponent } from '../contact-section/contact-section.comp
 import { TechnicalProfileComponent } from '../technical-profile/technical-profile.component';
 import { IncidentSimulatorComponent } from '../incident-simulator/incident-simulator.component';
 import { ChatBotComponent } from '../chat-bot/chat-bot.component';
-import { TelemetryHudComponent } from '../telemetry-hud/telemetry-hud.component';
 import { MatrixRainComponent } from '../../shared/components/matrix-rain/matrix-rain.component';
-import { HeroVercelComponent } from '../hero-vercel/hero-vercel.component';
 import { TechStackStripComponent } from '../../shared/components/tech-stack-strip/tech-stack-strip.component';
 import { I18nService } from '../../../application/services/i18n.service';
 import { ThemeService } from '../../../application/services/theme.service';
@@ -47,9 +45,7 @@ export const LANDING_SECTIONS: readonly LandingSection[] = [
     TechnicalProfileComponent,
     IncidentSimulatorComponent,
     ChatBotComponent,
-    TelemetryHudComponent,
     MatrixRainComponent,
-    HeroVercelComponent,
     TechStackStripComponent
   ],
   templateUrl: './landing.component.html',

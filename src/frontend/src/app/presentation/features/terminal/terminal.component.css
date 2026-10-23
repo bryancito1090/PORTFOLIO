@@ -238,7 +238,83 @@
 
 :host-context([data-theme='zen-light']) .arch-terminal-card,
 :host-context(body.theme-light) .arch-terminal-card {
-  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.16), 0 1px 3px rgba(15, 23, 42, 0.08);
+  background-color: #ffffff;
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.12), 0 1px 3px rgba(15, 23, 42, 0.06);
   border-color: rgba(15, 23, 42, 0.12);
+}
+
+:host-context([data-theme='zen-light']) .term-window-header,
+:host-context(body.theme-light) .term-window-header {
+  background-color: #f1f5f9;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+:host-context([data-theme='zen-light']) .term-title-block,
+:host-context(body.theme-light) .term-title-block {
+  color: #475569;
+}
+
+:host-context([data-theme='zen-light']) .term-body,
+:host-context(body.theme-light) .term-body {
+  background: radial-gradient(circle at top right, rgba(2, 132, 199, 0.04) 0%, transparent 60%);
+}
+
+:host-context([data-theme='zen-light']) .term-image-banner,
+:host-context(body.theme-light) .term-image-banner {
+  background-color: transparent;
+}
+
+:host-context([data-theme='zen-light']) .term-banner-text,
+:host-context([data-theme='zen-light']) .term-banner,
+:host-context(body.theme-light) .term-banner-text,
+:host-context(body.theme-light) .term-banner {
+  color: #0369a1;
+}
+
+:host-context([data-theme='zen-light']) .term-output,
+:host-context(body.theme-light) .term-output {
+  color: #0f172a;
+}
+
+:host-context([data-theme='zen-light']) .typed-command,
+:host-context([data-theme='zen-light']) .term-input,
+:host-context(body.theme-light) .typed-command,
+:host-context(body.theme-light) .term-input {
+  color: #0f172a;
+}
+
+:host-context([data-theme='zen-light']) .term-ghost-text,
+:host-context(body.theme-light) .term-ghost-text {
+  color: #94a3b8;
+}
+
+:host-context([data-theme='zen-light']) .prompt-user,
+:host-context(body.theme-light) .prompt-user {
+  color: #0284c7;
+}
+
+:host-context([data-theme='zen-light']) .prompt-path,
+:host-context(body.theme-light) .prompt-path {
+  color: #7c3aed;
+}
+
+:host-context([data-theme='zen-light']) .prompt-symbol,
+:host-context(body.theme-light) .prompt-symbol {
+  color: #059669;
+}
+
+:host-context([data-theme='zen-light']) .term-ascii,
+:host-context(body.theme-light) .term-ascii {
+  color: #2563eb;
+}
+
+:host-context([data-theme='zen-light']) .git-branch,
+:host-context(body.theme-light) .git-branch {
+  color: #64748b;
+}
+
+:host-context([data-theme='zen-light']) .branch-name,
+:host-context(body.theme-light) .branch-name {
+  color: #7c3aed;
 }
 

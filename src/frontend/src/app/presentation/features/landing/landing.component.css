@@ -16,57 +16,77 @@
 }
 
 /* ==============================================================================
-   HEADER MINIMALISTA FLOTANTE (Glassmorphism & Cyber-Zen)
+   NAVBAR FLOTANTE GLASSMORPHISM (Barra desprendida con vidrio esmerilado)
    ============================================================================== */
 
 .zen-header {
+  --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)), rgba(12, 14, 20, 0.55);
+  --glass-edge: rgba(255, 255, 255, 0.09);
+  --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --glass-track: rgba(255, 255, 255, 0.04);
+  --glass-chip: rgba(255, 255, 255, 0.1);
+
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 56px;
-  padding: 0 clamp(0.75rem, 2vw, 2rem);
-  background: rgba(10, 10, 11, 0.88);
-  backdrop-filter: blur(14px) saturate(160%);
-  border-bottom: 1px solid var(--zen-border-subtle);
   gap: var(--space-3);
+  width: min(1240px, calc(100% - 24px));
+  height: 52px;
+  padding: 0 var(--space-2) 0 var(--space-4);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--zen-radius-md);
+  box-shadow: var(--glass-shadow);
+}
+
+:host-context([data-theme='zen-light']) .zen-header {
+  --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.45));
+  --glass-edge: rgba(15, 23, 42, 0.08);
+  --glass-shadow: 0 10px 40px rgba(15, 23, 42, 0.1), inset 0 1px 0 #ffffff;
+  --glass-track: rgba(15, 23, 42, 0.04);
+  --glass-chip: #ffffff;
 }
 
 .brand-block-btn {
   background: none;
   border: none;
   padding: 0;
-  margin: 0;
   cursor: pointer;
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  transition: transform 0.2s ease;
+  transition: opacity var(--transition-fast);
 }
 
 .brand-block-btn:hover {
-  transform: scale(1.05);
+  opacity: 0.75;
 }
 
 .brand-logo {
-  height: 30px;
+  height: 28px;
   width: auto;
   object-fit: contain;
   border-radius: var(--zen-radius-xs);
 }
 
-/* Barra de Navegación Rápida */
+/* Riel de navegación hundido con chip activo elevado */
 .zen-nav {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
+  padding: 3px;
+  background: var(--glass-track);
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--zen-radius-sm);
   overflow-x: auto;
   scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
 }
 
 .zen-nav::-webkit-scrollbar {
@@ -74,28 +94,40 @@
 }
 
 .nav-item {
+  position: relative;
   background: transparent;
-  border: 1px solid transparent;
+  border: none;
   color: var(--zen-text-secondary);
   font-family: var(--font-sans);
   font-size: 0.8125rem;
   font-weight: 600;
-  padding: 5px 12px;
+  padding: 6px 14px;
   border-radius: var(--zen-radius-xs);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color var(--transition-fast), background var(--transition-fast);
   white-space: nowrap;
 }
 
 .nav-item:hover {
   color: var(--zen-text-primary);
-  background: rgba(255, 255, 255, 0.05);
 }
 
 .nav-item.active {
-  color: var(--zen-accent-kintsugi);
-  background: rgba(197, 155, 39, 0.12);
-  border-color: rgba(197, 155, 39, 0.4);
+  color: var(--zen-text-primary);
+  background: var(--glass-chip);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.nav-item.active::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 14px;
+  height: 2px;
+  transform: translateX(-50%);
+  background: var(--zen-accent-kintsugi);
+  border-radius: 1px;
 }
 
 .header-right-group {
@@ -109,87 +141,58 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  justify-content: center;
-  font-family: var(--font-sans);
-  line-height: 1.25;
+  font-family: var(--font-mono);
+  line-height: 1.2;
 }
 
 .live-clock {
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--zen-text-primary);
-  letter-spacing: 0.02em;
 }
 
 .location-label {
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   color: var(--zen-text-muted);
+  letter-spacing: 0.04em;
 }
 
-.lang-toggle-btn {
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--zen-text-secondary);
-  background: var(--zen-bg-surface);
-  border: 1px solid var(--zen-border-subtle);
-  border-radius: var(--zen-radius-xs);
-  padding: 4px 8px;
-  cursor: pointer;
-  transition: var(--transition-fast);
+/* Control segmentado: idioma + tema en una sola pieza de vidrio */
+.header-controls {
+  display: flex;
+  align-items: center;
+  background: var(--glass-track);
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--zen-radius-sm);
+  overflow: hidden;
 }
 
-.lang-toggle-btn:hover {
-  border-color: var(--zen-accent-kintsugi);
-  color: var(--zen-accent-kintsugi);
-  background: var(--zen-bg-elevated);
-}
-
-/* Botón Conmutador de Modo Claro / Oscuro (Glassmorphism) */
+.lang-toggle-btn,
 .theme-toggle-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  background: var(--zen-bg-surface);
-  border: 1px solid var(--zen-border-subtle);
-  border-radius: var(--zen-radius-xs);
-  color: var(--zen-text-primary);
+  height: 34px;
+  min-width: 36px;
+  padding: 0 10px;
+  background: transparent;
+  border: none;
+  color: var(--zen-text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  padding: 0;
+  transition: color var(--transition-fast), background var(--transition-fast);
 }
 
+.theme-toggle-btn {
+  border-left: 1px solid var(--glass-edge);
+}
+
+.lang-toggle-btn:hover,
 .theme-toggle-btn:hover {
-  border-color: var(--zen-border-focus);
-  background: var(--zen-bg-elevated);
-  transform: scale(1.05);
-}
-
-/* Modo Claro Adaptativo para el Header y Navegación */
-:host-context([data-theme='zen-light']) .zen-header,
-:host-context(body.theme-light) .zen-header {
-  background: rgba(248, 249, 251, 0.88);
-  border-bottom: 1px solid var(--zen-border-subtle, rgba(15, 23, 42, 0.08));
-}
-
-:host-context([data-theme='zen-light']) .nav-item,
-:host-context(body.theme-light) .nav-item {
-  color: var(--zen-text-secondary, #475569);
-}
-
-:host-context([data-theme='zen-light']) .nav-item:hover,
-:host-context(body.theme-light) .nav-item:hover {
-  color: var(--zen-text-primary, #0f172a);
-  background: rgba(15, 23, 42, 0.05);
-}
-
-:host-context([data-theme='zen-light']) .nav-item.active,
-:host-context(body.theme-light) .nav-item.active {
-  color: var(--zen-text-primary, #0f172a);
-  background: rgba(15, 23, 42, 0.08);
-  border-color: rgba(15, 23, 42, 0.25);
+  color: var(--zen-accent-kintsugi);
+  background: var(--glass-chip);
 }
 
 :host-context([data-theme='zen-light']) .cyber-matrix-stage-wrapper,
@@ -218,7 +221,7 @@
   box-sizing: border-box;
 }
 
-/* 01. HERO SECTION (Modo Oscuro con Laptop 3D al scroll & Modo Claro estilo Vercel) */
+/* 01. HERO SECTION (Laptop 3D al scroll en ambos temas) */
 .hero-section {
   position: relative;
   z-index: 10;
@@ -226,11 +229,9 @@
   width: 100%;
 }
 
-.hero-vercel-section {
-  position: relative;
-  z-index: 10;
-  background-color: #ffffff;
-  width: 100%;
+:host-context([data-theme='zen-light']) .hero-section,
+:host-context(body.theme-light) .hero-section {
+  background-color: #d9d9d9;
 }
 
 /* CONTENEDOR MAESTRO DE ETAPAS PANTALLA COMPLETA CON MATRIX RAIN */
@@ -253,6 +254,11 @@
   z-index: 0;
   margin-bottom: -100vh;
   opacity: 0.28;
+}
+
+:host-context([data-theme='zen-light']) .global-matrix-bg,
+:host-context(body.theme-light) .global-matrix-bg {
+  opacity: 0.38;
 }
 
 /* ETAPAS EN PANTALLA COMPLETA (100vh con centrado vertical y espacio negativo Zen) */
@@ -348,7 +354,9 @@
 
 @media (max-width: 640px) {
   .zen-header {
-    padding: 0 0.75rem;
+    top: 8px;
+    width: calc(100% - 16px);
+    padding: 0 var(--space-1) 0 var(--space-2);
   }
 
   .time-location-block {

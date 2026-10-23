@@ -78,13 +78,12 @@
     </nav>
 
     <div class="header-right-group">
-      <app-telemetry-hud></app-telemetry-hud>
-
       <div class="time-location-block">
         <span class="live-clock">{{ currentTime() }}</span>
         <span class="location-label"> {{ i18n.t().location }}</span>
       </div>
 
+      <div class="header-controls">
       <button
         type="button"
         class="lang-toggle-btn"
@@ -120,31 +119,21 @@
           </svg>
         }
       </button>
+      </div>
     </div>
   </header>
 
-  <!-- SECCIÓN 01: Hero Adaptativo (Modo Claro Vercel / Modo Oscuro Laptop 3D) -->
-  @if (themeService.isLightMode()) {
-    <section id="hero" class="landing-section hero-vercel-section">
-      <app-hero-vercel
-        (explore)="scrollToSection('projects')"
-        (terminal)="scrollToSection('terminal')"
-        (contact)="scrollToSection('contact')"
-      ></app-hero-vercel>
-    </section>
-  } @else {
-    <section id="hero" class="landing-section hero-section">
-      <app-hero-3d></app-hero-3d>
-      <app-tech-stack-strip></app-tech-stack-strip>
-    </section>
-  }
+  <!-- SECCIÓN 01: Laptop animada al scroll con una secuencia por tema -->
+  <section id="hero" class="landing-section hero-section">
+    <app-hero-3d></app-hero-3d>
+    <app-tech-stack-strip></app-tech-stack-strip>
+  </section>
 
   <!-- CONTENEDOR DE SECCIONES CON LLUVIA MATRIX AMBIENTAL (PANTALLA COMPLETA) -->
   <div class="cyber-matrix-stage-wrapper" [class.is-light]="themeService.isLightMode()">
     <!-- Lienzo Matrix Global activo en Dark Mode para estas secciones -->
-    @if (themeService.isDarkMode()) {
-      <app-matrix-rain class="global-matrix-bg"></app-matrix-rain>
-    }
+    <!-- Lluvia Matrix ambiental continua (Visible en modo oscuro y claro) -->
+    <app-matrix-rain class="global-matrix-bg"></app-matrix-rain>
 
     <!-- SECCIÓN 02: Módulos Interactivos (Perfil Técnico & Retro Monitor CRT) -->
     <section id="retro" class="landing-section fullscreen-stage">

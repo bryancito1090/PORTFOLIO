@@ -29,6 +29,25 @@
   filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.45));
 }
 
+:host-context([data-theme='zen-light']) .monitor-background-img,
+:host-context(body.theme-light) .monitor-background-img {
+  filter: drop-shadow(0 12px 24px rgba(15, 23, 42, 0.08));
+}
+
+:host-context([data-theme='zen-light']) .vintage-monitor-wrapper::after,
+:host-context(body.theme-light) .vintage-monitor-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 18%;
+  width: 64%;
+  height: 24px;
+  background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.12) 0%, transparent 70%);
+  filter: blur(8px);
+  pointer-events: none;
+  z-index: 0;
+}
+
 /* Área de Pantalla CRT Calibrada al Milímetro (81.83% del ancho del chasis) */
 .monitor-screen-glass {
   position: absolute;

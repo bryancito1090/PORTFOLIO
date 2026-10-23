@@ -8,6 +8,7 @@ import {
   NgZone,
   inject
 } from '@angular/core';
+import { ThemeService } from '../../../../application/services/theme.service';
 
 interface RainColumn {
   x: number;
@@ -36,6 +37,7 @@ export class MatrixRainComponent implements AfterViewInit, OnDestroy {
 
   private readonly hostRef = inject(ElementRef<HTMLElement>);
   private readonly ngZone = inject(NgZone);
+  private readonly themeService = inject(ThemeService);
 
   private readonly columns: RainColumn[] = [];
   private context?: CanvasRenderingContext2D;
@@ -184,6 +186,8 @@ export class MatrixRainComponent implements AfterViewInit, OnDestroy {
     this.context.textAlign = 'center';
     this.context.textBaseline = 'top';
 
+    const isLight = this.themeService.isLightMode();
+
     for (const column of this.columns) {
       for (let i = 0; i < column.characters.length; i++) {
         const charY = column.y + i * fontSize;
@@ -197,15 +201,28 @@ export class MatrixRainComponent implements AfterViewInit, OnDestroy {
 
         if (alpha <= 0) continue;
 
-        this.context.fillStyle = isHead
-          ? `rgba(235, 255, 240, ${Math.min(1, alpha + 0.4)})`
-          : isHighlight
-            ? `rgba(80, 255, 130, ${alpha})`
-            : `rgba(20, 185, 85, ${alpha})`;
+        if (isLight) {
+          this.context.fillStyle = isHead
+            ? `rgba(15, 23, 42, ${Math.min(1, alpha + 0.45)})`
+            : isHighlight
+              ? `rgba(21, 128, 61, ${Math.min(1, alpha + 0.25)})`
+              : `rgba(22, 101, 52, ${alpha * 0.9})`;
 
-        if (isHead || isHighlight) {
-          this.context.shadowColor = 'rgba(40, 255, 110, 0.85)';
-          this.context.shadowBlur = isHead ? 8 : 4;
+          if (isHead || isHighlight) {
+            this.context.shadowColor = 'rgba(21, 128, 61, 0.4)';
+            this.context.shadowBlur = isHead ? 4 : 2;
+          }
+        } else {
+          this.context.fillStyle = isHead
+            ? `rgba(235, 255, 240, ${Math.min(1, alpha + 0.4)})`
+            : isHighlight
+              ? `rgba(80, 255, 130, ${alpha})`
+              : `rgba(20, 185, 85, ${alpha})`;
+
+          if (isHead || isHighlight) {
+            this.context.shadowColor = 'rgba(40, 255, 110, 0.85)';
+            this.context.shadowBlur = isHead ? 8 : 4;
+          }
         }
 
         this.context.fillText(column.characters[i], column.x, charY);
